@@ -1,0 +1,187 @@
+=pod
+
+=encoding utf8
+
+=head1 LWP, Curl e Mechanize! 
+
+=head1 Introdução
+
+Nesse artigo iremos ver os três principais engines para spider/crawler, todos os exemplos serão feitos em Perl, mas 2 dos 3 engines ( cURL, Mechanize )  tem ports e implementações em outras linguagens.
+
+cURL tem a libcurl em C, com isso fica muito facil você encaixar ela em qualquer linguagem, linguagens que não implemetam a pilha de rede usam o cURL para ter comodidade para fazer seus spiders.
+
+cURL é o crawler default para C, C++, PHP e tem binds para todas as linguagens mais populares
+
+A ideia do Mechanize é tão boa, e você saberá o porque é boa/util, que foi portado para Ruby e Python falta algumas coisas mais a ideia base está lá
+
+=head1 cURL 
+
+=head2 História
+
+Na segunda metade de 1997, Daniel Stenberg veio com a ideia de fazer uma ferramenta de cambio para usuários do IRC ( provavelmente um bot ). Todos os dados necessários eram publicados na web; Ele apenas precisava automatizar a recuperação desses dados.
+
+A necessidade é a mãe de todas as invenções não é mesmo?
+
+Eu aprendi Perl para fazer Bots de IRC, e o ciclo continua, por isso o IRC não pode acabar :)
+
+No inicio Daniel adotou uma ferramente de linha de comando chamda httpget, feita por um *Brasileiro* Rafael Sagula. Ele alterou algumas coisas e pronto o pessoal do IRC não precisava mais sair do IRC para ver o valor de sua moeda.
+
+Logo depois ele achou dados de cambio em um site GOPHER, por causa disso ele adicionou o suporte a GOPHER e logo depois o suporte a FTP. O nome do projeto mudou de httpget para urlget, porque agora ele não fazia get apenas de HTTP.
+
+Suporte a SSL foi adicionado usando a biblioteca SSLeay em Maio de 1998 o urlget mudou de nome de novo e foi para curl, em agosto de 1998 ele finalmente saiu na midia nerd, na epoca o freshmeat.net.
+
+O resto, como dizem, é história e pode ser conferida em mais detalhes no site do cURL
+
+=head2 Funcionamento
+
+O funcionamento do cURL é uma coisa complicada :) a maioria dos binds dele para as linguagens é apenas um wrapper em cima da libcurl, então algumas coisas simples como um get fica bem complicado confome o exemplo abaixo
+
+  use strict;
+  use warnings;
+  use WWW::Curl::Easy;
+
+  my $curl = WWW::Curl::Easy->new;
+
+  $curl->setopt(CURLOPT_HEADER,1);
+  $curl->setopt(CURLOPT_URL, 'http://www.cpan.org');
+
+  # A filehandle, reference to a scalar or reference to a typeglob can be used here.
+  my $response_body;
+  $curl->setopt(CURLOPT_WRITEDATA,\$response_body);
+
+  # Starts the actual request
+  my $retcode = $curl->perform;
+
+  # Looking at the results...
+  if ($retcode == 0) {
+          print("Transfer went ok\n");
+          my $response_code = $curl->getinfo(CURLINFO_HTTP_CODE);
+          # judge result and next action based on $response_code
+          print("Received response: $response_body\n");
+  } else {
+          # Error code, type of error, error message
+          print("An error happened: $retcode ".$curl->strerror($retcode)." ".$curl->errbuf."\n");
+  }
+
+Complicado não? para resolver esse problema existem 2 modulos 'auxiliares' que fazem a vida com cURL ficar mais fácil, LWP::Curl e WWW::Curl::Simple o primeiro foi feito por esse que vos escreve e acredite quando era prototipo ele tinha o nome de WWW::Curl::Simple :P quando conversei sobre esse namespace com o Breno ( garu ) ele me sugeriu que ficasse no namespace da LWP e assim nasceu o LWP::Curl, anos depois foi criado o WWW::Curl::Simple
+
+O exemplo em LWP::Curl ficaria assim:
+
+    use LWP::Curl;
+    my $lwpcurl = LWP::Curl->new();
+    my $content = $lwpcurl->get('http://www.cpan.org');
+
+
+Bem mais simples não? em WWW::Curl::Simple ficaria assim:
+
+    use WWW::Curl::Simple;
+    my $curl = WWW::Curl::Simple->new();
+    my $content  = $curl->get('http://www.cpan.org/');
+
+O unico problema do cURL é que você precisa ter instalado as libs de desenvolvimento para compilar esses modulos porque eles são tudo um wrapper em cima da lib em C
+
+=head1 LWP - libwww-perl 
+
+=head2 Historia
+
+O LWP é um projeto que começou na primeira conferencia de Internet em Geneve no ano de 1994. Nessa conferencia Martijn Koster conheceu Roy Fielding que estava apresentando o trabalho que ele havia feito chamado MOMspider, que era um programa Perl que navegava na web procurando links quebrados e construia um indice dos documentos e links descobertos. Martijn sugeriu que ele refatorasse seu programa e o transformasse em uma biblioteca com componentes reutilizaveis.
+
+O resultado, libwww-perl para Perl 4 mantido pelo Roy.
+
+Mais tarde no mesmo ano, Larry Wall lancou o Perl 5. O novo sistema de modulos e a orientação a objeto que a nova versão do Perl tinha deixou a biblioteca de Roy ainda melhor. Em um certo ponto tanto Roy quando Martijn tinham modificações diferentes da libwww-perl. Eles juntaram forças e fizeram um merge de codigo e varios lancamentos alphas do que seria a nova versão do LWP. Infelizmente Martijn teve um problema legal com seu empregador que dizia que ele era dono da propriedade intelectual que o Martjin fez fora do horario de trabalho (!!!) para garantir que o codigo continuasse disponivel para comunidade Perl Roy assumiu totalmente o LWP.
+
+O namespace LWP:: foi feito pelo Martijn em uma das versões alphas que foram liberadas. Essa escolha de nome foi bem discutida na lista da libwww. Na epoca houve uma certa confusão na lista porque havia uma implemtacao de threads com o nome parecido, mas como nenhuma alternativa foi sugerida o nome ficou até hoje..
+ 
+=head2 Funcionamento
+
+O LWP também 'sofre' do mesmo mal do cURL, a versão baixo nivel dele é baixo nivel mesmo mas tem uma vantagem bem interessante basta você ter Perl para instalar o LWP ele não tem nenhuma dependencia externa e assim com o cURL também tem uma versão mais alto nivel e direta :)
+
+    use LWP::UserAgent;
+    my $ua = LWP::UserAgent->new;
+    $ua->agent("MyApp/0.1 ");
+    
+    # Create a request
+    my $req = HTTP::Request->new(POST => 'http://search.cpan.org/search');
+    $req->content_type('application/x-www-form-urlencoded');
+    $req->content('query=libwww-perl&mode=dist');
+    
+    # Pass request to the user agent and get a response back
+    my $res = $ua->request($req);
+    
+    # Check the outcome of the response
+    if ($res->is_success) {
+        print $res->content;
+    }
+    else {
+        print $res->status_line, "\n";
+    }
+
+Versão simples
+
+    require LWP::UserAgent;
+    my $ua = LWP::UserAgent->new;
+    $ua->timeout(10);
+    my $response = $ua->get('http://www.cpan.org/');
+
+Saber da existencia do objeto HTTP::Request 
+
+=head2 Mechanize
+
+O Mechanize, já começa com uma versão simples :) ele usa o LWP por baixo dos panos mais tem muita vantagem em cima dele
+
+  use WWW::Mechanize;
+  my $mech = WWW::Mechanize->new();
+
+  $mech->get( "http://www.cpan.org" );
+
+Só que o Mechanize é muito mais que um simples spider/crawler ele 'implementa' uma ideia basica de browser então você tem o botão voltar, faz cliques em 'botoões' ( não botoões de verdade, mas ele entende um form com botão e pode 'clicar' nesse botão do form para você )  por exemplo com isso você consegue navegar no site que está explorando sem saber a url que você estava, navega apenas manipulando o objeto como se fosse um browser
+
+Exemplo
+
+Imagine que você está em um site que tem um link chamado Próxima e Anterior, links normais quando se tem paginação de conteudo resultado de busca etc, o que você faria no browser para navegar nessa pagina? clicaria no link Próxima ou Anterior e vez ou outra usaria o botão Voltar do browser para voltar a pagina principal, vou emular esse cenario com o Mechanize
+
+
+  use WWW::Mechanize;
+  my $mech = WWW::Mechanize->new();
+
+  $mech->get( "http://www.cpan.org" );
+  $mech−>follow_link( text_regex => qr/Próxima/i ); 
+  # faz alguma coisa com o conteudo da pagina proxima aqui
+  $mech->back(); # volta para pagina que você estava
+  $mech−>follow_link( text_regex => qr/Anterior/i ); 
+  # acessa a pagina Anterior e assim por diante
+  #
+  #
+
+Quer procurar na pagina atual o link que tenha a palavara Download? Mechanize facilita isso para você
+
+    my $link = $mech−>find_link( text_regex => qr/download/i ); 
+
+Lembrando que a busca de link no Mechanize, retorna um array de objetos do tipo WWW::Mechanize::Link o para acessar a informação você precisa tratar o retorno como um WWW::Mechanize::Link
+
+WWW::Mechanize::Link 
+$link−>url()
+
+Quer retornar todas as imagens da pagina que tenham o alt de 'informacao' ?
+
+    $mech−>find_image( alt_regex => qr/informacao/i );  
+
+Nesse caso o retorno é um WWW::Mechanize::Image contendo todas as informações da imagem
+
+=head2 Qual o melhor?
+
+
+=head2 Conclusão
+
+
+=head1 Bibliografia
+
+http://curl.haxx.se/docs/history.html
+
+http://lwp.interglacial.com/ch01_02.htm
+
+=head1 AUTHOR 
+
+Lindolfo "Lorn" Rodrigues - lorn at cpan.org
+
+=cut
