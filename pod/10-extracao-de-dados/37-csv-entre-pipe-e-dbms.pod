@@ -329,8 +329,23 @@ L<DBD::CSV>
 
 =back
 
-=head1 AUTOR
+=head2 AUTOR
 
-Stanislaw Pusep L<stas@sysd.org|mailto:stas@sysd.org>
+Stanislaw Pusep L<E<lt> stas@sysd.org E<gt>|mailto:stas@sysd.org>
+
+Blog: L<sysd.org|http://sysd.org/>
+
+=head2 LICENÇA
+
+Este texto está licenciado sob os termos da Creative Commons by-sa,
+L<http://creativecommons.org/licenses/by-sa/3.0/br/>
+
+=begin pod:xhtml
+
+<center>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/"><img alt="Licença Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/">Creative Commons Attribution-ShareAlike License</a>.
+</center>
+
+=end pod:xhtml
 
 =cut

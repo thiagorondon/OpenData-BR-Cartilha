@@ -6,7 +6,7 @@
 
 =cut
 
-=head1 INTRODUÇÃO
+=head2 INTRODUÇÃO
 
 Em primeiro lugar: qual é o objetivo desse artigo, já que a documentação oficial do Perl é acompanhada de L<perlunitut> e L<perlunifaq>?
 Simples: um amplo espectro de erros relacionados à codificação observados em nossos scripts, desde um inofensivo I<Wide character in print at ...> e até o enigmático I<Parsing of undecoded UTF-8 will give garbage when decoding entities at ...>.
@@ -17,7 +17,7 @@ Agora, cronologicamente: o suporte B<nativo> a Unicode surgiu na versão 5.6 do 
 
 Então por que toda essa confusão no Perl? Vamos por partes.
 
-=head1 MITOS E VERDADES
+=head2 MITOS E VERDADES
 
 =over
 
@@ -107,14 +107,14 @@ Nos tempos mais primórdios, o esforço era acomodar a maior quantidade possíve
 
 =back
 
-=head1 O QUE É UNICODE, AFINAL?
+=head2 O QUE É UNICODE, AFINAL?
 
 Trocando em miúdos: um alfabeto ideal (no sentido platônico), com potencial para representar todo e qualquer sistema de escrita real ou fictício que já existiu ou virá a existir, desde o tibetano arcaico e até vogon.
 Para isso, foi reservado um índice não de 256 e nem de 65,536, mas de 2**31 posições (I<code points>). Dentro desse espaço, existe uma divisão por categorias e I<scripts>, além de um mapeamento de equivalência (por exemplo: Unicode "sabe" que "©" é aproximadamente equivalente a "C", e "ö" é similar a "o").
 Porém, o mais importante a saber é que Unicode ainda pode ser abstraído como um índice unidimensional: quem mexe com XML (e HTML) já viu I<entities> no formato C<&#8305;>, que renderiza como "ⁱ", e nada mais é do que o caractere Unicode com índice decimal 8305, e, respectivamente, hexadecimal C<"\x{2071}">. Um formato padronizado, independente da linguagem (XML ou Perl, no caso) é C<U+2071>.
 Voltando ao Perl; este trata os dados textuais como Unicode, e armazena internamente como C<utf8>.
 
-=head2 E O QUE É UTF-8?
+=head3 E O QUE É UTF-8?
 
 Cada caractere de Unicode pode ter índice de até 31 bits, mas, historicamente, linguagens de programação e I<markup> usam apenas os primeiros 7 bits do ASCII, suficientes para representar os textos em inglês.
 Então, C<utf8> nada mais é do que uma codificação capaz de acomodar todos os 31 bits do Unicode, porém mantendo o I<backward compatibility> com ASCII. Simplificando, funciona da seguinte forma
@@ -165,13 +165,13 @@ Obviamente, este I<flag> de C<utf8> é legível e configurável a partir do cód
 
 Então, concluindo sobre a relação do Perl com C<utf8>. O Perl a partir da versão 5.8 armazena e trata strings Unicode B<internamente> codificadas com C<utf8>. Entretanto, B<externamente>, o Perl, por default e visando I<backward compatibility>, emprega... C<latin1> no código-fonte e I<"literal bytes"> para I/O! Ou seja: é de se esperar encrenca em OS moderno, tal como Ubuntu, a menos que os devidos cuidados sejam tomados.
 
-=head1 CONVERSÃO DE CODIFICAÇÃO EM PERL
+=head2 CONVERSÃO DE CODIFICAÇÃO EM PERL
 
 Recapitulando: Perl, apesar de empregar Unicode (e com grande êxito) e armazenar strings como C<utf8> internamente, é um tanto quanto inconsistente ao se comunicar com o "mundo exterior".
 O próprio interpretador espera que o código-fonte esteja em C<latin1>, a menos que seja empregado o pragma C<use utf8> (o que não implica que I/O deixe de ser visto como I<"literal bytes">!!!).
 Portanto, a codificação do texto precisa ser especificada explicitamente.
 
-=head2 Usando PerlIO
+=head3 Usando PerlIO
 
 Frequentemente, a entrada de dados se dá por meio dos filehandles. Se o seu Perl foi compilado com suporte a L<perlio> (e quem, em sã consciência, não o faria?), este é o jeito mais natural de codificar (até mesmo encriptar!) os dados. É importante destacar que o Perl não seleciona layer de C<utf8> automaticamente mesmo que o arquivo a ser aberto contenha o I<Byte Order Mark>. Então, para abrir um arquivo em C<utf8>:
 
@@ -207,7 +207,7 @@ Aliás, o pragma L<open> só atua em open()/readpipe()/afins que se situam no me
 
 E, por fim, temos a clássica situação em que precisamos mexer com um código-macarronada herdado de um sistema arcaico. Para ajudar, o Perl tem o argumento C<-C> que controla o emprego dos layers. Por exemplo: C<perl -CSDA script_das_trevas.pl --buscar=açaí> vai forçar STD(IN|OUT|ERR) e todos os demais filehandles a serem C<utf8>, além de interpretar C<@ARGV> como C<utf8>. Ver L<perlrun> para maiores detalhes, mas lembre-se: isso é uma B<gambiarra>.
 
-=head2 Usando Encode
+=head3 Usando Encode
 
 Já que nem sempre é possível empregar PerlIO (por exemplo, o clássico erro I<Parsing of undecoded UTF-8 will give garbage when decoding entities at ...> se deve ao fato do L<LWP::UserAgent> pegar HTML como I<octets>, mas L<HTML::Parser> esperar como entrada Unicode), pode-se usar o L<Encode> para fazer a conversão diretamente em memória, I<"ad hoc">.
 Sabendo a codificação de uma string "crua", ela primeiro deve ser "Unicodificada":
@@ -320,7 +320,7 @@ Então, segue aqui o script que exemplifica a heurística da diferenciação ent
 
 A função C<detect_utf8()>, que "emprestei" dos comentários da página de documentação online do PHP, faz uma verificação B<aproximada> se o "protocolo" de C<utf8> de guardar 31 bits por caractere é respeitado. Se não é, das duas uma: os I<octets> são C<ascii>, se nenhum exceder 7 bits por byte; ou a codificação é "qualquer outra coisa". Se estamos trabalhando com textos em português, a chance da "outra coisa" ser C<latin1> é de 99.9%. Se não for suficiente, é possível combinar o poder do L<Encode::Guess> com esta muleta; ou mesmo elaborar uma heurística que leve em consideração a frequência da ocorrência das letras em um texto. Esse último caso é realmente B<o último caso>: além da complexidade, a quantidade de falsos-positivos chega a ser irritante. Quem mais se lembra como era navegar na Web lá em 1996? Ao menos para mim, apareciam letrinhas árabes no lugar dos acentos C<:P>
 
-=head2 Gotchas
+=head3 Gotchas
 
 =over
 
@@ -396,7 +396,7 @@ Um cuidado especial deve ser tomado com módulos que empregam L<XS|perlxs>; se s
 
 =back
 
-=head1 RESUMO
+=head2 RESUMO
 
 =over
 
@@ -468,7 +468,7 @@ Então não citei codificações obscuras (como o C<EBCDIC> que tive oportunidad
 
 =back
 
-=head1 REFERÊNCIAS
+=head2 REFERÊNCIAS
 
 =over
 
@@ -506,8 +506,23 @@ L<The Absolute Minimum Every Software Developer Absolutely, Positively Must Know
 
 =back
 
-=head1 AUTOR
+=head2 AUTOR
 
-Stanislaw Pusep L<stas@sysd.org|mailto:stas@sysd.org>
+Stanislaw Pusep L<E<lt> stas@sysd.org E<gt>|mailto:stas@sysd.org>
+
+Blog: L<sysd.org|http://sysd.org/>
+
+=head2 LICENÇA
+
+Este texto está licenciado sob os termos da Creative Commons by-sa,
+L<http://creativecommons.org/licenses/by-sa/3.0/br/>
+
+=begin pod:xhtml
+
+<center>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/"><img alt="Licença Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/">Creative Commons Attribution-ShareAlike License</a>.
+</center>
+
+=end pod:xhtml
 
 =cut
