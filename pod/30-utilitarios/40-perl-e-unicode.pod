@@ -94,7 +94,7 @@ B<C<iso-8859-1>, C<iso-8859-15> e C<win-1252> são tudo a mesma coisa>
 
 B<FALSO>. Se fossem, não teriam nomes diferentes C<:P>
 
-Apesar de todos serem I<Western Latin character sets> e apresentarem similaridades, também tem diferenças. Entretanto, para os fins de processamento de texto em português, I<podem ser considerados iguais>, pois todos os caracteres usadas em palavras em português coincidem. O que muda são as letrinhas bonitinhas como "E<#128>", "E<#8482>" ou "E<#159>", que interessam mais à juventude na hora da elaboração do nickname C<:)>
+Apesar de todos serem I<Western Latin character sets> e apresentarem similaridades, também tem diferenças. Entretanto, para os fins de processamento de texto em português, I<podem ser considerados iguais>, pois todos os caracteres usadas em palavras em português coincidem. O que muda são as letrinhas bonitinhas como "€", "™" ou "Ÿ", que interessam mais à juventude na hora da elaboração do nickname C<:)>
 
 B<Observação>: já C<iso-8859-1> e C<latin1>, são sinônimos.
 
@@ -111,14 +111,14 @@ Nos tempos mais primórdios, o esforço era acomodar a maior quantidade possíve
 
 Trocando em miúdos: um alfabeto ideal (no sentido platônico), com potencial para representar todo e qualquer sistema de escrita real ou fictício que já existiu ou virá a existir, desde o tibetano arcaico e até vogon.
 Para isso, foi reservado um índice não de 256 e nem de 65,536, mas de 2**31 posições (I<code points>). Dentro desse espaço, existe uma divisão por categorias e I<scripts>, além de um mapeamento de equivalência (por exemplo: Unicode "sabe" que "©" é aproximadamente equivalente a "C", e "ö" é similar a "o").
-Porém, o mais importante a saber é que Unicode ainda pode ser abstraído como um índice unidimensional: quem mexe com XML (e HTML) já viu I<entities> no formato C<&#8305;>, que renderiza como "E<#185>", e nada mais é do que o caractere Unicode com índice decimal 8305, e, respectivamente, hexadecimal C<"\x{2071}">. Um formato padronizado, independente da linguagem (XML ou Perl, no caso) é C<U+2071>.
+Porém, o mais importante a saber é que Unicode ainda pode ser abstraído como um índice unidimensional: quem mexe com XML (e HTML) já viu I<entities> no formato C<&#8305;>, que renderiza como "ⁱ", e nada mais é do que o caractere Unicode com índice decimal 8305, e, respectivamente, hexadecimal C<"\x{2071}">. Um formato padronizado, independente da linguagem (XML ou Perl, no caso) é C<U+2071>.
 Voltando ao Perl; este trata os dados textuais como Unicode, e armazena internamente como C<utf8>.
 
 =head2 E O QUE É UTF-8?
 
 Cada caractere de Unicode pode ter índice de até 31 bits, mas, historicamente, linguagens de programação e I<markup> usam apenas os primeiros 7 bits do ASCII, suficientes para representar os textos em inglês.
 Então, C<utf8> nada mais é do que uma codificação capaz de acomodar todos os 31 bits do Unicode, porém mantendo o I<backward compatibility> com ASCII. Simplificando, funciona da seguinte forma
-(sendo que "E<#185>" representa bit setado, "0" - não-setado, e "x" é o espaço reservado para o índice do caractere codificado):
+(sendo que "1" representa bit setado, "0" - não-setado, e "x" é o espaço reservado para o índice do caractere codificado):
 
   BYTE 1   BYTE 2   BYTE 3   BYTE 4   BYTE 5   BYTE 6
 
@@ -134,7 +134,7 @@ Para dar uma pista de que o arquivo B<não é> ASCII, existe o BOM (I<Byte Order
 
 B<OBSERVAÇÃO>: apesar do espaço reservado ser de 2**31, nem todos os índices decodificam para caracteres Unicode válidos!!!
 
-Voltando ao exemplo anterior, o caractere C<U+2071> ("E<#185>"), representado em C<utf8>, é sequencia de bytes C<(0xE2, 0x81, 0xB1)>. Eis um aparente paradoxo: string "ímã" tem 3 caracteres, mas, codificada em C<utf8>, ocupa 5 bytes! Outro ponto importante é que C<utf8> é interpretável em uma só direção, já que é o primeiro byte da sequencia que determina o tamanho do bloco todo. Então, para que a coisa toda dê certo, e C<substr("ímã", 1, 1)> retorne "m", Perl armazena metadados juntamente com strings em C<utf8>. Vejamos:
+Voltando ao exemplo anterior, o caractere C<U+2071> ("ⁱ"), representado em C<utf8>, é sequencia de bytes C<(0xE2, 0x81, 0xB1)>. Eis um aparente paradoxo: string "ímã" tem 3 caracteres, mas, codificada em C<utf8>, ocupa 5 bytes! Outro ponto importante é que C<utf8> é interpretável em uma só direção, já que é o primeiro byte da sequencia que determina o tamanho do bloco todo. Então, para que a coisa toda dê certo, e C<substr("ímã", 1, 1)> retorne "m", Perl armazena metadados juntamente com strings em C<utf8>. Vejamos:
 
  #!/usr/bin/perl
  use utf8;
@@ -424,7 +424,7 @@ E, é claro, salvar o arquivo em C<utf8>.
 
 Mesmo salvando o script em C<utf8>, é melhor evitar copiar & colar a torto e a direito, B<especialmente> para dentro das expressões regulares! Pois veja só:
 
- s/[\---__-]/-/g;
+ s/[\-‐‑‒–−]/-/g;
 
 Dependendo da fonte, são 6 caracteres B<parecidos>, enquanto na realidade são distintos:
 
@@ -486,7 +486,7 @@ L<Encode>
 
 =item *
 
-L<Support Unicode|http://xpoint.ru/know-how/Perl/PodderzhkaUnicode>
+L<Поддержка Unicode|http://xpoint.ru/know-how/Perl/PodderzhkaUnicode>
 
 =item *
 
@@ -498,7 +498,7 @@ L<Unicode UTF-8 encoding|http://home.tiscali.nl/t876506/utf8tbl.html>
 
 =item *
 
-L<UTF8, MySQL, Perl and PHP (Phil Gyford's website)|http://www.gyford.com/phil/writing/2008/04/25/utf8_mysql_perl.php>
+L<UTF8, MySQL, Perl and PHP (Phil Gyford’s website)|http://www.gyford.com/phil/writing/2008/04/25/utf8_mysql_perl.php>
 
 =item *
 
