@@ -10,9 +10,8 @@ O formato CSV (I<Comma-Separated Values>) é o verdadeiro "idioma inglês" para 
 
 Único "formato" que pode ser considerado mais simples do que CSV é o TSV (I<Tab-Separated Values>), que nada mais é do que um caso particular de CSV. O formato TSV está de certa forma I<hard-coded> em scripts de I<shell>, por exemplo, C<xinput -list | cut -f 2> retorna os identificadores dos dispositivos de entrada do X11. O próprio Perl já lida muito bem com os dados delimitados, via I<inline>:
 
+ # extrai o PID e a linha de comando dos processos operantes
  ps auwx | perl -anE '$,="\t"; say @F[1,10]'
- 
-(extrai o PID e a linha de comando dos processos operantes)
 
 Do ponto de vista da eficiência, separar pelo delimitador é muito melhor, entretanto, alguns dados são suficientemente elaborados a ponto de empregarem o próprio delimitador como parte dos dados. Por outro lado, colunas separadas por caractere invisível definitivamente não são uma forma I<human-readable> de representar os dados, especialmente quando existem muitas colunas e/ou colunas de valor indefinido.
 
