@@ -1,3 +1,5 @@
+=encoding utf8
+
 =head1 Scraping fácil com Mojolicious (e feeds Atom!)
 
 A suíte Mojolicious de módulos para web pode ser mais conhecida
