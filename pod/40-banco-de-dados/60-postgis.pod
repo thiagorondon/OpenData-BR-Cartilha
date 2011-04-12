@@ -66,7 +66,7 @@ POINT( -20.1929 -44.11221 )
 
 =begin html
 
-  <img src="../../images/postfix/point.png">
+  <img src="../../images/postgis/point.png">
 
 =end html
 
@@ -77,7 +77,7 @@ LINESTRING(0 0,1 1,1 2)
 
 =begin html
 
-  <img src="../../images/postfix/linestring.png">
+  <img src="../../images/postgis/linestring.png">
 
 =end html
 
@@ -89,7 +89,7 @@ POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
 
 =begin html
 
-  <img src="../../images/postfix/polygon.png">
+  <img src="../../images/postgis/polygon.png">
 
 =end html
 
@@ -101,7 +101,7 @@ MULTIPOINT(0 0,1 2)
 
 =begin html
 
-  <img src="../../images/postfix/multipoint.png">
+  <img src="../../images/postgis/multipoint.png">
 
 =end html
 
@@ -113,7 +113,7 @@ MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))
 
 =begin html
 
-  <img src="../../images/postfix/multilinestring.png">
+  <img src="../../images/postgis/multilinestring.png">
 
 =end html
 
@@ -123,7 +123,7 @@ MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)), ((-1 -1,-1 -2,-2 -2,
 
 =begin html
 
-  <img src="../../images/postfix/multipolygon.png">
+  <img src="../../images/postgis/multipolygon.png">
 
 =end html
 
@@ -133,7 +133,7 @@ GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))
 
 =begin html
 
-  <img src="../../images/postfix/geometrycollection.png">
+  <img src="../../images/postgis/geometrycollection.png">
 
 =end html
 

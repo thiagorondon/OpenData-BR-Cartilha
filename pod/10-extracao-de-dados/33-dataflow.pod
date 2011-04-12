@@ -66,7 +66,7 @@ Em meados de Dezembro de 2010, a primeira idéia foi codificada em termos de
 
 =begin pod:xhtml
 
-<center><img style="border-width:0" src="fig1-porco-salsicha.png" /></center>
+<center><img style="border-width:0" src="../../images/dataflow/fig1-porco-salsicha.png" /></center>
 
 =end pod:xhtml
 
@@ -75,7 +75,7 @@ porquinhos:
 
 =begin pod:xhtml
 
-<center><img style="border-width:0" src="fig2-porco-salsicha.png" /></center>
+<center><img style="border-width:0" src="../../images/dataflow/fig2-porco-salsicha.png" /></center>
 
 =end pod:xhtml
 
@@ -191,13 +191,13 @@ C<DataFlow> seria a mesma de um I<pipe> na linha de comando.
 
 =begin pod:xhtml
 
-<center><img style="border-width:0" src="fig3-node.png" /></center>
+<center><img style="border-width:0" src="../../images/dataflow/fig3-node.png" /></center>
 
 =end pod:xhtml
 
 =begin pod:xhtml
 
-<center><img style="border-width:0" src="fig4-chain.png" /></center>
+<center><img style="border-width:0" src="../../images/dataflow/fig4-chain.png" /></center>
 
 =end pod:xhtml
 
