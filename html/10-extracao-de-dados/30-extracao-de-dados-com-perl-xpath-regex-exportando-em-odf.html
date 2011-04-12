@@ -56,7 +56,13 @@ name="Obtendo_os_dados_de_uma_p&#225;gina"
     - //table/td[1] : retorna o primeiro td de uma &#60;table&#62;
     - /body/html//table/td[1] : retorna o primero td de uma tabela dentro do &#60;html&#62;</pre>
 
+<p align="center"><img src="../../images/img2.png"/></p>
+
+
 <p>Agora que entendemos o b&#225;sico sobre XPath, vamos continuar e aplicar este aprendizado no site que escolhemos anteriormente. O objetivo vai ser carregar os dados da p&#225;gina dentro de uma estrutura de dados criada especificamente para este site. Veja a ilustra&#231;&#227;o do que deve ser feito conforme a imagem:</p>
+
+<p align="center"><img src="../../images/img1.png"/></p>
+
 
 <h2><a class='u' href='#___top' title='click to go to top of document'
 name="Analisando_texto_com_regex"
@@ -84,7 +90,35 @@ name="Analisando_texto_com_regex"
 
 <p>Veja um exemplo de regex na imagem:</p>
 
+<p align="center"><img src="../../images/img3.png"/></p>
+
+
 <p>Compilei uma tabela de regex simples com os itens que mais utilizo quando trabalho com regex:</p>
+
+Tabela de regex simples
+
+
+         [A-Za-z0-9]   Apenas caracteres alfanuméricos
+        [A-Za-z0-9_]   Alfanuméricos e _
+                  \w   Alfanuméricos e _
+               [0-9]   Apenas dígitos
+                  \d   Apenas dígitos
+                  \D   Não dígitos
+                  \s   espaço
+                  \S   Não espaço
+                   ^   String começando em
+                   $   String terminando em
+       [^a-zA-Z0-9_]   Negação/Não alfanuméricos
+                 \n    Nova linha
+                  \r   Carriage return
+           {min,max}   Quantidade de ocorrências
+                 ()    Agrupa itens dentro do parêntesis
+                   |   Separa alternativas
+                   .   Algum caracter
+                (.+)   Alguma coisa obrigatoriamente
+                (.*)   Alguma coisa opcionalmente
+
+
 
 <h2><a class='u' href='#___top' title='click to go to top of document'
 name="Navega&#231;&#227;o_e_web_crawler_com_perl"

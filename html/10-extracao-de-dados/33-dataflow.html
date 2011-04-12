@@ -132,8 +132,14 @@ a primeira id&#233;ia foi codificada em termos de &#34;caixas&#34;,
 que teriam um entrada e uma sa&#237;da - de uma forma bem gen&#233;rica: &#34;entra porquinho,
 sai salsicha&#34;.</p>
 
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig1-porco-salsicha.png" /></center>
+
+
 <p>Em termos de programa&#231;&#227;o em <b>Perl</b>,
 podemos colocar v&#225;rios tipos de porquinhos:</p>
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig2-porco-salsicha.png" /></center>
+
 
 <p>E as caixas poderiam ser enfileiradas para que a salsicha de um pudesse virar a feijoada do pr&#243;ximo.</p>
 
@@ -161,6 +167,9 @@ usando a fun&#231;&#227;o <code>uc()</code> padr&#227;o do Perl.</p>
     );</pre>
 
 <p>O racional de um <code>DataFlow::Node</code> &#233; o mesmo de um comando de Unix ou Linux que atua como um filtro: ele &#233; um peda&#231;o de cano (<i>pipe</i>), que faz uma coisa s&#243;, simples, e bem definida:</p>
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig3-node.png" /></center>
+
 
 <p>E como usar esse n&#243;? Seguindo a tradi&#231;&#227;o, de mais de um jeito:</p>
 
@@ -207,6 +216,9 @@ name="Chains"
 >Chains</a></h3>
 
 <p>Um <i>node</i> sozinho n&#227;o faz um <i>hack</i>, ent&#227;o &#233; preciso &#34;enfileirar&#34; os n&#243;s para conseguir obter um resultado significativo. O poder dos comandos pequenos est&#225; em junt&#225;-los para fazer algo maior:</p>
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig4-chain.png" /></center>
+
 
 <p>Exatamente como se fosse um <i>pipe</i> na linha de comando. No <code>DataFlow</code>, isso se faz com a classe <a href="http://search.cpan.org/perldoc?DataFlow%3A%3AChain" class="podlinkpod"
 >DataFlow::Chain</a>, que pode ser usada assim:</p>
@@ -601,5 +613,10 @@ name="Licen&#231;a"
 
 <p>Este texto est&#225; licenciado sob os termos da Creative Commons by-sa, <a href="http://creativecommons.org/licenses/by-sa/3.0/br/" class="podlinkurl"
 >http://creativecommons.org/licenses/by-sa/3.0/br/</a></p>
+
+<center>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/"><img alt="Licença Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/">Creative Commons Attribution-ShareAlike License</a>.
+</center>
+
 
 </body></html>
