@@ -1,4 +1,5 @@
 =pod
+
 =encoding utf8
 
 =head1 PostGIS
@@ -120,13 +121,11 @@ MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))
 
 MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)), ((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1)))
 
-
 =begin html
 
   <img src="multipolygon.png">
 
 =end html
-
 
 =item Geometrycollection
 
@@ -138,9 +137,7 @@ GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))
 
 =end html
 
-
 =back
-
 
 =head2 Principais funções
 
@@ -172,11 +169,8 @@ Analisa se dois objetos se cruzam e retorna verdadeiro caso ocorra.
 
 =back
 
-
 A consulta a seguir, por exemplo, possui uma medição espacial e calcula a área
 baseando-se numa coluna contendo um objeto geográfico.
-
-
 
   SELECT name, ST_Area(the_geom)/10000 AS hectares
   FROM bc_municipality
@@ -191,31 +185,38 @@ baseando-se numa coluna contendo um objeto geográfico.
 
 =head2 Exemplo: Antenas de telefonia celular no estado de São Paulo
 
-Vamos utilizar os dados geográficos das microregiões do estado de São Paulo
-disponibilizados pelo L<IBGE|http://www.ibge.gov.br/> [L<1|/"IBGE">] como mapa
-base para o nosso exemplo com dados reais. Cruzaremos esses mapas com os dados
-obtidos do projeto L<OpenCellID|http://http://www.opencellid.org/>
-[L<2|/"OpenCellID">], que é um projeto open source que cataloga informações
-sobre antenas de celulares no mundo todo.
+Vamos utilizar os dados geográficos das microregiões do estado de São
+Paulo disponibilizados pelo L<IBGE|http://www.ibge.gov.br/>
+[L<1|/IBGE>] como mapa base para o nosso exemplo com dados
+reais. Cruzaremos esses mapas com os dados obtidos do projeto
+L<OpenCellID|http://http://www.opencellid.org/> [L<2|/OpenCellID>], um
+projeto open source que cataloga informações sobre antenas de
+celulares no mundo todo.
 
 
 =head2 Criando banco dados com suporte ao PostGIS
 
-Em nome da brevidade, omitiremos os passos que envolvem a instalação e
-configuração do PostGIS. Essas informações estão disponíveis no site oficial
-do projeto[L<3|"PostGIS - Site Oficial">].
+Para ilustrar nosso exemplo, uma máquina com Debian 6.0 (Squeeze) será
+usada.
 
-Os comandos a seguir habilitam o suporte ao PostGIS no PostgreSQL:
+Primeiro, a instalação do PostGis:
 
+  root@debian6:~# apt-get install postgresql-8.4-postgis
+
+Os comandos a seguir habilitam o suporte ao PostGIS no banco
+"exemplo", criado no PostgreSQL:
+
+  root@debian6:~# su postgres
   $ createdb exemplo
-  $ psql -d exemplo -f postgis.sql
-  $ psql -d exemplo -f spatial_ref_sys.sql
+  $ createlang plpgsql exemplo
+  $ psql -d exemplo -f /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
+  $ psql -d exemplo -f /usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
 
 
 =head2 Populando o banco com dados
 
 Vamos agora carregar os dados obtidos no banco. Dentre os arquivos
-disponibilizados pelo IBGE [L<1|/"IBGE">] existe um arquivo com formato
+disponibilizados pelo IBGE [L<1|/IBGE>] existe um arquivo com formato
 shapefile (.shp) que precisa ser convertido em SQL antes de ser inserido no
 banco, para isso utilizamos a ferramenta shp2pgsql, disponível após a
 instalação do PostGIS:
@@ -228,31 +229,38 @@ Os dados das antenas são disponibilizados pelo OpenCellID no formato CSV com a 
 
   id,lat,lon,mcc,mnc,lac,cellid,range,nbSamples,created_at,updated_at
 
-O arquivo é imenso e possui informações de antenas de telefonia móvel do mundo
-inteiro. A nós, interessa somente as colunas "lat" e "lon" das linhas que
-possuam o "mcc" igual a 724, que são as antenas localizadas no Brasil e serão
-inseridas na tabela cel(id,position) (onde "position" é do tipo geometry)
-usando a notação WKT "POINT( longitude latitude )". Notem que nessa notação a
-ordem das coordenadas geográficas é diferente da que estamos acostumados:
+O arquivo é imenso e possui informações de antenas de telefonia móvel
+do mundo inteiro. Nos interessa somente as colunas "lat" e "lon" das
+linhas que possuam o "mcc" igual a 724, que são as antenas localizadas
+no Brasil e serão inseridas na tabela cel(id,position) (onde
+"position" é do tipo geometry) usando a notação WKT "POINT( longitude
+latitude )". Notem que nessa notação a ordem das coordenadas
+geográficas é diferente da que estamos acostumados. A seguir, alguns
+one-liners em Perl fazem a filtragem dos dados que serão inseridos no
+banco:
 
   $ perl -F',' -anE 'print if $F[4] == 724' cells.txt > br_cells.txt
   $ perl -F',' -anE 'say qq/INSERT INTO cell(position) VALUES("POINT( $F[2]  $F[1] )"::geometry);/' br_cells.txt > cell.sql
   $ psql -d exemplo -f cell.sql
 
-A tabela "cell" agora possui posições de toda as antenas do Brasil, ainda
-podemos fazer outra filtragem, desta vez utilizando as condições de junção
-disponíveis no PostGIS, para filtrar somente as antenas do estado de São
-Paulo. Vamos criar uma tabela contendo somente as antenas presentes em SP:
+A tabela "cell" agora possui posições de todas as antenas do
+Brasil. Ainda podemos fazer outra filtragem, desta vez utilizando as
+condições de junção disponíveis no PostGIS para filtrar somente as
+antenas do estado de São Paulo. Vamos criar uma tabela contendo
+somente as antenas presentes em SP:
 
-  exemplo=# CREATE TABLE sp_cell AS 
-  exemplo-# SELECT cell.* FROM cell
-  exemplo-# JOIN mapa_sp on ST_Within(cell.position,mapa_sp.the_geom);
+  exemplo=# CREATE TABLE sp_cell AS
+  exemplo-#   SELECT cell.*
+  exemplo-#   FROM cell
+  exemplo-#   JOIN mapa_sp on ST_Within(cell.position, mapa_sp.the_geom);
 
 =head2 Consultas interessantes
 
 Agora que já temos nossos dados prontos, vamos realizar algumas consultas.
 
 =over
+
+=
 
 =item Quantas antenas existem em cada microregião do Estado de São Paulo?
 
@@ -291,13 +299,16 @@ Agora que já temos nossos dados prontos, vamos realizar algumas consultas.
 
 =head2 Visualizando dados geográficos
 
-Como pudemos ver, são grandes as possibilidades de consultas e informações
-obtidas, e abrem um horizonte para diversas combinações de diferentes tipos
-de dados que podem ser cruzados e relacionados espacialmente. Mas o acesso e
-visualização somente em modo texto não tem muita graça. E pra isso foram
-desenvolvidas ferramentas que possibilitam a plotagem de dados e rasterização
-de mapas. Muitos desses projetos oferecem suporte ao PostGIS como fonte de
-dados e dividem-se em aplicações baseadas em web ou desktop.
+Como pudemos ver, são grandes as possibilidades de consultas e
+informações obtidas e abrem um horizonte para diversas combinações de
+diferentes tipos de dados que podem ser cruzados e relacionados
+espacialmente. À primeira vista, para um usuário final os resultados
+em forma de texto podem parecer "crus" e carecem de uma representação
+gráfica tão comumente associada a dados espaciais. Para isso foram
+desenvolvidas ferramentas que possibilitam a plotagem de dados e
+rasterização de mapas obtidos de resultados de consultas ou de tabelas
+inteiras. Muitos desses projetos oferecem suporte ao PostGIS como
+fonte de dados e dividem-se em aplicações baseadas em web ou desktop.
 
 Clique nos links e conheça esses projetos, com destaque para o TerraView,
 desenvolvido aqui mesmo no Brasil, pelo INPE:
