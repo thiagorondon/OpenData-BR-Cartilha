@@ -1,20 +1,4 @@
 #!/usr/bin/perl
-
-package OpenData::Pod;
-use strict;
-use utf8;
-use warnings 'all';
-
-use base 'Pod::Simple::HTML';
-
-sub set_base {
-    my ($self, $base) = @_;
-    $self->{base} = $base;
-}
-
-1;
-
-package main;
 use strict;
 use utf8;
 use warnings 'all';
@@ -22,6 +6,7 @@ use warnings 'all';
 use Data::Dumper;
 use File::Find;
 use FindBin qw($Bin);
+use Pod::Simple::HTML;
 use Regexp::Common qw(comment);
 
 my $path = "$Bin/pod";
@@ -45,17 +30,16 @@ foreach my $pod (@files) {
     my $link = join('/', @path, $html_file);
 
     unshift @path, @docs;
-    mkdir join('/', @path[0 .. $_]) for 2 .. $#path;
+    mkdir join('/', @path[0 .. $_]) for 1 .. $#path;
 
     printf STDERR "%s/%s -> %s\n", $path, $pod, $html_file;
 
-    my $p = new OpenData::Pod;
+    my $p = new Pod::Simple::HTML;
     my $html = '';
     $p->accept_targets('*');
     $p->html_css($css);
     $p->index(1);
     $p->output_string(\$html);
-    $p->set_base($path);
     $p->parse_file("$path/$pod");
 
     $html =~ s/$RE{comment}{HTML}\s*//gos;

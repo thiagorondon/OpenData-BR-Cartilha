@@ -28,7 +28,7 @@
 name="Formatos_para_Transpar&#234;ncia_de_Dados_P&#250;blicos"
 >Formatos para Transpar&#234;ncia de Dados P&#250;blicos</a></h1>
 
-<p>Um dos maiores problemas enfrentados pelo <a href="http://search.cpan.org/perldoc?http%3A#%2Fsao-paulo.pm.org%2Fequinocio%2F2011%2Fmar%2F1" class="podlinkpod"
+<p>Um dos maiores problemas enfrentados pelo <a href="http://sao-paulo.pm.org/equinocio/2011/mar/1" class="podlinkurl"
 >projeto OpenData</a> est&#225; no formato em que a informa&#231;&#227;o &#233; disponibilizada pelo poder p&#250;blico.
 A lei diz que as informa&#231;&#245;es devem ser expostas &#224; popula&#231;&#227;o,
 mas n&#227;o especifica <b>como</b>.
@@ -55,9 +55,9 @@ o que efetivamente desperdi&#231;a e invalida todos os esfor&#231;os de democrat
 <p>Embora existam t&#233;cnicas de parsing e extra&#231;&#227;o autom&#225;tica de informa&#231;&#245;es em formatos de arquivos deste tipo - muitos dos quais discutidos nos demais artigos deste Equin&#243;cio - o ideal &#233; que as informa&#231;&#245;es sejam expostas pela Administra&#231;&#227;o P&#250;blica da forma mais direta e bem estruturada poss&#237;vel.</p>
 
 <p>Para um exemplo simples,
-considere o excelente site do <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.isp.rj.gov.br" class="podlinkpod"
+considere o excelente site do <a href="http://www.isp.rj.gov.br" class="podlinkurl"
 >Insituto de Seguran&#231;a P&#250;blica (ISP)</a> do Estado do Rio de Janeiro,
-que tornou p&#250;blicas as <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.isp.rj.gov.br%2FConteudo.asp%3Fident%3D150" class="podlinkpod"
+que tornou p&#250;blicas as <a href="http://www.isp.rj.gov.br/Conteudo.asp?ident=150" class="podlinkurl"
 >informa&#231;&#245;es acerca de incid&#234;ncias criminais no Estado</a>.
 A iniciativa &#233; fant&#225;stica,
 e com isso a Secretaria de Estado de Seguran&#231;a espera &#34;<i>assegurar o m&#225;ximo de transpar&#234;ncia e o amplo acesso &#224;s informa&#231;&#245;es relativas a notifica&#231;&#245;es criminais</i>&#34;.</p>
@@ -128,7 +128,7 @@ o que facilita enormemente a automatiza&#231;&#227;o dos processos de coleta e a
 
 <p>Existem diversos estilos de Web Services,
 o mais popular hoje em dia chamado REST.
-H&#225; <a href="http://search.cpan.org/perldoc?http%3A#%2Fsao-paulo.pm.org%2Fartigo%2F2010%2FRESTful" class="podlinkpod"
+H&#225; <a href="http://sao-paulo.pm.org/artigo/2010/RESTful" class="podlinkurl"
 >excelente material dispon&#237;vel sobre REST</a> e outros estilos,
 da estrutura &#224; implementa&#231;&#227;o,
 ent&#227;o vamos nos concentrar em mostrar como pode ser simples a exibi&#231;&#227;o de dados e estruturas complexas nos principais formatos para API&#39;s web.</p>
@@ -148,7 +148,7 @@ Os respons&#225;veis criam um servi&#231;o REST simples na forma da URI:</p>
 
 <p>e importar o resultado para nosso software de an&#225;lise.</p>
 
-<p>Em <a href="http://search.cpan.org/perldoc?http%3A#%2Fsao-paulo.pm.org%2Fartigo%2F2010%2FMojolicious" class="podlinkpod"
+<p>Em <a href="http://sao-paulo.pm.org/artigo/2010/Mojolicious" class="podlinkurl"
 >Mojolicious</a>, criar esse tipo de rota &#233; t&#227;o f&#225;cil quanto escrever:</p>
 
 <pre>   use Mojolicious::Lite;
@@ -172,7 +172,7 @@ Os respons&#225;veis criam um servi&#231;o REST simples na forma da URI:</p>
 name="JSON"
 >JSON</a></h3>
 
-<p>O formato <a href="http://search.cpan.org/perldoc?http%3A#%2Fjson.org" class="podlinkpod"
+<p>O formato <a href="http://json.org" class="podlinkurl"
 >JSON</a> &#233; extremamente leve e simples - a especifica&#231;&#227;o cabe em apenas uma p&#225;gina! Sua estrutura &#233; de f&#225;cil entendimento e usa conven&#231;&#245;es comuns em muitas linguagens de programa&#231;&#227;o, o que facilita ainda mais sua integra&#231;&#227;o.</p>
 
 <p>Passar a estrutura de dados acima para JSON &#233; muito simples:</p>
@@ -191,7 +191,7 @@ name="JSON"
 name="YAML"
 >YAML</a></h3>
 
-<p>O formato <a href="http://search.cpan.org/perldoc?http%3A#%2Fyaml.org" class="podlinkpod"
+<p>O formato <a href="http://yaml.org" class="podlinkurl"
 >YAML</a> &#233; uma tentativa de simplificar o XML, ofererendo um padr&#227;o de serializa&#231;&#227;o de dados f&#225;cil de ser interpretado tanto por humanos quanto por programas.</p>
 
 <p>Podemos passar a estrutura de dados anterior para YAML fazendo:</p>
@@ -214,7 +214,7 @@ name="YAML"
 name="XML"
 >XML</a></h3>
 
-<p><a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.w3.org%2FTR%2FREC-xml%2F" class="podlinkpod"
+<p><a href="http://www.w3.org/TR/REC-xml/" class="podlinkurl"
 >XML</a> foi um dos formatos padronizados mais populares para serializa&#231;&#227;o de dados via rede. Hoje em dia, muitos desenvolvedores o evitam em Web Services REST, optando por alternativas mais simples como as acima. Ainda assim, o XML &#233; um forte candidato, especialmente nos casos em que queremos validar o dado em quest&#227;o, usando os chamados <i>Schemas</i>.</p>
 
 <p>Supondo que o arquivo contendo o Schema de nosso XML est&#225; em &#34;<code>dados.xsd</code>&#34;, podemos gerar um xml da seguinte forma:</p>
@@ -237,9 +237,9 @@ name="XML"
 name="A_escolha_&#233;_do_fregu&#234;s"
 >A escolha &#233; do fregu&#234;s</a></h3>
 
-<p>A transforma&#231;&#227;o de estruturas de dados nos formatos acima &#233; t&#227;o simples que muitos frameworks web como <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.catalystframework.org" class="podlinkpod"
->Catalyst</a>, <a href="http://search.cpan.org/perldoc?http%3A#%2Fmojolicio.us" class="podlinkpod"
->Mojolicious</a> e <a href="http://search.cpan.org/perldoc?http%3A#%2Fperldancer.org" class="podlinkpod"
+<p>A transforma&#231;&#227;o de estruturas de dados nos formatos acima &#233; t&#227;o simples que muitos frameworks web como <a href="http://www.catalystframework.org" class="podlinkurl"
+>Catalyst</a>, <a href="http://mojolicio.us" class="podlinkurl"
+>Mojolicious</a> e <a href="http://perldancer.org" class="podlinkurl"
 >Dancer</a> permitem que voc&#234; especifique o formato atrav&#233;s de um par&#226;metro de extens&#227;o na URI, como se fosse a extens&#227;o de um arquivo. Assim, podemos oferecer o mesmo servi&#231;o em diferentes formatos, conforme a prefer&#234;ncia do sistema usu&#225;rio.</p>
 
 <p>No exemplo que estamos usando, a URI</p>

@@ -41,15 +41,15 @@ name="DataFlow_-_Um_Framework_Para_Fluxo_de_Dados"
 name="OpenData_-_O_Come&#231;o_e_o_Fim"
 >OpenData - O Come&#231;o e o Fim</a></h2>
 
-<p>Tudo come&#231;ou com um e-mail na <a href="http://search.cpan.org/perldoc?http%3A#%2Fsao-paulo.pm.org%2Flista" class="podlinkpod"
+<p>Tudo come&#231;ou com um e-mail na <a href="http://sao-paulo.pm.org/lista" class="podlinkurl"
 >lista da SP-PM</a>,
 no qual se falou de &#34;hackear&#34; dados p&#250;blicos.
 Logo isso evoluiu para a id&#233;ia de produzir um framework para buscar e analisar dados p&#250;blicos.
 Sem demora,
-o <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.maluco.com.br%2Fblog%2F" class="podlinkpod"
->Thiago Rondon</a> montou um <a href="http://search.cpan.org/perldoc?https%3A#%2Fgithub.com%2Fmaluco%2FOpenData-BR" class="podlinkpod"
+o <a href="http://www.maluco.com.br/blog/" class="podlinkurl"
+>Thiago Rondon</a> montou um <a href="https://github.com/maluco/OpenData-BR" class="podlinkurl"
 >reposit&#243;rio no GitHub</a> e come&#231;ou a rabiscar umas id&#233;ias de c&#243;digo.
-Em seguida nasceu o site do <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.opendatabr.org%2F" class="podlinkpod"
+Em seguida nasceu o site do <a href="http://www.opendatabr.org/" class="podlinkurl"
 >OpenData-BR</a>.</p>
 
 <p>O projeto ainda tem um status de <i>work in progress</i>,
@@ -68,7 +68,7 @@ name="Buscar_dados_na_web_(scrape)"
 Na lista,
 ou no canal #saopaulo.pm no irc.perl.org,
 surgiram as primeiras indica&#231;&#245;es de sites onde a informa&#231;&#227;o estava disponibilizada.
-Um dos sites primariamente visados foi o <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.portaltransparencia.gov.br%2F" class="podlinkpod"
+Um dos sites primariamente visados foi o <a href="http://www.portaltransparencia.gov.br/" class="podlinkurl"
 >PortalTransparencia</a>,
 o site do governo federal para promover a transpar&#234;ncia nos dados do governo.</p>
 
@@ -327,7 +327,7 @@ name="E_Como_Uso_Tudo_Isso?"
 >E Como Uso Tudo Isso?</a></h2>
 
 <p>O <a href="http://search.cpan.org/perldoc?DataFlow" class="podlinkpod"
->DataFlow</a> surgiu do projeto <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.opendatabr.org%2F" class="podlinkpod"
+>DataFlow</a> surgiu do projeto <a href="http://www.opendatabr.org/" class="podlinkurl"
 >OpenData-BR</a>, e um dos usos para o qual ele foi pensado foi justamente a obten&#231;&#227;o e manipula&#231;&#227;o de dados dispon&#237;veis em sites na web.</p>
 
 <h3><a class='u' href='#___top' title='click to go to top of document'
@@ -503,7 +503,7 @@ name="Passo-a-Passo"
 
 <pre>        $flow-&#62;input($base_url);</pre>
 
-<p>Essa opera&#231;&#227;o pega o valor de <code>$base_url</code>, uma URL (para este exemplo estamos considerando que &#233; a URL do <b>Cadastro de Empresas Inid&#244;neas ou Sancionadas</b> do site <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.portaltransparencia.gov.br" class="podlinkpod"
+<p>Essa opera&#231;&#227;o pega o valor de <code>$base_url</code>, uma URL (para este exemplo estamos considerando que &#233; a URL do <b>Cadastro de Empresas Inid&#244;neas ou Sancionadas</b> do site <a href="http://www.portaltransparencia.gov.br" class="podlinkurl"
 >PortalTranspar&#234;ncia</a>), e a injeta na fila de entrada do <i>dataflow</i>.</p>
 
 <pre>    $flow-&#62;flush;</pre>
@@ -541,7 +541,7 @@ name="Conclus&#227;o"
 <li>Processadores que permitam <i>split</i> e <i>join</i> de fluxos de informa&#231;&#227;o</li>
 </ul>
 
-<p>Estas e outras id&#233;ias de melhorias est&#227;o no arquivo de <a href="http://search.cpan.org/perldoc?https%3A#%2Fgithub.com%2Frussoz%2FDataFlow%2Fblob%2Fmaster%2FTODO" class="podlinkpod"
+<p>Estas e outras id&#233;ias de melhorias est&#227;o no arquivo de <a href="https://github.com/russoz/DataFlow/blob/master/TODO" class="podlinkurl"
 >TODO</a> no reposit&#243;rio do projeto.</p>
 
 <p><b>Voc&#234; pode ajudar!</b> De v&#225;rias formas: escrevendo c&#243;digo, tanto para os m&#243;dulos quanto testes. Executando testes e enviando <i>reports</i> - neste momento h&#225;, por exemplo, alguns reports de erro em FreeBSD que n&#227;o est&#227;o ocorrendo no sistema dos mantenedores (Linux).</p>
