@@ -57,7 +57,7 @@ O trabalho com infográficos é a criação do visual e os dados, o produto tamb
 =begin pod:xhtml
 
 <center>
-<img src="/static/images/equinocio/2011/mar/infograficos/colecao1.png">
+<img src="../../images/infograficos/colecao1.png">
 </center>
 
 =end pod:xhtml
@@ -67,7 +67,7 @@ Para elaboração de infográficos, o fluxo normalmente é :
 =begin pod:xhtml
 
 <center>
-<img src="/static/images/equinocio/2011/mar/infograficos/colecao2.png">
+<img src="../../images/infograficos/colecao2.png">
 </center>
 
 =end pod:xhtml
@@ -95,7 +95,7 @@ Iremos tratar aqui da maneira de visualizar os dados, e discutir e refletir sobr
 =begin pod:xhtml
 
 <center>
-<img src="/static/images/equinocio/2011/mar/infograficos/treemap_example.jpg">
+<img src="../../images/infograficos/treemap_example.jpg">
 </center>
 
 =end pod:xhtml
@@ -112,7 +112,7 @@ Alguns algoritmos conhecidos que são utilizados para auxiliar na organização 
 =begin pod:xhtml
 
 <center>
-<img src="/static/images/equinocio/2011/mar/infograficos/diagramme_de_Voronoi.png">
+<img src="../../images/infograficos/diagramme_de_Voronoi.png">
 </center>
 
 =end pod:xhtml
@@ -135,7 +135,7 @@ Existem alguns algoritmos que tornam esta tarefa mais simples, tais como a "Bowy
 =begin pod:xhtml
 
 <center>
-<img src="/static/images/equinocio/2011/mar/infograficos/Delaunay_circumcircles.png">
+<img src="../../images/infograficos/Delaunay_circumcircles.png">
 </center>
 
 =end pod:xhtml
@@ -150,7 +150,7 @@ Este algoritmo normalmente é utilizado para determinar a densidade e a intensid
 =begin pod:xhtml
 
 <center>
-<img src="/static/images/equinocio/2011/mar/infograficos/synergies-on-synergy-map.gif">
+<img src="../../images/infograficos/synergies-on-synergy-map.gif">
 </center>
 
 =end pod:xhtml
@@ -162,7 +162,7 @@ O interessante deste mapa é a possibilidade de dividir as perspectivas em quatr
 =begin pod:xhtml
 
 <center>
-<img src="/static/images/equinocio/2011/mar/infograficos/800px-Kepler-world.jpg">
+<img src="../../images/infograficos/800px-Kepler-world.jpg">
 </center>
 
 =end pod:xhtml
@@ -176,7 +176,7 @@ Existem bancos de dados especificos para trabalhar com a geração de dados base
 =begin pod:xhtml
 
 <center>
-<img src="/static/images/equinocio/2011/mar/infograficos/658px-Parallel_telomere_quadruple.png">
+<img src="../../images/infograficos/658px-Parallel_telomere_quadruple.png">
 </center>
 
 =end pod:xhtml
@@ -238,15 +238,15 @@ Para isto é interessante que exista uma padronização relacionada ao tipo da m
 
 =over
 
-=back $ : Cifrão, valor monetário ;
+=item $ : Cifrão, valor monetário ;
 
-=back % : Porcentagem ; 
+=item % : Porcentagem ; 
 
-=back N : Quantidade, Medidas unitárias ;
+=item N : Quantidade, Medidas unitárias ;
 
-=back C : Classificação ; 
+=item C : Classificação ; 
 
-=back I : Índice .
+=item I : Índice .
 
 =back
 

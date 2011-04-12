@@ -164,10 +164,10 @@ para acessarmos o(s) elemento(s) desejado(s).
 
 Essa naturalmente não é a única forma de se chegar aos elementos em
 questão, mas é a que vamos usar aqui. Sinta-se à vontade para
-experimentar L<outros seletores/Seletores Simples> :)
+experimentar L<Seletores simples> :)
 
 Para quem ainda não está acostumado com a sintaxe de seletores, colocamos
-um L<guia de referência rápida com os principais seletores CSS/Guia de Referência Rápida: Seletores CSS>.
+um L<Guia de Referência Rápida: Seletores CSS>.
 
 
 =head2 Extraindo as informações
