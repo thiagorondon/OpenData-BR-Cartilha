@@ -72,7 +72,7 @@ name="Consulta_por_texto"
 
 <p>Quando consultamos um banco buscando sempre pelo mesmo campo de uma tabela, &#233; conveniente criar um &#237;ndice para esse campo. &#205;ndices agilizam a obten&#231;&#227;o da informa&#231;&#227;o, pois guardam o conte&#250;do do campo de forma ordenada e otimizada. Assim, ao inv&#233;s da consulta ser realizada diretamente na tabela, o &#237;ndice &#233; usado para saber de antem&#227;o os registros realmente pertinentes. &#205;ndices s&#227;o muito interessantes para agilizar consultas em campos com valores</p>
 
-<p>Por&#233;m em um campo do tipo <i>TEXT</i>, no MySQL por exemplo, ocupa 65.536bytes, voc&#234; pode criar um prefixo ao &#237;ndice(por exemplo 10 primeiros bytes da string), por&#233;m fica limitado a consultar pelo <a href="http://dev.mysql.com/doc/refman/5.0/en/create-index.html" class="podlinkurl"
+<p>Por&#233;m em um campo do tipo <i>TEXT</i>, no MySQL por exemplo, ocupa 65.536bytes, voc&#234; pode criar um prefixo ao &#237;ndice(por exemplo 10 primeiros bytes da string), por&#233;m fica limitado a consultar pelo <a href="http://search.cpan.org/perldoc?http%3A#%2Fdev.mysql.com%2Fdoc%2Frefman%2F5.0%2Fen%2Fcreate-index.html" class="podlinkpod"
 >in&#237;cio da string</a> , o que torna essa implementa&#231;&#227;o de &#237;ndice n&#227;o eficiente para a maioria dos casos.</p>
 
 <h3><a class='u' href='#___top' title='click to go to top of document'
@@ -95,7 +95,7 @@ name="Full_Text_Search_e_&#205;ndice_Invertido"
  R&#185; = &#34;Hoje em sua 12 vers&#227;o, o Perl 5 moderno &#233; uma linguagem de uso geral&#34;
  R&#178; = &#34;Perl moderno a escolha certa para um projeto t&#227;o ambicioso e multifacetado&#34;</pre>
 
-<p>O &#237;ndice gerado considerando <a href="http://en.wikipedia.org/wiki/Stop_words" class="podlinkurl"
+<p>O &#237;ndice gerado considerando <a href="http://search.cpan.org/perldoc?http%3A#%2Fen.wikipedia.org%2Fwiki%2FStop_words" class="podlinkpod"
 >stop words</a>, teria essa cara:</p>
 
 <pre> &#34;estamos&#34;:       {(0, 0)}
@@ -134,7 +134,7 @@ name="No_Banco_de_Dados"
 
 <p>Como o banco trabalh com o &#237;ndice em mem&#243;ria, o desempenho do &#237;ndice degrada e o consumo de mem&#243;ria aumenta consideravelmente conforme o volume de texto.</p>
 
-<p>N&#227;o &#233; poss&#237;vel inserir direto no campo tsvector (workaround: trigger para <a href="http://www.postgresql.org/docs/8.3/static/textsearch-features.html#TEXTSEARCH-UPDATE-TRIGGERS" class="podlinkurl"
+<p>N&#227;o &#233; poss&#237;vel inserir direto no campo tsvector (workaround: trigger para <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.postgresql.org%2Fdocs%2F8.3%2Fstatic%2Ftextsearch-features.html%23TEXTSEARCH-UPDATE-TRIGGERS" class="podlinkpod"
 >automatizar o update</a>).</p>
 
 <p>tsvector suporta menos de 2 kb por lexema e 1 mb por lexema com as posi&#231;&#245;es.</p>
@@ -177,7 +177,7 @@ name="Plucene"
 name="Kinosearch"
 >Kinosearch</a></h1>
 
-<p>Vers&#227;o do Lucene portada para C compilado para Perl. Seu <a href="http://www.rectangular.com/pipermail/kinosearch/2006-April/006819.html" class="podlinkurl"
+<p>Vers&#227;o do Lucene portada para C compilado para Perl. Seu <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.rectangular.com%2Fpipermail%2Fkinosearch%2F2006-April%2F006819.html" class="podlinkpod"
 >desempenho &#233; semelhante ao Lucene</a>. Para instalar via CPAN:</p>
 
 <pre> cpan KinoSearch</pre>
@@ -421,7 +421,7 @@ name="autor"
 
 <p>Marcio Ferreira$ perl -e&#39;push @gmail, marciodesouzaferreira&#39;</p>
 
-<p>Twitter <a href="http://twitter.com/_marcioferreira" class="podlinkurl"
+<p>Twitter <a href="http://search.cpan.org/perldoc?http%3A#%2Ftwitter.com%2F_marcioferreira" class="podlinkpod"
 >@_marcioferreira</a></p>
 
 </body></html>
