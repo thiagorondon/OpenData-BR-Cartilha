@@ -1,0 +1,385 @@
+<html><head><title>PostGIS</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#PostGIS'>PostGIS</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Introdu%E7%E3o'>Introdu&#231;&#227;o</a>
+    <li class='indexItem indexItem2'><a href='#O_que_%E9_o_PostGIS%3F'>O que &#233; o PostGIS?</a>
+    <li class='indexItem indexItem2'><a href='#Principais_fun%E7%F5es'>Principais fun&#231;&#245;es</a>
+    <li class='indexItem indexItem2'><a href='#Exemplo%3A_Antenas_de_telefonia_celular_no_estado_de_S%E3o_Paulo'>Exemplo: Antenas de telefonia celular no estado de S&#227;o Paulo</a>
+    <li class='indexItem indexItem2'><a href='#Criando_banco_dados_com_suporte_ao_PostGIS'>Criando banco dados com suporte ao PostGIS</a>
+    <li class='indexItem indexItem2'><a href='#Populando_o_banco_com_dados'>Populando o banco com dados</a>
+    <li class='indexItem indexItem2'><a href='#Consultas_interessantes'>Consultas interessantes</a>
+    <li class='indexItem indexItem2'><a href='#Visualizando_dados_geogr%E1ficos'>Visualizando dados geogr&#225;ficos</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Refer%EAncias'>Refer&#234;ncias</a>
+  <li class='indexItem indexItem1'><a href='#AUTOR'>AUTOR</a>
+  <li class='indexItem indexItem1'><a href='#POD_ERRORS'>POD ERRORS</a>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="PostGIS"
+>PostGIS</a></h1>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Introdu&#231;&#227;o"
+>Introdu&#231;&#227;o</a></h2>
+
+<p>O <a href="http://postgis.refractions.net/" class="podlinkurl"
+>PostGIS</a> &#233; uma extens&#227;o do <a href="http://www.postgresql.org/" class="podlinkurl"
+>PostgreSQL</a> que adiciona suporte a dados geogr&#225;ficos tornando poss&#237;vel opera&#231;&#245;es envolvendo pontos,
+linhas,
+&#225;reas e volumes localizados no espa&#231;o geogr&#225;fico.
+Esse artigo apresentar&#225; uma breve (e n&#227;o menos enriquecedora) introdu&#231;&#227;o ao PostGIS,
+mostrando seus principais conceitos,
+funcionalidades e poss&#237;veis aplica&#231;&#245;es.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="O_que_&#233;_o_PostGIS?"
+>O que &#233; o PostGIS?</a></h2>
+
+<p>Desenvolvido e distribu&#237;do livremente pela <a href="http://www.refractions.net/" class="podlinkurl"
+>Refractions Research</a> o PostGIS adiciona suporte espacial ao <a href="http://www.postgresql.org/" class="podlinkurl"
+>PostgreSQL</a> permitindo a manipula&#231;&#227;o e an&#225;lise de atributos num&#233;ricos e textuais em intera&#231;&#227;o com o espa&#231;o geogr&#225;fico.
+O PostGIS pode ser usado para obter informa&#231;&#245;es sobre uma determinada localidade,
+como por exemplo,
+dist&#226;ncia at&#233; outra localidade,
+a densidade da malha vi&#225;ria ou taxa de criminalidade.</p>
+
+<p>Para realizar tais tarefas o PostGIS disp&#245;e de tipos de dados,
+fun&#231;&#245;es e &#237;ndices especiais para lidar com esse tipo de informa&#231;&#227;o.</p>
+
+<p>O PostGIS disp&#245;e de duas classes de dados: &#34;geometry&#34; e &#34;geography&#34;.
+&#34;geometry&#34; &#233; o formato padr&#227;o para dados geogr&#225;ficos e possui uma vasta lista fun&#231;&#245;es para manipula&#231;&#227;o e convers&#227;o de dados.
+Com ele &#233; poss&#237;vel realizar muito mais opera&#231;&#245;es,
+contudo,
+para tirar maior proveito das capacidade do PostGIS &#233; neces&#225;rio um maior conhecimento de sistemas de refer&#234;ncia espacial e como realizar transforma&#231;&#245;es entre eles.
+A base para o tipo &#34;geometry&#34; &#233; um plano e,
+portanto,
+a menor dist&#226;ncia entre de um ponto a outro &#233; sempre uma reta,
+mas como a Terra &#233; um esfer&#243;ide e nem tudo &#233; t&#227;o plano como parece ser,
+isso pode trazer grandes problemas na precis&#227;o quando os valores ou o resultado de opera&#231;&#245;es extrapolam a grandes dist&#226;ncias territoriais.</p>
+
+<p>&#34;geography&#34; &#233; um tipo dado mais recente e foi incorporado not PostGIS a partir da vers&#227;o 1.5 e tem como base uma esfera,
+e numa esfera a menor dist&#226;ncia entre dois pontos &#233; um arco.
+Isso significa que c&#225;lculos e opera&#231;&#245;es envolvendo dados geogr&#225;ficos tem que levar em considera&#231;&#227;o curvatura da terra,
+tornando os resultados das opera&#231;&#245;es muito mais exatos mas proporcionalmente mais custosos,
+algoritmicamente falando.</p>
+
+<p>Comparativamente existem muito menos fun&#231;&#245;es definidas para o tipo &#34;geography&#34; por causa da complexidade matem&#225;tica que fundamenta as opera&#231;&#245;es geogr&#225;ficas,
+mas isso est&#225; sendo solucionado com o passar do tempo &#224; medida que novos algoritmos v&#227;o sendo adicionados.</p>
+
+<p>Um dos padr&#245;es utilizados para representar objetos espaciais &#233; a forma Well-Known Text (WKT) que inclui informa&#231;&#245;es sobre o tipo de objeto e as coordenadas os quais determinam os valores utilizados nas colunas das tabelas.</p>
+
+<p>Os principais tipos de objetos s&#227;o listados a seguir junto com sua representa&#231;&#227;o na forma WKT:</p>
+
+<dl>
+<dt><a name="Point"
+>Point</a></dt>
+
+<dd>
+<p>POINT( -20.1929 -44.11221 )</p>
+
+  <img src="point.png">
+
+
+
+<dt><a name="Linestring"
+>Linestring</a></dt>
+
+<dd>
+<p>LINESTRING(0 0,1 1,1 2)</p>
+
+  <img src="linestring.png">
+
+
+
+<dt><a name="Polygon"
+>Polygon</a></dt>
+
+<dd>
+<p>POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1,
+2 1,
+2 2,
+1 2,1 1))</p>
+
+  <img src="polygon.png">
+
+
+
+<dt><a name="Multipoint"
+>Multipoint</a></dt>
+
+<dd>
+<p>MULTIPOINT(0 0,1 2)</p>
+
+  <img src="multipoint.png">
+
+
+
+<dt><a name="Multilinestring"
+>Multilinestring</a></dt>
+
+<dd>
+<p>MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))</p>
+
+  <img src="multilinestring.png">
+
+
+
+<dt><a name="Multipolygon"
+>Multipolygon</a></dt>
+
+<dd>
+<p>MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)),
+((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1)))</p>
+
+  <img src="multipolygon.png">
+
+
+
+<dt><a name="Geometrycollection"
+>Geometrycollection</a></dt>
+
+<dd>
+<p>GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))</p>
+
+  <img src="geometrycollection.png">
+
+
+</dd>
+</dl>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Principais_fun&#231;&#245;es"
+>Principais fun&#231;&#245;es</a></h2>
+
+<p>O PostGIS possui v&#225;rias fun&#231;&#245;es espaciais que equivalem &#224;s opera&#231;&#245;es de agrega&#231;&#227;o e jun&#231;&#227;o num banco de dados relacional.
+Elas s&#227;o baseadas em relacionamentos espaciais como: determina&#231;&#227;o de topologia entre dois objetos,
+aritm&#233;tica de pol&#237;gonos,
+c&#225;lculo de &#225;rea,
+etc.</p>
+
+<p>Algumas das principais fun&#231;&#245;es de an&#225;lises espaciais no PostGIS s&#227;o:</p>
+
+<dl>
+<dt><a name="ST_Disjoint(obj1,_obj2)"
+>ST_Disjoint(obj1,
+obj2)</a></dt>
+
+<dd>
+<p>Analisa se dois objetos possuem pontos em comum e retorna verdadeiro em caso positivo.</p>
+
+<dt><a name="ST_Intersects(obj1,_obj2)"
+>ST_Intersects(obj1,
+obj2)</a></dt>
+
+<dd>
+<p>Analisa se 2 objetos possuem alguma intersec&#231;&#227;o e retorna verdadeiro caso haja.</p>
+
+<dt><a name="ST_Within(obj1,_obj2)"
+>ST_Within(obj1,
+obj2)</a></dt>
+
+<dd>
+<p>Analisa se um obj1 est&#225; completamente dentro de obj2.</p>
+
+<dt><a name="ST_Crosses(obj1,_obj2)"
+>ST_Crosses(obj1,
+obj2)</a></dt>
+
+<dd>
+<p>Analisa se dois objetos se cruzam e retorna verdadeiro caso ocorra.</p>
+</dd>
+</dl>
+
+<p>A consulta a seguir,
+por exemplo,
+possui uma medi&#231;&#227;o espacial e calcula a &#225;rea baseando-se numa coluna contendo um objeto geogr&#225;fico.</p>
+
+<pre>  SELECT name, ST_Area(the_geom)/10000 AS hectares
+  FROM bc_municipality
+  ORDER BY hectares DESC
+  LIMIT 1;
+
+  name           | hectares
+  ---------------+-----------------
+  TUMBLER RIDGE  | 155020.02556131
+  (1 row)</pre>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Exemplo:_Antenas_de_telefonia_celular_no_estado_de_S&#227;o_Paulo"
+>Exemplo: Antenas de telefonia celular no estado de S&#227;o Paulo</a></h2>
+
+<p>Vamos utilizar os dados geogr&#225;ficos das microregi&#245;es do estado de S&#227;o Paulo disponibilizados pelo <a href="http://www.ibge.gov.br/" class="podlinkurl"
+>IBGE</a> [<a href="#IBGE" class="podlinkpod"
+>1</a>] como mapa base para o nosso exemplo com dados reais. Cruzaremos esses mapas com os dados obtidos do projeto <a href="http://http://www.opencellid.org/" class="podlinkurl"
+>OpenCellID</a> [<a href="#OpenCellID" class="podlinkpod"
+>2</a>], que &#233; um projeto open source que cataloga informa&#231;&#245;es sobre antenas de celulares no mundo todo.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Criando_banco_dados_com_suporte_ao_PostGIS"
+>Criando banco dados com suporte ao PostGIS</a></h2>
+
+<p>Em nome da brevidade, omitiremos os passos que envolvem a instala&#231;&#227;o e configura&#231;&#227;o do PostGIS. Essas informa&#231;&#245;es est&#227;o dispon&#237;veis no site oficial do projeto[<a href="#PostGIS_-_Site_Oficial" class="podlinkpod"
+>3</a>].</p>
+
+<p>Os comandos a seguir habilitam o suporte ao PostGIS no PostgreSQL:</p>
+
+<pre>  $ createdb exemplo
+  $ psql -d exemplo -f postgis.sql
+  $ psql -d exemplo -f spatial_ref_sys.sql</pre>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Populando_o_banco_com_dados"
+>Populando o banco com dados</a></h2>
+
+<p>Vamos agora carregar os dados obtidos no banco. Dentre os arquivos disponibilizados pelo IBGE [<a href="#IBGE" class="podlinkpod"
+>1</a>] existe um arquivo com formato shapefile (.shp) que precisa ser convertido em SQL antes de ser inserido no banco, para isso utilizamos a ferramenta shp2pgsql, dispon&#237;vel ap&#243;s a instala&#231;&#227;o do PostGIS:</p>
+
+<pre>  $ shp2pgsql -c -W LATIN1 -I 35mu2500gsd.shp mapa_sp &#62; mapa_sp.sql
+  $ psql -d exemplo -f mapa_sp.sql</pre>
+
+<p>Os dados das antenas s&#227;o disponibilizados pelo OpenCellID no formato CSV com a seguinte configura&#231;&#227;o:</p>
+
+<pre>  id,lat,lon,mcc,mnc,lac,cellid,range,nbSamples,created_at,updated_at</pre>
+
+<p>O arquivo &#233; imenso e possui informa&#231;&#245;es de antenas de telefonia m&#243;vel do mundo inteiro. A n&#243;s, interessa somente as colunas &#34;lat&#34; e &#34;lon&#34; das linhas que possuam o &#34;mcc&#34; igual a 724, que s&#227;o as antenas localizadas no Brasil e ser&#227;o inseridas na tabela cel(id,position) (onde &#34;position&#34; &#233; do tipo geometry) usando a nota&#231;&#227;o WKT &#34;POINT( longitude latitude )&#34;. Notem que nessa nota&#231;&#227;o a ordem das coordenadas geogr&#225;ficas &#233; diferente da que estamos acostumados:</p>
+
+<pre>  $ perl -F&#39;,&#39; -anE &#39;print if $F[4] == 724&#39; cells.txt &#62; br_cells.txt
+  $ perl -F&#39;,&#39; -anE &#39;say qq/INSERT INTO cell(position) VALUES(&#34;POINT( $F[2]  $F[1] )&#34;::geometry);/&#39; br_cells.txt &#62; cell.sql
+  $ psql -d exemplo -f cell.sql</pre>
+
+<p>A tabela &#34;cell&#34; agora possui posi&#231;&#245;es de toda as antenas do Brasil, ainda podemos fazer outra filtragem, desta vez utilizando as condi&#231;&#245;es de jun&#231;&#227;o dispon&#237;veis no PostGIS, para filtrar somente as antenas do estado de S&#227;o Paulo. Vamos criar uma tabela contendo somente as antenas presentes em SP:</p>
+
+<pre>  exemplo=# CREATE TABLE sp_cell AS 
+  exemplo-# SELECT cell.* FROM cell
+  exemplo-# JOIN mapa_sp on ST_Within(cell.position,mapa_sp.the_geom);</pre>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Consultas_interessantes"
+>Consultas interessantes</a></h2>
+
+<p>Agora que j&#225; temos nossos dados prontos, vamos realizar algumas consultas.</p>
+
+<dl>
+<dt><a name="Quantas_antenas_existem_em_cada_microregi&#227;o_do_Estado_de_S&#227;o_Paulo?"
+>Quantas antenas existem em cada microregi&#227;o do Estado de S&#227;o Paulo?</a></dt>
+
+<dd>
+<pre>  SELECT nome_micro, COUNT (module.id) AS count 
+  FROM saopaulo, module 
+  WHERE ST_Within(module.position, saopaulo.the_geom) 
+  GROUP BY nome_micro
+  ORDER BY count desc;
+
+  Sa&#237;da:
+ 
+    nome_micro | count 
+   ------------+-------
+    S&#227;o Paulo  |  6895
+    Campinas   |   801
+    Santos     |   455
+    Sorocaba   |   436
+    Osasco     |   426
+    ...        |   ...</pre>
+
+<dt><a name="Quantas_antenas_existem_num_raio_de_1000_metros_do_ponto_POINT(-48.5186233520508_-27.6062755584717)?"
+>Quantas antenas existem num raio de 1000 metros do ponto POINT(-48.5186233520508 -27.6062755584717)?</a></dt>
+
+<dd>
+<pre>  SELECT count(sp_cell.id)
+  FROM sp_cell
+  WHERE ST_distance_sphere(sp_cell.position, &#39;POINT(-48.5186233520508 -27.6062755584717)&#39;) &#60; 1000.0;
+
+  Sa&#237;da:
+    count 
+   -------
+       18</pre>
+</dd>
+</dl>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Visualizando_dados_geogr&#225;ficos"
+>Visualizando dados geogr&#225;ficos</a></h2>
+
+<p>Como pudemos ver, s&#227;o grandes as possibilidades de consultas e informa&#231;&#245;es obtidas, e abrem um horizonte para diversas combina&#231;&#245;es de diferentes tipos de dados que podem ser cruzados e relacionados espacialmente. Mas o acesso e visualiza&#231;&#227;o somente em modo texto n&#227;o tem muita gra&#231;a. E pra isso foram desenvolvidas ferramentas que possibilitam a plotagem de dados e rasteriza&#231;&#227;o de mapas. Muitos desses projetos oferecem suporte ao PostGIS como fonte de dados e dividem-se em aplica&#231;&#245;es baseadas em web ou desktop.</p>
+
+<p>Clique nos links e conhe&#231;a esses projetos, com destaque para o TerraView, desenvolvido aqui mesmo no Brasil, pelo INPE:</p>
+
+<dl>
+<dt><a name="TerraView"
+><a href="http://www.dpi.inpe.br/terraview/index.php/" class="podlinkurl"
+>TerraView</a>
+<dt><a name="MapServer"
+><a href="http://http://www.mapserver.org/" class="podlinkurl"
+>MapServer</a>
+<dt><a name="GeoServer"
+><a href="http://geoserver.org/display/GEOS/Welcome/" class="podlinkurl"
+>GeoServer</a>
+<dt><a name="uDig"
+><a href="http://udig.refractions.net/" class="podlinkurl"
+>uDig</a>
+<dt><a name="QGIS"
+><a href="http://qgis.org/" class="podlinkurl"
+>QGIS</a></a></dt>
+</dl>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Refer&#234;ncias"
+>Refer&#234;ncias</a></h1>
+
+<dl>
+<dt><a name="IBGE"
+>IBGE</a></dt>
+
+<dd>
+<p><a href="ftp://geoftp.ibge.gov.br/mapas/malhas_digitais/municipio_2007/Malha_Municipal_Digital_2007_2500/Disseminacao_2007/Proj_Geografica/SAD_69/ArcView_Shp/2007/E2500/UF/SP/" class="podlinkurl"
+>ftp://geoftp.ibge.gov.br/mapas/malhas_digitais/municipio_2007/Malha_Municipal_Digital_2007_2500/Disseminacao_2007/Proj_Geografica/SAD_69/ArcView_Shp/2007/E2500/UF/SP/</a></p>
+
+<dt><a name="OpenCellID"
+>OpenCellID</a></dt>
+
+<dd>
+<p><a href="http://myapp.fr/cellsIdData/" class="podlinkurl"
+>http://myapp.fr/cellsIdData/</a></p>
+
+<dt><a name="PostGIS_-_Site_Oficial"
+>PostGIS - Site Oficial</a></dt>
+
+<dd>
+<p><a href="http://postgis.org/" class="podlinkurl"
+>http://postgis.org/</a></p>
+</dd>
+</dl>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="AUTOR"
+>AUTOR</a></h1>
+
+<p>Gabriel Andrade &#60;gabriel[@]aware.com.br&#62;</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="POD_ERRORS"
+>POD ERRORS</a></h1>
+
+<p>Hey! <b>The above document had some coding errors, which are explained below:</b></p>
+
+<dl>
+<dt><a name="Around_line_1:"
+>Around line 1:</a></dt>
+
+<dd>
+<p>=pod directives shouldn&#39;t be over one line long!  Ignoring all 2 lines of content</p>
+</dd>
+</dl>
+
+</body></html>

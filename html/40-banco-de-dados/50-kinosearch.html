@@ -1,0 +1,427 @@
+<html><head><title>KinoSearch (Search Engine)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#KinoSearch_(Search_Engine)'>KinoSearch (Search Engine)</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Consulta_por_texto'>Consulta por texto</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Operador_LIKE'>Operador LIKE</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#Full_Text_Search_e_%CDndice_Invertido'>Full Text Search e &#205;ndice Invertido</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#No_Banco_de_Dados'>No Banco de Dados</a>
+      <li class='indexItem indexItem3'><a href='#Engines'>Engines</a>
+      <ul   class='indexList indexList4'>
+        <li class='indexItem indexItem4'><a href='#LUCENE_-_Solr'>LUCENE - Solr</a>
+        <li class='indexItem indexItem4'><a href='#Sphinx'>Sphinx</a>
+        <li class='indexItem indexItem4'><a href='#Plucene'>Plucene</a>
+      </ul>
+    </ul>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Kinosearch'>Kinosearch</a>
+  <ul   class='indexList indexList2'>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Criando_um_%CDndice'>Criando um &#205;ndice</a>
+      <ul   class='indexList indexList4'>
+        <li class='indexItem indexItem4'><a href='#KinoSearch%3A%3ASchema'>KinoSearch::Schema</a>
+        <li class='indexItem indexItem4'><a href='#KinoSearch%3A%3AIndexer'>KinoSearch::Indexer</a>
+        <li class='indexItem indexItem4'><a href='#KinoSearch%3A%3AAnalysis%3A%3APolyAnalyzer'>KinoSearch::Analysis::PolyAnalyzer</a>
+      </ul>
+      <li class='indexItem indexItem3'><a href='#Consultando'>Consultando</a>
+      <ul   class='indexList indexList4'>
+        <li class='indexItem indexItem4'><a href='#KinoSearch%3A%3ASearcher'>KinoSearch::Searcher</a>
+        <li class='indexItem indexItem4'><a href='#KinoSearch%3A%3AHighlight%3A%3AHighlighter'>KinoSearch::Highlight::Highlighter</a>
+        <li class='indexItem indexItem4'><a href='#Search%3A%3AQuery%3A%3ADialect%3A%3AKSx%2FSearch%3A%3AQuery'>Search::Query::Dialect::KSx/Search::Query</a>
+      </ul>
+    </ul>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Conclus%E3o'>Conclus&#227;o</a>
+  <li class='indexItem indexItem1'><a href='#Refer%EAncias'>Refer&#234;ncias</a>
+  <li class='indexItem indexItem1'><a href='#Agradecimentos'>Agradecimentos</a>
+  <li class='indexItem indexItem1'><a href='#autor'>autor</a>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="KinoSearch_(Search_Engine)"
+>KinoSearch (Search Engine)</a></h1>
+
+<pre> Um erro &#233; simplesmente outro modo de fazer as coisas.
+                                                    --Katharine Graham 
+
+ Ci&#234;ncia &#233; o que entendemos bem o suficiente para explicar a um computador.
+ Arte &#233; qualquer coisa que fazemos al&#233;m disso.
+                                                        --Donald Knuth </pre>
+
+<p>Objetivo desse artigo &#233; desmistificar um pouco <i>Full Text Search</i>, apresentando o <i>engine de busca</i> KinoSearch. Utilizo o KinoSearch como exemplo, mas apresento tamb&#233;m h&#225; refer&#234;ncias a outros engines igualmente interessantes, al&#233;m de abordar brevemente o funcionamento do Full Text em banco de dados. Esse artigo originou-se da necessidade de tornar minhas consultas mais eficientes.</p>
+
+<p>Caso o leitor tenha cr&#237;tica/d&#250;vida, por favor comente no fim do artigo - contribua. ;)</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Consulta_por_texto"
+>Consulta por texto</a></h2>
+
+<p>Apesar de haver diversas formas de armazenamento de dados, o banco de dados relacional &#233; de longe a solu&#231;&#227;o mais implementada. Por&#233;m quando nosso input corresponde a uma longa cadeia de caracteres, &#233; interessante sabermos como o banco de dados relacional armazena e recupera os dados.</p>
+
+<p>Quando consultamos um banco buscando sempre pelo mesmo campo de uma tabela, &#233; conveniente criar um &#237;ndice para esse campo. &#205;ndices agilizam a obten&#231;&#227;o da informa&#231;&#227;o, pois guardam o conte&#250;do do campo de forma ordenada e otimizada. Assim, ao inv&#233;s da consulta ser realizada diretamente na tabela, o &#237;ndice &#233; usado para saber de antem&#227;o os registros realmente pertinentes. &#205;ndices s&#227;o muito interessantes para agilizar consultas em campos com valores</p>
+
+<p>Por&#233;m em um campo do tipo <i>TEXT</i>, no MySQL por exemplo, ocupa 65.536bytes, voc&#234; pode criar um prefixo ao &#237;ndice(por exemplo 10 primeiros bytes da string), por&#233;m fica limitado a consultar pelo <a href="http://dev.mysql.com/doc/refman/5.0/en/create-index.html" class="podlinkurl"
+>in&#237;cio da string</a> , o que torna essa implementa&#231;&#227;o de &#237;ndice n&#227;o eficiente para a maioria dos casos.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Operador_LIKE"
+>Operador <i>LIKE</i></a></h3>
+
+<p>Imaginemos uma tabela com 100 mil registros, onde uma consulta &#233; realizada em um campo <i>TEXT</i>. Sem a utiliza&#231;&#227;o/exist&#234;ncia de um &#237;ndice, os 100 mil registros ser&#227;o visitados e comparados com o valor da express&#227;o <i>LIKE</i>. Essa implementa&#231;&#227;o n&#227;o faz qualquer otimiza&#231;&#227;o na consulta. O que torna a pesquisa lenta a medida que se acrescentam registros.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Full_Text_Search_e_&#205;ndice_Invertido"
+>Full Text Search e &#205;ndice Invertido</a></h2>
+
+<p><b>Full Text Search</b> &#233; uma t&#233;cnica de pesquisar texto em documentos ou banco de dados.</p>
+
+<p>A forma mais eficiente de indexar esse tipo de conte&#250;do &#233; utilizando o que chamamos de <b>&#205;ndice Invertido</b>. Em resumo, &#233; criar uma lista de todas as palavras da string referenciando suas respectivas posi&#231;&#245;es no texto original.</p>
+
+<p>Imagine que temos os registros:</p>
+
+<pre> R  = &#34;Estamos falando de Perl Moderno&#34;
+ R&#185; = &#34;Hoje em sua 12 vers&#227;o, o Perl 5 moderno &#233; uma linguagem de uso geral&#34;
+ R&#178; = &#34;Perl moderno a escolha certa para um projeto t&#227;o ambicioso e multifacetado&#34;</pre>
+
+<p>O &#237;ndice gerado considerando <a href="http://en.wikipedia.org/wiki/Stop_words" class="podlinkurl"
+>stop words</a>, teria essa cara:</p>
+
+<pre> &#34;estamos&#34;:       {(0, 0)}
+ &#34;falando&#34;:       {(0, 1)}
+ &#34;moderno&#34;:       {(0, 4), (1, 8), (2, 1)}
+ &#34;perl&#34;:          {(0, 3), (1, 6), (2, 0)}
+ &#34;hoje&#34;:          {(1, 0)}
+ &#34;vers&#227;o&#34;:        {(1, 4)}
+ &#34;&#233;&#34;:             {(1, 9)}
+ &#34;linguagem&#34;:     {(1, 11)}
+ &#34;uso&#34;:           {(1, 13)}
+ &#34;geral&#34;:         {(1, 14)}
+ &#34;escolha&#34;:       {(2, 3)}
+ &#34;certa&#34;:         {(2, 4)}
+ &#34;projeto&#34;:       {(2, 7)}
+ &#34;ambicioso&#34;:     {(2, 9)}
+ &#34;multifacetado&#34;: {(2, 11)}</pre>
+
+<p>O primeiro n&#250;mero corresponde ao registro e o segundo a posi&#231;&#227;o do termo no registro. Assim quando criamos um &#237;ndice, estamos efetivamente criando <i>tokens</i> com o lexema do texto original.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="No_Banco_de_Dados"
+>No Banco de Dados</a></h3>
+
+<p>O PostgreSQL possui um tipo de dado para trabalhar com Full Text, <i>tsvector</i>, e os tipos &#237;ndice s&#227;o <i>GIN</i> e <i>GIST</i>. O GIST pode gerar falsos-positivos, uma vez que seu &#237;ndice &#233; baseado em bits aleat&#243;rios. O GIN, por sua vez, &#233; mais preciso e oferece um desempenho melhor que o GIST, perdendo apenas durante o processo de atualiza&#231;&#227;o do &#237;ndice.</p>
+
+<p>&#201; poss&#237;vel criar um &#237;ndice de campos compostos:</p>
+
+<pre> CREATE INDEX pgweb_idx ON pgweb USING gin(to_tsvector(config_name, body));
+ [...]
+ WHERE to_tsvector(config_name, body) @@ &#39;a &#38; b&#39;</pre>
+
+<p>&#201; poss&#237;vel ainda concatenar campos:</p>
+
+<pre> CREATE INDEX pgweb_idx ON pgweb USING gin(to_tsvector(&#39;english&#39;, title || &#39; &#39; || body));</pre>
+
+<p>Como o banco trabalh com o &#237;ndice em mem&#243;ria, o desempenho do &#237;ndice degrada e o consumo de mem&#243;ria aumenta consideravelmente conforme o volume de texto.</p>
+
+<p>N&#227;o &#233; poss&#237;vel inserir direto no campo tsvector (workaround: trigger para <a href="http://www.postgresql.org/docs/8.3/static/textsearch-features.html#TEXTSEARCH-UPDATE-TRIGGERS" class="podlinkurl"
+>automatizar o update</a>).</p>
+
+<p>tsvector suporta menos de 2 kb por lexema e 1 mb por lexema com as posi&#231;&#245;es.</p>
+
+<pre> SELECT title
+ FROM pgweb
+ WHERE to_tsvector(&#39;english&#39;, body) @@ to_tsquery(&#39;english&#39;, &#39;friend&#39;);</pre>
+
+<p>Nesse exemplo, convertemos um campo text para <code>tsvector</code> (tipo de dado que suporta o &#237;ndice) com o <code>to_tsvector</code>, para buscar o termo &#34;friend&#34;. @@ &#233; o operador de consulta em um campo <code>tsvector</code>. O dicion&#225;rio padr&#227;o &#233; &#39;english&#39;.</p>
+
+<p><code>to_tsquery</code> e <code>plainto_tsquery</code> convertem a query para <code>tsquery</code>. <code>to_tsquery</code> &#233; menos preciso que <code>plainto_tsquery</code>, n&#227;o considera stop words por exemplo.</p>
+
+<p>PostgreSQL possui dicion&#225;rios em v&#225;rias linguagens. &#201; poss&#237;vel configurar os termos ignorados no &#237;ndice, customizar seu pr&#243;prio dicion&#225;rio, sin&#244;nimos e lexidade.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Engines"
+>Engines</a></h3>
+
+<p>A melhor forma de obter bons resultados com <b>Full Text Search</b> &#233; usando <i>engines</i> projetadas para armazenamento de texto.</p>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="LUCENE_-_Solr"
+>LUCENE - Solr</a></h4>
+
+<p>&#201; a engine mais difundida. Desenvolvida em Java, possui alta performance. &#201; capaz de indexar documentos em diversos formatos(PDF, HTML, Microsoft Word e OpenDocument).</p>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="Sphinx"
+>Sphinx</a></h4>
+
+<p>Desenhado para trabalhar em conjunto com banco de dados.</p>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="Plucene"
+>Plucene</a></h4>
+
+<p>Esse engine &#233; um port do Lucene para Perl</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Kinosearch"
+>Kinosearch</a></h1>
+
+<p>Vers&#227;o do Lucene portada para C compilado para Perl. Seu <a href="http://www.rectangular.com/pipermail/kinosearch/2006-April/006819.html" class="podlinkurl"
+>desempenho &#233; semelhante ao Lucene</a>. Para instalar via CPAN:</p>
+
+<pre> cpan KinoSearch</pre>
+
+<p>Por ser em Perl, n&#227;o h&#225; qualquer pr&#233;-requisito para us&#225;-lo, a n&#227;o ser instalar o pr&#243;prio m&#243;dulo. Al&#233;m de possuir &#243;timo desempenho e ter baixo consumo de mem&#243;ria, &#233; simples de ser usado/configurado.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Criando_um_&#205;ndice"
+>Criando um &#205;ndice</a></h3>
+
+<p>O KinoSearch permite configurar v&#225;rios tipos diferentes de &#237;ndices. Abaixo, detalho um pouco sobre a cria&#231;&#227;o e consulta dos &#237;ndices:</p>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="KinoSearch::Schema"
+>KinoSearch::Schema</a></h4>
+
+<p>Parametriza o schema do &#237;ndice.</p>
+
+<pre> my $schema = KinoSearch::Schema-&#62;new;
+ $schema-&#62;spec_field( name =&#62; $field, type =&#62; $datatype );</pre>
+
+<p>O datatype pode ser: <b>BlobType</b> (dados em bin&#225;rio) - op&#231;&#227;o padr&#227;o -, <b>FullTextType</b> e <b>StringType</b> - para busca em campos de valores exatos.</p>
+
+<p>O <b>FullTextType</b> merece um pouco mais da nossa aten&#231;&#227;o. H&#225; configura&#231;&#245;es espec&#237;ficas nesse campo que personalizam a forma de utiliz&#225;-lo.</p>
+
+<pre> my $type = KinoSearch::Plan::FullTextType-&#62;new(
+                analyzer      =&#62; $analyzer,
+                boost         =&#62; 2.0,
+                indexed       =&#62; 1,
+                stored        =&#62; 1,
+                sortable      =&#62; 1,
+                highlightable =&#62; 1,
+            );</pre>
+
+<p><b>analyzer</b> - Agrega o &#34;Analizador&#34; do campo, por exemplo idioma, stopword, normaliza o case.</p>
+
+<p>Com <b>KinoSearch::Analysis::*</b> se faz tais configura&#231;&#245;es;</p>
+
+<p><b>boost</b> - float, precis&#227;o do campo;</p>
+
+<p><b>indexed</b> - boolean se o campo deve ser indexado;</p>
+
+<p><b>stored</b> - boolean se o campo deve ser armazenado;</p>
+
+<p><b>sortable</b> - boolean se o campo deve ser ordenado;</p>
+
+<p><b>highlightable</b> - boolean se o campo pode destacar termos.</p>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="KinoSearch::Indexer"
+>KinoSearch::Indexer</a></h4>
+
+<p>Constr&#243;i o index, com ele parametriza-se a cria&#231;&#227;o do index.</p>
+
+<pre> my $indexer = KinoSearch::Indexer-&#62;new(
+                   schema   =&#62; $schema,
+                   index    =&#62; &#39;/path/to/index&#39;,
+                   create   =&#62; 1,
+                   truncate =&#62; 1,
+                   manager  =&#62; $manager
+               );
+                     
+ while ( my ( $title, $content ) = each %source_docs ) {
+     $indexer-&#62;add_doc(
+         doc   =&#62; { field_name =&#62; $field_value },
+         boost =&#62; 2.5,                # default: 1.0
+     );
+ }
+                    
+ $indexer-&#62;commit;</pre>
+
+<p><b>schema</b> - define o schema;</p>
+
+<p><b>index</b> - caminho para o &#237;ndice a ser consultado;</p>
+
+<p><b>create</b> - boolean se o index deve ser criado fisicamente;</p>
+
+<p><b>truncate</b> - boolean se o campo deve ser &#34;trunc&#225;vel&#34;;</p>
+
+<p><b>manager</b> - boolean se o campo deve permitir futuras reconfigura&#231;&#245;es;</p>
+
+<p><b>add_doc()</b> - Esse m&#233;todo adiciona um documento no &#237;ndice, bastar definir o nome do campo e seu valor no atributo &#34;doc&#34; e o &#34;boost&#34;;</p>
+
+<p><b>optimize()</b> - Otimiza o &#237;ndice para um tempo de busca menor;</p>
+
+<p><b>commit()</b> - Grava as altera&#231;&#245;es no &#237;ndice.</p>
+
+<p>OBS** O tamanho do arquivo de &#237;ndice criado &#233; semelhante a uma tabela exportada (COPY) do PostgreSQL. Os metadados s&#227;o armazenados em JSON, o que &#233; um ponto positivo.</p>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="KinoSearch::Analysis::PolyAnalyzer"
+>KinoSearch::Analysis::PolyAnalyzer</a></h4>
+
+<p>Parametriza a cria&#231;&#227;o de cada campo, isso determina o que ser&#225; poss&#237;vel fazer com o campo. Todos os tipos de campos podem usufruir desse recurso.</p>
+
+<pre> my $case_folder  = KinoSearch::Analysis::CaseFolder-&#62;new;
+ my $tokenizer    = KinoSearch::Analysis::Tokenizer-&#62;new(
+                        language =&#62; &#39;pt&#39;
+                    );
+ my $stemmer      = KinoSearch::Analysis::Stemmer-&#62;new(
+                        language =&#62; &#39;pt&#39;
+                    );
+ my $polyanalyzer = KinoSearch::Analysis::PolyAnalyzer-&#62;new(
+                        analyzers =&#62; [ 
+                            $case_folder, 
+                            $whitespace_tokenizer, 
+                            $stemmer, 
+                        ], 
+                    );</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Consultando"
+>Consultando</a></h3>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="KinoSearch::Searcher"
+>KinoSearch::Searcher</a></h4>
+
+<p>Classe para busca nos documentos.</p>
+
+<pre> my $searcher  = Searcher-&#62;new( index =&#62; $index );
+ 
+ my $sort_spec = KinoSearch::Search::SortSpec-&#62;new(
+                     rules =&#62; [
+                         KinoSearch::Search::SortRule-&#62;new( field =&#62; &#39;date&#39; ),
+                         KinoSearch::Search::SortRule-&#62;new( type  =&#62; &#39;doc_id&#39; ),
+                     ],
+                 );
+ 
+ my $hits = $searcher-&#62;hits(
+                query      =&#62; $query,
+                offset     =&#62; $offset,
+                num_wanted =&#62; $limit,
+                sort_spec =&#62; $sort_spec,
+            );
+                    
+ while ( my $hit = $hits-&#62;next ) {
+     print $hit-&#62;{$field}
+  }
+
+  print $hits-&#62;total_hits;</pre>
+
+<p>Na inst&#226;ncia do objeto j&#225; se define o &#237;ndice que vamos trabalhar.</p>
+
+<p><b>query</b> - consulta, exemplo: &#34;field_name:$field_value&#34;;</p>
+
+<p><b>offset</b> - offset da consulta;</p>
+
+<p><b>num_wanted</b> - limite de resultados na consulta;</p>
+
+<p><b>sort_spec</b> - forma de ordernar o resultado;</p>
+
+<p><b>next</b> - percorre o conjunto de resultados;</p>
+
+<p><b>total_hits</b> - total de documentos retornados;</p>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="KinoSearch::Highlight::Highlighter"
+>KinoSearch::Highlight::Highlighter</a></h4>
+
+<p>Esse m&#243;dulo personaliza o retorno da busca, dando realce no resultado. Ele assume um padr&#227;o de HTML para os destaques, &#60;strong&#62; por default.</p>
+
+<pre> my $highlighter = KinoSearch::Highlight::Highlighter-&#62;new(
+                       searcher       =&#62; $searcher,      
+                       query          =&#62; $query,       
+                       field          =&#62; &#39;content&#39;,   
+                       excerpt_length =&#62; 150,        
+                   );
+                      
+ my $hits = $searcher-&#62;hits( query =&#62; $query );
+   
+ while ( my $hit = $hits-&#62;next ) {
+     print $highlighter-&#62;create_excerpt($hit);
+ }</pre>
+
+<p><b>field</b> - campo que queremos real&#231;ar em nosso match;</p>
+
+<p><b>excerpt_length</b> - tamanho m&#225;ximo do trecho retornado, em caracteres;</p>
+
+<p><b>create_excerpt( $Obj )</b> - retorna o trecho a ser destacado.</p>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="Search::Query::Dialect::KSx/Search::Query"
+>Search::Query::Dialect::KSx/Search::Query</a></h4>
+
+<p>Usando o Search::Query &#233; poss&#237;vel consultar o dialeto KSx no momento da busca. Esse recurso permite pesquisar via wildcard;</p>
+
+<pre> use Search::Query;
+ my $query = Search::Query-&#62;parser(
+                 fields      =&#62; { $field =&#62; { analyzer =&#62; $analyzer } },
+                 query_class =&#62; &#39;KSx&#39;,
+                 field_class =&#62; &#39;Search::Query::Field&#39;,
+                 query_class_opts =&#62; { default_field =&#62; [$field], },
+             )-&#62;parse( &#39;processo* +administrativo* -contratante&#39; );</pre>
+
+<p>A string de consulta gerada:</p>
+
+<pre> txt_item:processo* AND txt_item:administrativo* AND (NOT txt_item:CONTRATANTE)</pre>
+
+<p><b>query_class</b> - define o dialeto usado na consulta;</p>
+
+<p><b>parser()</b> - configura a consulta;</p>
+
+<p><b>parse()</b> - string da consulta.</p>
+
+<p>OBS** esse &#233; o modo mais complexo de se fazer consultas no KinoSearch. Usando-o obtemos o mesmo efeito do ILIKE em SQL. Ele &#233; escrito em XS, o que o mant&#233;m com &#243;timo desempenhoa, por&#233;m n&#227;o suporta consultas mais complexas. Sugest&#227;o por Peter Karman, usa-se o m&#243;dulo Search::Tools para esse tipo de pesquisa.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Conclus&#227;o"
+>Conclus&#227;o</a></h1>
+
+<p>Como vimos, h&#225; maneiras mais eficientes de trabalhar com armazenamento de texto que armazen&#225;-lo em banco de dados relacional, mesmo havendo suporte ao Full Text em no banco, seu desempenho &#233; muito discrepante em compara&#231;&#227;o as engines de mercado. Kinosearch &#233; uma engine interessante, considerando sua simplicidade desde a instala&#231;&#227;o, indexa&#231;&#227;o e consulta.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Refer&#234;ncias"
+>Refer&#234;ncias</a></h1>
+
+<p>MySQL - http://dev.mysql.com/doc/refman/5.5/en/storage-requirements.html</p>
+
+<p>PostgreSQL - http://www.postgresql.org/docs/8.3/static/textsearch.html</p>
+
+<p>KinoSearch - http://search.cpan.org/~creamyg/KinoSearch-0.31/</p>
+
+<p>Lucene/Solr - http://lucene.apache.org/</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Agradecimentos"
+>Agradecimentos</a></h1>
+
+<p>Agrade&#231;o &#224; comunidade Perl brasileira pela oportunidade de contribuir com conte&#250;do t&#233;cnico.</p>
+
+<p>Ao pessoal do IRC, principalmente Lorn e lmc por deixar pistas no in&#237;cio da minha pesquisa.</p>
+
+<p>Ao Breno pela incr&#237;vel paci&#234;ncia e revis&#227;o desse texto.</p>
+
+<p>E principalmente a Larry Wall e os mantenedores do Perl que possibilitam que meu trabalho seja t&#227;o mais f&#225;cil/divertido :)</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="autor"
+>autor</a></h1>
+
+<p>Marcio Ferreira$ perl -e&#39;push @gmail, marciodesouzaferreira&#39;</p>
+
+<p>Twitter <a href="http://twitter.com/_marcioferreira" class="podlinkurl"
+>@_marcioferreira</a></p>
+
+</body></html>

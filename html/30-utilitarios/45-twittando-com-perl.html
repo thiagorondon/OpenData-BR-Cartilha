@@ -1,0 +1,296 @@
+<html><head><title>Twittando com o Perl</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#Twittando_com_o_Perl'>Twittando com o Perl</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Registre_sua_aplica%E7%E3o%3A'>Registre sua aplica&#231;&#227;o:</a>
+    <li class='indexItem indexItem2'><a href='#Autenticando_seu_usu%E1rio%3A'>Autenticando seu usu&#225;rio:</a>
+    <li class='indexItem indexItem2'><a href='#A_API_Search%3A'>A API Search:</a>
+    <li class='indexItem indexItem2'><a href='#A_API_REST'>A API REST</a>
+    <li class='indexItem indexItem2'><a href='#Pagina%E7%E3o.'>Pagina&#231;&#227;o.</a>
+    <li class='indexItem indexItem2'><a href='#Autor'>Autor</a>
+  </ul>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Twittando_com_o_Perl"
+>Twittando com o Perl</a></h1>
+
+<p><b>Nota</b>: Este artigo visa passar as orienta&#231;&#245;es b&#225;sicas do funcionamento do m&#243;dulo <b>Net::Twitter</b>.
+Como aplica&#231;&#245;es que envolvem seguran&#231;a de contas de twitter crackeadas podem causar danos a imagens e marcas,
+aplica&#231;&#245;es em produ&#231;&#227;o devem realizar a limpeza dos dados assegurando que apenas entradas v&#225;lidas sejam informadas.
+Estas aplica&#231;&#245;es tamb&#233;m devem garantir a seguran&#231;a dos usu&#225;rios,
+armazenando as credenciais de forma segura - bancos de dados protegidos ou arquivos criptografados s&#227;o op&#231;&#245;es.
+Isto est&#225; al&#233;m dos objetivos deste tutorial.
+Para obter melhores conhecimentos de seguran&#231;a leia:</p>
+
+<dl>
+<dt><a name="https://dev.twitter.com/pages/security_best_practices;"
+>https://dev.twitter.com/pages/security_best_practices;
+<dt><a name="O_tutorial_perlsec,_na_sua_documenta&#231;&#227;o_online_do_Perl;"
+>O tutorial perlsec,
+na sua documenta&#231;&#227;o online do Perl;
+<dt><a name="SQL_Injection_Defenses_por_Martim_Nystrom;"
+>SQL Injection Defenses por Martim Nystrom;</a></dt>
+</dl>
+
+<p>Integrar o Perl com o Twitter&#174; &#233; uma das melhores formas de estudarmos como o Perl pode se comunicar com as redes sociais modernas.
+O Perl oferece,
+por meio do CPAN os m&#243;dulos Net::Twitter,
+Net::Twitter::Lite,
+App::Twitter e Net::Oauth como interfaces simplificadas para programa&#231;&#227;o de uma aplica&#231;&#227;o integrada ao Twitter.
+Esta aplica&#231;&#227;o pode ser uma aplica&#231;&#227;o Web,
+um cliente desktop com Tk ou mesmo uma aplica&#231;&#227;o de linha de comando com GetOpt::Std.
+Enfim,
+com Perl e um pouco de criatividade as possibilidades tendem ao infinito.</p>
+
+<p>O Twitter n&#227;o oferece nenhuma interface oficial para programadores Perl.
+Mas nossos amigos,
+criadores de m&#243;dulos do CPAN,
+realizaram um trabalho decente e profissional desenvolvendo os m&#243;dulos que nos fornecem uma API para o Twitter,
+bem como para outras redes sociais que podemos integrar com o Perl,
+como o pol&#234;mico Facebook.</p>
+
+<p>A escolha do m&#243;dulo a ser utilizado &#233; uma quest&#227;o de analisar seu projeto e sua familiaridade com a forma de utilizar o m&#243;dulo ou mesmo o framework.
+Alguns m&#243;dulos do Twitter s&#227;o integrados ao Moose,
+ao Catalyst ou at&#233; mesmo ao POE.
+Como o objetivo deste artigo &#233; explicar como utilizar o Perl com o Twitter n&#227;o vou complicar a vida dos iniciantes com o Moose ou o POE pois isto poderia excluir os programadores menos experientes,
+e este n&#227;o &#233; o objetivo da comunidade.
+Ent&#227;o utilizarei o m&#243;dulo Net::Twitter.</p>
+
+<p>Eu gosto muito deste m&#243;dulo pois,
+como administrador de sistemas,
+acabo utilizando muitos m&#243;dulos do tipo Net:: como Net::SSH,
+Net::Ping,
+Net::SNMP,
+Net::SMTP,
+etc.
+Isso faz com que eu prefira os m&#243;dulos Net:: pois eles tem muita familiaridade com sua forma de funcionamento.
+Mas acho que est&#225; na hora de um pouco de a&#231;&#227;o.
+Vamos preparar nosso kit para twittar.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Registre_sua_aplica&#231;&#227;o:"
+>Registre sua aplica&#231;&#227;o:</a></h2>
+
+<p>Para come&#231;ar,
+nossa primeira aplica&#231;&#227;o ser&#225; um comando shell que envia mensagens para uma conta espec&#237;fica do twitter.
+Vamos precisar dos m&#243;dulos <b>Geopt::Std</b>,
+<b>Net::Twitter</b> e o <b>Term::ReadKey</b> al&#233;m de uma conta de desenvolvedor no twitter.
+Para criar esta conta acesse a p&#225;gina: dev.twitter.com/apps/new.
+Ela fornecer&#225; os dados que sua aplica&#231;&#227;o necessita para efetuar conex&#227;o com o site via OAuth.
+Para uma aplica&#231;&#227;o cliente que ficar&#225; hospedada no desktop como um comando ou utilizando Perl TK o Twitter vai te fornecer:</p>
+
+<pre>    API key
+    XXXXXXXXXXXX
+    Consumer key
+    XXXXXXXXXXXXXXXXXXXXXXXXX
+    Consumer secret
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    Request token URL
+    https://api.twitter.com/oauth/request_token
+    Access token URL
+    https://api.twitter.com/oauth/access_token
+    Authorize URL
+    https://api.twitter.com/oauth/authorize</pre>
+
+<p>Estas informa&#231;&#245;es s&#227;o importantes, principalmente para a primeira vez que um usu&#225;rio novo utilizar esta ferramenta. Ent&#227;o, vamos discutir como funciona a autentica&#231;&#227;o de uma aplica&#231;&#227;o externa ao Twitter. Depois de compreendido o processo de autentica&#231;&#227;o fica mais f&#225;cil decidir se o seu projeto vai manusear a autentica&#231;&#227;o via SQLite, arquivos de texto criptografados ou qualquer outra forma que voc&#234; considere interessante.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Autenticando_seu_usu&#225;rio:"
+>Autenticando seu usu&#225;rio:</a></h2>
+
+<p>At&#233; 2010, existia a autentica&#231;&#227;o simplificada, onde voc&#234; precisava apenas informar um usu&#225;rio e senha e sua aplica&#231;&#227;o poderia acessar a API do Twitter como se fosse o usu&#225;rio. Agora toda a autentica&#231;&#227;o deve ser feita via OAuth. A autentica&#231;&#227;o OAuth funciona:</p>
+
+<dl>
+<dt><a name="primeiro,_obtendo_um_token_de_solicita&#231;&#227;o;"
+>primeiro, obtendo um token de solicita&#231;&#227;o;
+<dt><a name="segundo,_confirmando_a_autoriza&#231;&#227;o_do_usu&#225;rio;"
+>segundo, confirmando a autoriza&#231;&#227;o do usu&#225;rio;
+<dt><a name="terceiro,_modificando_seu_token_de_solicita&#231;&#227;o_por_um_token_de_acesso."
+>terceiro, modificando seu token de solicita&#231;&#227;o por um token de acesso.</a></dt>
+</dl>
+
+<p>Um primeiro acesso a uma aplica&#231;&#227;o que acesse o Twitter via linha de comando deve conter:</p>
+
+<pre>    use 5.12.0;
+    use Net::Twitter;
+    
+    my $t = Net::Twitter-&#62;new(
+        traits          =&#62; [qw/OAuth API::REST/],
+        consumer_key    =&#62; &#39;xxxxxxxxxxxxxxxxxxxxxxx&#39;,
+        consumer_secret =&#62; &#39;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#39;,
+    );</pre>
+
+<p>Aqui n&#243;s criamos nosso objeto Net::Twitter, que &#233; instanciado na vari&#225;vel $t. Esse construtor informa o tipo de autentica&#231;&#227;o, OAuth, e a API que ser&#225; utilizada. API::REST. Veremos as APIs mais adiante. Repare que sua aplica&#231;&#227;o deve informar os dados fornecidos pelo Twitter quando voc&#234; registrou sua aplica&#231;&#227;o (consumer_key e consumer_secret). Lembre-se que a forma como voc&#234; armazenas as suas credenciais tamb&#233;m &#233; importante para evitar que aplica&#231;&#245;es maliciosas se passem pela sua aplica&#231;&#227;o.</p>
+
+<p>Depois temos que solicitar que o usu&#225;rio confirme que deseja que o nosso aplicativo use o twitter com as suas configura&#231;&#245;es de conta. Para isso, o Twitter fornece para nosso aplicativo uma url de acesso, onde ele ir&#225; confirmar que nosso aplicativo pode se passar por ele. Adicione este c&#243;digo ao final:</p>
+
+<pre>    my $pin;
+
+    # Solicita confirma&#231;&#227;o do usu&#225;rio
+    unless($t-&#62;authorized){
+        my $url = $t-&#62;get_authorization_url();
+        
+        say &#34;Esta aplica&#231;&#227;o ainda n&#227;o est&#225; autorizada para acessar o twitter&#34; .
+        &#34; como se fosse voc&#234;.&#34;;
+        
+        say &#34;Acesse o link ao lado. &#34; . $url . &#34;\n Ele vai lhe fornecer um PIN &#34; .
+        &#34;que permitira que esta aplica&#231;&#227;o acesse suas informa&#231;&#245;es no twitter.\n&#34; .
+        &#34;Informe este PIN aqui: &#34;;
+        
+        chomp($pin = &#60;STDIN&#62;);
+        
+        my ($access_token, $access_token_secret, $user_id, $screen_name) =
+            $t-&#62;request_access_token(verifier =&#62; $pin);
+    }</pre>
+
+<p>A URL fornecida pelo m&#233;todo <code>get_authorization_url</code> apontar&#225; para uma p&#225;gina que solicita as credenciais do seu usu&#225;rio no Twitter e pede que ele confirme que sua aplica&#231;&#227;o pode acessar seus dados no twitter e at&#233; mesmo postar em seu nome.</p>
+
+<p>O Twitter ent&#227;o fornece um c&#243;digo num&#233;rico que representa a etapa 2, onde o usu&#225;rio confirma que sua aplica&#231;&#227;o pode utilizar suas credenciais.</p>
+
+<p>Em seguida passamos para a terceira etapa, que &#233; solicitar um token de acesso. O m&#233;todo <code>request_access_token</code> informa o PIN para o Twitter que, por sua vez, retorna os c&#243;digos que sua aplica&#231;&#227;o precisa para acessar o twitter como se fora aquele usu&#225;rio. Guarde estas informa&#231;&#245;es de forma segura. Assim voc&#234; n&#227;o vai obrigar seu usu&#225;rio a requisitar um PIN toda vez que rodar sua aplica&#231;&#227;o.</p>
+
+<p>Quando voc&#234; j&#225; tiver estas informa&#231;&#245;es a sua disposi&#231;&#227;o poder&#225; usar o construtor como abaixo:</p>
+
+<pre>    my $t = Net::Twitter-&#62;new(
+        traits              =&#62; [qw/OAuth API::REST/], #Autentica&#231;&#227;o e as API&#39;s
+        consumer_key        =&#62; $key,
+        consumer_secret     =&#62; $secret,
+        access_token        =&#62; $access_token,
+        access_token_secret =&#62; $token_secret,
+    );</pre>
+
+<p>O Net::Twitter &#233; um m&#243;dulo robusto, formado por diversos m&#243;dulos menores. A interface de autentica&#231;&#227;o completa pode ser aprendida na documenta&#231;&#227;o CPAN do m&#243;dulo Net::Twitter::Role::OAuth. Mas &#233; importante entender pelo menos os m&#233;todos abaixo:</p>
+
+<dl>
+<dt><a name="authorized:"
+><code>authorized</code>:</a></dt>
+
+<dd>
+<p>Retorna um valor verdadeiro se todos o dados para autentica&#231;&#227;o foram recebidos pelo objeto. N&#227;o necessariamente a autentica&#231;&#227;o funcionar&#225;.</p>
+
+<dt><a name="get_authorization_url(callback_=_URL)&#62;:"
+><code>get_authorization_url(callback =</code> URL)&#62;:</a></dt>
+
+<dd>
+<p>Informa a URL que o usu&#225;rio deve utilizar para autorizar sua aplica&#231;&#227;o. Aplica&#231;&#245;es web utilizam um callbak, que &#233; uma URL que o Twitter acessar&#225; para enviar os dados de autoriza&#231;&#227;o.</p>
+
+<dt><a name="access_token_e_access_token_secret:"
+><code>access_token e access_token_secret</code>:</a></dt>
+
+<dd>
+<p>Informa ou configura o token e a senha relacionada ao token respectivamente. Se voc&#234; j&#225; tiver os tokens de usu&#225;rio armazenados, poder&#225; configurar seu objeto com estes m&#233;todos.</p>
+</dd>
+</dl>
+
+<p>Agora vamos falar das API&#39;s. O Twitter nos fornece diversas API&#39;s, que s&#227;o informadas nos construtores dos objetos da aplica&#231;&#227;o que usa o Net::Twitter. Vamos ver um pouco delas agora.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="A_API_Search:"
+>A API Search:</a></h2>
+
+<p>A API Search &#233; uma das mais simples e &#250;teis, pois permite que pesquisemos termos no Twitter. Para utilizar esta API, temos que adicion&#225;-la ao traits do construtor:</p>
+
+<pre>    use 5.12.0;
+
+    use Net::Twitter; 
+    use Data::Dumper;
+
+    my $nt = Net::Twitter-&#62;new(
+        traits              =&#62; [qw/OAuth API::Search/], # Autentica&#231;&#227;o e API
+        consumer_key        =&#62; &#39;11111111111111111111&#39;,
+        consumer_secret     =&#62; &#39;22222222222222222222222222222222222222222&#39;,
+        access_token        =&#62; $access_token,
+        access_token_secret =&#62; $token_secret,
+    );</pre>
+
+<p>O m&#233;todo mais importante desta API &#233; o search. O m&#233;todo search pode receber como par&#226;metros nomeados:</p>
+
+<pre>    q        =&#62; &#39;Query, termo a ser pesquisado&#39;
+    callback =&#62; &#39;url para onde a pesquisa deve ser retornada&#39;
+    lang     =&#62; &#39;idioma (codifica&#231;&#227;o ISO 639-1)&#39;
+    rpp      =&#62; resultados por p&#225;gina
+    page     =&#62; p&#225;gina
+    since_id =&#62; posts a apartir da data especificada
+    geocode  =&#62; localiza&#231;&#227;o dos posts
+    
+    my $result = $nt-&#62;search(&#39;Clean Energy&#39;);
+    say Dumper $result;</pre>
+
+<p>O m&#233;todo search executa uma pesquisa no Twitter pelo termo informado no argumento, no caso, &#39;Clean Energy&#39;. Esta pesquisa retorna um hashref. Seria muito interessante voc&#234; imprimir alguns hashes retornados da pesquisa com o Data::Dumper e estudar o formato da estrutura de sa&#237;da.</p>
+
+<pre>    my $result = $nt-&#62;search({
+        q    =&#62; &#39;Energia limpa&#39;,
+        rpp  =&#62; 100,
+        lang =&#62; &#39;pt&#39;
+    });
+
+    say Dumper $result;</pre>
+
+<p>A documenta&#231;&#227;o completada desta API est&#225; na documenta&#231;&#227;o online do m&#243;dulo Net::Twitter. &#201; interessante que voc&#234; leia tamb&#233;m a documenta&#231;&#227;o do pr&#243;prio Twitter.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="A_API_REST"
+>A API REST</a></h2>
+
+<p>A API REST permite acesso &#224;s informa&#231;&#245;es de usu&#225;rio, al&#233;m de permitir que a aplica&#231;&#227;o poste como se fosse o pr&#243;prio usu&#225;rio. Esta &#233; a API mais importante, portanto leia a documenta&#231;&#227;o do Net::Twitter e do pr&#243;prio Twitter.</p>
+
+<p>O m&#233;todo <code>followers</code> retorna um array de hashrefs com as informa&#231;&#245;es de seus seguidores. &#201; interessante que voc&#234; vejar o formato destas refer&#234;ncias com o Data::Dumper</p>
+
+<pre>    my $followers = $nt-&#62;followers();
+    say Dumper $followers;</pre>
+
+<p>O m&#233;todo <code>update</code> &#233; o que voc&#234; pode utilizar para twittar:</p>
+
+<pre>    $nt-&#62;update(&#34;$message&#34;);</pre>
+
+<p>O m&#233;todo <code>following_ids</code> retorna um array com os ids das contas que s&#227;o seguidas pelo usu&#225;rio autenticado.</p>
+
+<p>Enfim, a API &#233; imensa e n&#227;o vale ficar aqui explicando m&#233;todo a m&#233;todo. Leia a documenta&#231;&#227;o, estude os formatos de sa&#237;da com Data::Dumper e os monges estar&#227;o a disposi&#231;&#227;o para maiores d&#250;vidas.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Pagina&#231;&#227;o."
+>Pagina&#231;&#227;o.</a></h2>
+
+<p>Uma outra coisa important&#237;ssima &#233; a pagina&#231;&#227;o. Alguns m&#233;todos retornam resultados muito longos, como lista de seguidores ou mesmo os resultados de pesquisas tem diversas p&#225;ginas. Para estes m&#233;todos que usam pagina&#231;&#227;o o Net::Twitter tem os par&#226;metros page e cursor. O parametro page informa o n&#250;mero da p&#225;gina desejada:</p>
+
+<pre>    for my $page (1 .. 5){
+        my $result = $nt-&#62;search({
+            q       =&#62; &#39;Linux&#39;,
+            rpp     =&#62; 10,
+            lang    =&#62; &#39;pt&#39;,
+            page    =&#62; $page
+        });
+        
+        say $_-&#62;{text} foreach @{$result-&#62;{results}};
+    }</pre>
+
+<p>J&#225; o cursor &#233; uma referencia a pr&#243;xima p&#225;gina:</p>
+
+<pre>    for ( my $cursor = -1, my $result; $cursor; $cursor = $result-&#62;{next_cursor} ) {
+        $result = $nt-&#62;search({
+            q       =&#62; &#39;Linux&#39;,
+            pp      =&#62; 10,
+            lang    =&#62; &#39;pt&#39;,
+            cursor  =&#62; $cursor
+        });
+        
+        say $_-&#62;{text} foreach @{$result-&#62;{results}};
+    }</pre>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Autor"
+>Autor</a></h2>
+
+<p>Thiago Glauco <code>&#60;thiagoglauco at ticursos dot net&#62;</code>.</p>
+
+</body></html>

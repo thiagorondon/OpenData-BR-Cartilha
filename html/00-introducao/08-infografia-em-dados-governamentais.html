@@ -1,0 +1,513 @@
+<html><head><title>Infografia em Dados Governamentais</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#Infografia_em_Dados_Governamentais'>Infografia em Dados Governamentais</a>
+  <li class='indexItem indexItem1'><a href='#Fluxo_dos_dados'>Fluxo dos dados</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Coletar'>Coletar</a>
+    <li class='indexItem indexItem2'><a href='#Armazenar'>Armazenar</a>
+    <li class='indexItem indexItem2'><a href='#Processar'>Processar</a>
+    <li class='indexItem indexItem2'><a href='#Visualizar'>Visualizar</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Cole%E7%E3o_de_dados_e_a_experi%EAncia_do_usu%E1rio'>Cole&#231;&#227;o de dados e a experi&#234;ncia do usu&#225;rio</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#ICONOLOGIA_e_ICONOGRAFIA'>ICONOLOGIA e ICONOGRAFIA</a>
+    <li class='indexItem indexItem2'><a href='#Crowdsourcing'>Crowdsourcing</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Visualizac%F5es_dos_dados'>Visualizac&#245;es dos dados</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Treemapping'>Treemapping</a>
+    <li class='indexItem indexItem2'><a href='#Diagramas_de_Voronoi'>Diagramas de Voronoi</a>
+    <li class='indexItem indexItem2'><a href='#Triangula%E7%F5es_de_Delaunay'>Triangula&#231;&#245;es de Delaunay</a>
+    <li class='indexItem indexItem2'><a href='#Mapa_de_sinergia'>Mapa de sinergia</a>
+    <li class='indexItem indexItem2'><a href='#Geogr%E1ficos'>Geogr&#225;ficos</a>
+    <li class='indexItem indexItem2'><a href='#DNA'>DNA</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Exemplos_dos_assuntos'>Exemplos dos assuntos</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Dados_urbanos'>Dados urbanos</a>
+    <li class='indexItem indexItem2'><a href='#Pol%EDticos'>Pol&#237;ticos</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Disposi%E7%E3o_dos_dados_para_encontrar_os_dados_e_processar'>Disposi&#231;&#227;o dos dados para encontrar os dados e processar</a>
+  <li class='indexItem indexItem1'><a href='#Estat%EDsticas'>Estat&#237;sticas</a>
+  <li class='indexItem indexItem1'><a href='#M%E9tricas'>M&#233;tricas</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Escolhendo_os_n%FAmeros_certos'>Escolhendo os n&#250;meros certos</a>
+    <li class='indexItem indexItem2'><a href='#Padronizando_as_refer%EAncias.'>Padronizando as refer&#234;ncias.</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Algoritmos'>Algoritmos</a>
+  <li class='indexItem indexItem1'><a href='#Conclus%E3o'>Conclus&#227;o</a>
+  <li class='indexItem indexItem1'><a href='#Refer%EAncias'>Refer&#234;ncias</a>
+  <li class='indexItem indexItem1'><a href='#Agradecimentos'>Agradecimentos</a>
+  <li class='indexItem indexItem1'><a href='#Autor'>Autor</a>
+  <li class='indexItem indexItem1'><a href='#POD_ERRORS'>POD ERRORS</a>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Infografia_em_Dados_Governamentais"
+>Infografia em Dados Governamentais</a></h1>
+
+<p>Em Ci&#234;ncias da Computa&#231;&#227;o o termo &#34;<i>design</i> de informa&#231;&#227;o&#34; &#233; associado algumas vezes como sin&#244;nimo para arquitetura de informa&#231;&#227;o,
+ou <i>design</i> de sistemas de informa&#231;&#227;o,
+banco de dados ou estrutura de informa&#231;&#227;o,
+mas na &#225;rea de <i>design</i> gr&#225;fico,
+que lida detalhadamente com o projeto da informa&#231;&#227;o visual,
+o objetivo principal &#233; que o leitor adquira informa&#231;&#227;o em sistemas de comunica&#231;&#227;o visuais.</p>
+
+<p>Este artigo na realidade &#233; uma discuss&#227;o que irei fazer em &#34;voz alta&#34;,
+sobre os primeiros passos dos meus estudos relacionados a infografia,
+e este &#233; um assunto muito importante quando se fala de dados governamentais pois,
+&#224;s vezes,
+apenas mostrar um montante de dados n&#227;o faz com que os leitores entendam bem o que eles representam.</p>
+
+<p>Basicamente a representa&#231;&#227;o visual de informa&#231;&#245;es s&#227;o definidos como infografia,
+ou como conhecemos atrav&#233;s de alguns portais brasileiros de not&#237;cia como infogr&#225;ficos que s&#227;o usados para descrever o que aconteceu em uma determinada situa&#231;&#227;o.</p>
+
+<p>Oferecer ao usu&#225;rio uma experi&#234;ncia nova pode parecer muito &#243;bvio,
+mas para que tenhamos um projeto para desenvolver experi&#234;ncias relacionadas a infogr&#225;fica,
+precisamos de profissionais em v&#225;rias &#225;reas,
+e n&#227;o apenas do setor de tecnologia.
+O nosso papel como desenvolvedores &#233; conseguir prover informa&#231;&#245;es que eles sejam processadas de uma forma trivial,
+e por isto vamos discutir algumas estrat&#233;gias neste documento.</p>
+
+<p>Uma breve hist&#243;ria sobre o assunto,
+podemos come&#231;ar pela simiologia da gr&#225;fica que &#233; uma teoria do <i>design</i> de informa&#231;&#227;o apresentada por Jacques Bertin,
+que considera <i>&#34;um quadro para a an&#225;lise e representa&#231;&#227;o de dados em papel.
+Fundada na experi&#234;ncia pr&#225;tica de Bertin como ge&#243;grafo e cart&#243;grafo,
+ao inv&#233;s de pesquisa emp&#237;rica&#34;</i>.</p>
+
+<p>Outro grande nome deste ramo,
+&#233; Edward Tufle que disse que este trabalho de Jacques <i>&#34;prev&#234; um estudo aprofundado de diferentes t&#233;cnicas gr&#225;ficas (forma,
+orienta&#231;&#227;o,
+cor,
+textura,
+volume,
+tamanho) para localizar e sinalizar varia&#231;&#245;es quantitativas,
+geralmente sobre o espa&#231;o geogr&#225;fico ou ao longo do tempo.&#34;</i>.</p>
+
+<p>Um fato relevante da hist&#243;ria,
+&#233; o caso do Leonardo da Vinci que tentou entender os fen&#244;menos descrevendo-os em detalhes extremos e n&#227;o enfatizando experi&#234;ncias ou explica&#231;&#245;es te&#243;ricas,
+tanto que ele planejou uma enciclop&#233;dia baseada em desenhos detalhados em tudo,
+pois n&#227;o dominava o latim e o matem&#225;tico e foi ignorado pelos estudiosos contempor&#226;neos por conta disto.</p>
+
+<p>Realizou aut&#243;psias e elaborou desenhos anat&#244;micos extremamente detalhados,
+tendo planejado um trabalho,
+inclusive sobre o corpo humano,
+de anotomia comparativa e,
+entre 1510 e 1513,
+estudou fetos,
+de que resultaram obras que podem ser consideradas como infografias de grande complexidade.</p>
+
+<p>Mas o assunto principal aqui &#233; abordar a quest&#227;o da infografia para os desenvolvedores: como n&#243;s podemos oferecer dados para que bons designers ou belas ferramentas j&#225; existentes possam processar os dados ?
+Ent&#227;o iremos abordar inicialmente alguns conceitos t&#233;cnicos relacionado a matem&#225;tica e computa&#231;&#227;o e depois discutir sobre como utilizar estes dados em um infogr&#225;fico.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Fluxo_dos_dados"
+>Fluxo dos dados</a></h1>
+
+<p>Para entendermos melhor como construir um infogr&#225;fico,
+&#233; interessante discutirmos alguns pontos sobre como os dados e as informa&#231;&#245;es presentes nos infogr&#225;ficos s&#227;o obtidos e compilados.</p>
+
+<p>As estrat&#233;gias para que isto funcione no seu sistema,
+basicamente devem seguir como os dados s&#227;o concebidos na abstra&#231;&#227;o do infogr&#225;fico,
+ou seja a ideia &#233; a reflex&#227;o desde da coleta dos dados at&#233; a produ&#231;&#227;o visual.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Coletar"
+>Coletar</a></h2>
+
+<p>A coleta de dados pode ser efetuada de muitas maneiras,
+mas a quest&#227;o &#233; que para que estes dados estejam de uma maneira que computadores consigam interpretar de forma mais &#225;gil.</p>
+
+<p>Voc&#234; pode ter todos estes dados impressos em livros,
+o teu trabalho ser&#225; de colher eles de forma manual.
+Com tecnologia,
+se estes dados estiverem em formatos abertos para que computadores possam ler de forma sem&#226;ntica,
+o trabalho ser&#225; muito mais trivial.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Armazenar"
+>Armazenar</a></h2>
+
+<p>O segundo passo &#233; armazenar estes dados de uma maneira,
+com qual voc&#234; consiga trabalhar com eles posteriormente,
+por&#233;m existem processos de coleta de dados com tecnologia que j&#225; incluem este passo.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Processar"
+>Processar</a></h2>
+
+<p>Neste ponto &#233; que efetuamos o resumo dos dados,
+ou seja,
+nos processamos eles e podemos cruzar com outras informa&#231;&#245;es,
+gerar estatisticas,
+criar m&#233;tricas e etc.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Visualizar"
+>Visualizar</a></h2>
+
+<p>Com os dados preparados,
+agora est&#225; no momento de definir como estes dados ser&#227;o visualizados,
+escolher a melhor maneira visual que o p&#250;blico alvo ir&#225; conseguir interpretar os dados processados com o m&#237;nimo de esfor&#231;o em rela&#231;&#227;o a conhecimento.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Cole&#231;&#227;o_de_dados_e_a_experi&#234;ncia_do_usu&#225;rio"
+>Cole&#231;&#227;o de dados e a experi&#234;ncia do usu&#225;rio</a></h1>
+
+<p>A cole&#231;&#227;o de dados na infogr&#225;fia esta orientada n&#227;o apenas aos dados que est&#227;o dispon&#237;veis,
+mas tamb&#233;m ao p&#250;blico alvo em rela&#231;&#227;o a experi&#234;ncia que ser&#225; criada para que estes dados sejam demonstrados.</p>
+
+<p>Nosso objetivo &#233; esclarecer que o fluxo para entregar a informa&#231;&#227;o altera em rela&#231;&#227;o aos dados,
+normalmente a produ&#231;&#227;o do conte&#250;do &#233; baseada nos dados e na tecnologia ao redor para cria&#231;&#227;o da visualiza&#231;&#227;o,
+e isto gera uma motiva&#231;&#227;o por parte dos usu&#225;rios.</p>
+
+<p>O trabalho com infogr&#225;ficos &#233; a cria&#231;&#227;o do visual e os dados,
+o produto tamb&#233;m dependa das motiva&#231;&#245;es do usu&#225;rio,
+isto significa que em um formato comum o processo &#233;:</p>
+
+<p>Para elabora&#231;&#227;o de infogr&#225;ficos,
+o fluxo normalmente &#233; :</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="ICONOLOGIA_e_ICONOGRAFIA"
+>ICONOLOGIA e ICONOGRAFIA</a></h2>
+
+<p>Erwin Panafsky escreveu em seu livro &#34;Estudos da Iconologia&#34; que a iconografia &#233; o estudo do tema e a iconologia &#233; o estudo do significado do objetivo analisado.
+Ele exemplifica o ato de um homem levantar o chap&#233;u.
+Num primeiro momento (ICONOGRAFIA) &#233; um homem que retira da cabe&#231;a um chap&#233;u,
+num segundo momento,
+(ICONOLOGIA) menciona que ao levantar o chap&#233;u educadamente,
+esse gesto &#233; &#34;resqu&#237;cio do cavalherismo medieval: os homens armados costumavam retirar os elmos para deixarem claras suas inten&#231;&#245;es pac&#237;ficas&#34;.
+Enfatizando a import&#226;ncia dos costumes cotidianos para se compreender as representa&#231;&#245;es simb&#243;licas.</p>
+
+<p>A importancia destas defini&#231;&#245;es esta diretamente ligada ao p&#250;blico que voc&#234; deseja alcan&#231;ar,
+e a experi&#234;ncia que voc&#234; quer oferecer.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Crowdsourcing"
+>Crowdsourcing</a></h2>
+
+<p>Este &#233; uma forma de produ&#231;&#227;o e dissemina&#231;&#227;o de informa&#231;&#227;o de uma maneira coletiva,
+no qual com os infogr&#225;ficos podemos incentivar este tipo de modelo pelo simples motivo que iremos compilar informa&#231;&#245;es para usu&#225;rios especificos.</p>
+
+<p>Isto significa em alguns casos,
+interpretar dados complexos e tornar-los simples,
+para que mais pessoas consigam aproveitar das informa&#231;&#245;es e agregar com conhecimento especifico.</p>
+
+<p>Hoje este tipo de movimento esta cada vez mais sendo adotado por comunidades da sociedade interessadas em conhecimento e dados,
+por isto que a utiliza&#231;&#227;o de infogr&#225;ficos pode ser um &#243;timo incentivador.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Visualizac&#245;es_dos_dados"
+>Visualizac&#245;es dos dados</a></h1>
+
+<p>Iremos tratar aqui da maneira de visualizar os dados,
+e discutir e refletir sobre alguns tipos de dados que normalmente encontramos na necessidade de simplificar.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Treemapping"
+>Treemapping</a></h2>
+
+<p>&#201; um m&#233;todo para mostrar informa&#231;&#245;es baseado em hierarquia que utiliza uma ordena&#231;&#227;o de &#225;rvore,
+e &#233; utilizado quadrados para demonstrar grupos de dados e que possuem fun&#231;&#245;es espec&#237;ficas.</p>
+
+<p>A hierarquia lhe d&#225; a oportunidade de criar ramifica&#231;&#245;es de dados,
+e assim criar n&#243;s baseado da maneira que voc&#234; desejar.
+Voc&#234; pode parametrizar a maneira que voc&#234; queira visualizar os dados em rela&#231;&#227;o as cores e dimens&#227;o,
+ou seja,
+um grupo de dados que possuem mais informa&#231;&#245;es pode ter um tamanho maior,
+assim como uma cor diferente.</p>
+
+<p>Alguns algoritmos conhecidos que s&#227;o utilizados para auxiliar na organiza&#231;&#227;o destes dados s&#227;o &#34;Arvores bin&#225;rias&#34;,
+&#34;Slice And Dice&#34; e &#34;Squarified&#34;.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Diagramas_de_Voronoi"
+>Diagramas de Voronoi</a></h2>
+
+<p>O matem&#225;tico Georgy Voronoy criou este tipo de diagrama para demonstrar o espa&#231;o m&#233;trico em regi&#245;es da imagem de acordo com a dist&#226;ncia a determinados pontos,
+e o interessante que ele lhe d&#225; um caminho seguro,
+gera uma rota equidistante dos objetos e uma &#243;tima visualiza&#231;&#227;o em casos que s&#227;o utilizados mapas,
+h&#225; um exemplo &#243;timo na <a href="http://www.wikipedia.org" class="podlinkurl"
+>Wikipedia</a> que diz:</p>
+
+<blockquote>
+<p><i>Imagine o seguinte problema: voc&#234; recebe o mapa de uma metr&#243;pole.
+Neste mapa est&#227;o marcados os locais onde existem os v&#225;rios postos de sa&#250;de espalhados pela metr&#243;pole.
+Sabe-se que h&#225; edif&#237;cios por toda a parte da metr&#243;pole.
+Deve-se determinar qual a &#225;rea de cobertura de cada um dos postos de sa&#250;de,
+ou qual o conjunto de edif&#237;cios que ser&#225; atendido por cada posto de sa&#250;de da metr&#243;pole.
+Naturalmente,
+bastaria descobrir os conjuntos de edif&#237;cios que est&#227;o mais pr&#243;ximos de cada posto de sa&#250;de que obter&#237;amos uma solu&#231;&#227;o para o problema.</i></p>
+</blockquote>
+
+<p>Essa solu&#231;&#227;o corresponde ao Diagrama de Voronoi.</p>
+
+<p>Existem alguns algoritmos que tornam esta tarefa mais simples,
+tais como a &#34;Bowyer&#8211;Watson&#34; e &#34;Fortune&#39;s&#34;.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Triangula&#231;&#245;es_de_Delaunay"
+>Triangula&#231;&#245;es de Delaunay</a></h2>
+
+<p>Um algoritmo muito interessante para criar visualiza&#231;&#245;es em mapas,
+baseado em triangula&#231;&#227;o,
+que organizando a dist&#226;ncia dos pontos em tri&#226;ngulos,
+voc&#234; tamb&#233;m obt&#234;m um c&#237;rculo-circundante vazio,
+para que voc&#234; consiga retirar propriedades de terrenos por exemplo.</p>
+
+<p>Este algoritmo normalmente &#233; utilizado para determinar a densidade e a intensidade dos pontos analisados,
+e pode ser utilizado para demonstrar ocorr&#234;ncias de determinas a&#231;&#245;es onde n&#227;o h&#225; uma informa&#231;&#227;o precisa.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Mapa_de_sinergia"
+>Mapa de sinergia</a></h2>
+
+<p>O interessante deste mapa &#233; a possibilidade de dividir as perspectivas em quatro partes baseado em prioridades e o cronograma,
+e ent&#227;o interligar eles visualmente para melhora compreens&#227;o do momento.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Geogr&#225;ficos"
+>Geogr&#225;ficos</a></h2>
+
+<p>Dados geograficos normalmente est&#227;o associados a onde os dados pertencem,
+e voc&#234; possui informa&#231;&#245;es tais como latitude e longitude.</p>
+
+<p>Existem bancos de dados especificos para trabalhar com a gera&#231;&#227;o de dados baseados em posicionamento e podem auxiliar na gera&#231;&#227;o de gr&#225;ficos na hora,
+um deles &#233; a extens&#227;o postgis para o postgresql.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="DNA"
+>DNA</a></h2>
+
+<p>Gr&#225;ficos baseado na estrutura chamada cromossoma que &#233; uma longa sequencia de DNA que cont&#233;m v&#225;rios genes e outras sequ&#234;ncias com fun&#231;&#245;es espec&#237;ficas.
+O interessante &#233; que podemos utilizar esta estrutura para demonstrar dados organizados por metadados,
+onde conseguimos representar a evolu&#231;&#227;o das informa&#231;&#245;es.</p>
+
+<p>Voc&#234; pode criar cen&#225;rios para descrever a evolu&#231;&#227;o com &#34;c&#226;ncer&#34;,
+baseada em replica&#231;&#227;o e v&#225;rias outras maneiras,
+e isto pode ser facilmente compreens&#237;vel em um gr&#225;fico para descrever o processo destas informa&#231;&#245;es.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Exemplos_dos_assuntos"
+>Exemplos dos assuntos</a></h1>
+
+<p>Os assuntos dos dados,
+podem ser v&#225;rios,
+e &#233; imposs&#237;vel de descrever todos eles,
+mas irei comentar alguns casos relativos a dados de interesse da sociedade em rela&#231;&#227;o a organiza&#231;&#227;o de si pr&#243;pria.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Dados_urbanos"
+>Dados urbanos</a></h2>
+
+<p>S&#227;o m&#233;tricas ou informa&#231;&#245;es processadas relacionadas &#224;s cidades,
+tais como &#237;ndices de crimalidade,
+tr&#226;nsito e desastres naturais.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Pol&#237;ticos"
+>Pol&#237;ticos</a></h2>
+
+<p>S&#227;o informa&#231;&#245;es para serem analisadas em rela&#231;&#227;o ao desempenho pol&#237;tico que est&#225; sendo avaliado,
+geralmente acompanhadas de dados para compara&#231;&#227;o hist&#243;rica</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Disposi&#231;&#227;o_dos_dados_para_encontrar_os_dados_e_processar"
+>Disposi&#231;&#227;o dos dados para encontrar os dados e processar</a></h1>
+
+<p>Ter estes dados dispon&#237;veis via uma API,
+uma linguagem de representa&#231;&#227;o de dados como RDF,
+ou ter eles armazenardos como j&#225; foi dito em fluxo dos dados,
+&#233; interessante para gerar infogr&#225;ficos no exato momento.</p>
+
+<p>O conhecimento sobre estas disposi&#231;&#245;es pode facilitar o trabalho de quem for criar as visualiza&#231;&#245;es de dados.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Estat&#237;sticas"
+>Estat&#237;sticas</a></h1>
+
+<p>Estat&#237;sticas utilizam-se das teorias de probabilidade e neste caso incialmente &#233; muito interessante para ser usado na detec&#231;&#227;o a frequencia da ocorr&#234;ncia de um determinado evento,
+para que facilite os estudos observacionais e etc.</p>
+
+<p>Este processo geralmente esta associado &#224; coleta,
+an&#225;lise e interpreta&#231;&#227;o dos dados.</p>
+
+<p>Com a computa&#231;&#227;o,
+a pr&#225;tica de modelos estast&#237;sticos n&#227;o-lineares est&#225; se tornando mais frequente,
+pois com o aumento da capacidade de processamento estamos obtendo habilidades para criar c&#225;lculos baseados em reamostragem,
+como testes de permuta&#231;&#227;o e bootstrap.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="M&#233;tricas"
+>M&#233;tricas</a></h1>
+
+<p>M&#233;trica &#233; um sistema de mensura&#231;&#227;o que quantifica uma tend&#234;ncia,
+uma din&#226;mica ou uma caracter&#237;stica.
+N&#243;s j&#225; estamos acostumados a visualizar m&#233;tricas em v&#225;rios estudos,
+onde o uso dela &#233; feito para explicar fen&#244;menos,
+diagnosticar causas,
+compartilhar descobertas e projetar resultados de eventos futuros.</p>
+
+<p>Podemos dizer que no mundo dos neg&#243;cios e do governo,
+as m&#233;tricas estimulam o rigor e a objetividade,
+elas tornam poss&#237;vel comparar observa&#231;&#245;es entre regi&#245;es e per&#237;odos de tempo,
+facilitando a compreens&#227;o e a colabora&#231;&#227;o.</p>
+
+<p>Normalmente com dados governamentais iremos discutir sobre m&#233;tricas relacionadas a ao desempenho.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Escolhendo_os_n&#250;meros_certos"
+>Escolhendo os n&#250;meros certos</a></h2>
+
+<p>O imperativo num&#233;rico representa um desafio,
+pois h&#225; uma dificuldade tremenda em selecionar quais f&#243;rmulas utilizar para representar um montante de dados,
+principalmente na administra&#231;&#227;o p&#250;blica ou na economia,
+pois muitos dados podem estar incompletos e temos que trabalhar com informa&#231;&#245;es aproximadas.</p>
+
+<p>Por isto em muitos casos &#233; interessante utilizar uma metodologia de que voc&#234; ir&#225; oferecer inicialmente v&#225;rias m&#233;tricas,
+para que voc&#234; possa &#39;tringular&#39; elas e criar estrat&#233;gias e at&#233; m&#233;tricas novas.</p>
+
+<p>O interessante da triangula&#231;&#227;o de m&#233;tricas &#233; que podemos usar umas para verificar o resultado das outras tamb&#233;m,
+e com o tempo criar proje&#231;&#245;es mais inteligentes baseado em dados - m&#233;tricas - aproximadas.</p>
+
+<p>Por isto escolher os n&#250;meros certos pode ser possivel apenas com um determinado tempo,
+para voc&#234; consiga provar os fen&#244;menos pr&#225;ticos com os n&#250;meros escolhidos.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Padronizando_as_refer&#234;ncias."
+>Padronizando as refer&#234;ncias.</a></h2>
+
+<p>Efetuar uma medi&#231;&#227;o &#233; algo muito complexo,
+por uma quest&#227;o de chegar a um ponto comum em v&#225;rios casos,
+como reduzir informa&#231;&#245;es de forma satisfat&#243;rias e tirar conclus&#245;es de assuntos &#224;s vezes t&#227;o complexos?</p>
+
+<p>Para isto &#233; interessante que exista uma padroniza&#231;&#227;o relacionada ao tipo da m&#233;trica que queremos utilizar para que haja uma f&#225;cil compreens&#227;o e tamb&#233;m para que futuramente uma m&#233;trica nova seja criada de forma sensata,
+tais elas como:</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Algoritmos"
+>Algoritmos</a></h1>
+
+<p>N&#227;o h&#225; como citar algoritmos em especificos,
+pois existe a necessidade inicialmente de coletar os dados que voc&#234; tem dispon&#237;vel,
+verificar se estes dados representam algum conceito ou algo da forma mais absoluta poss&#237;vel - ou aproximada -.
+O segundo passo &#233; organizar estes dados para que eles sejam compilados e processados em formas reduzidas.</p>
+
+<p>Dependendo da quantidade de dados envolvidos,
+h&#225; a necessidade de &#34;transformar&#34; estes dados em outro formato para que a manipula&#231;&#227;o seja mais r&#225;pida.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Conclus&#227;o"
+>Conclus&#227;o</a></h1>
+
+<p>Este artigo tem como objetivo oferecer um levantamento em rela&#231;&#227;o &#224;s id&#233;ias relacionadas a infografia,
+e quais os passos para conseguir enviar dados de forma din&#226;mica ou n&#227;o relacionado a uma quantidade de dados.</p>
+
+<p>O trabalho n&#227;o &#233; s&#243; em ter os dados,
+mas organizar eles de forma que fique simples o trabalho do design de informa&#231;&#227;o,
+al&#233;m de que como foi abordado existe um interesse grande para que os dados sejam compartilhados,
+reutilizados e principalmente para que exista um ecosistema para forma&#231;&#227;o de novas ideias baseado em um processo colaborativo.</p>
+
+<pre>        Se voc&#234; tem uma ma&#231;&#227; e eu tenho uma ma&#231;&#227; 
+        e n&#243;s trocamos essas ma&#231;&#227;s, 
+        ent&#227;o eu e voc&#234; ainda teremos uma ma&#231;&#227; cada. 
+
+        Mas se voc&#234; tiver uma id&#233;ia e eu tiver uma id&#233;ia 
+        e n&#243;s trocamos id&#233;ias, 
+        ent&#227;o cada um de n&#243;s ter&#225; duas id&#233;ias.&#34;
+        
+        -- George Bernard Shaw (1856-1950)</pre>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Refer&#234;ncias"
+>Refer&#234;ncias</a></h1>
+
+<p>Synergy map, how to map out your current strategy - <a href="http://http://www.agileweboperations.com/synergy-map-how-to-map-out-your-current-strategy-part-1-of-2" class="podlinkurl"
+>http://http://www.agileweboperations.com/synergy-map-how-to-map-out-your-current-strategy-part-1-of-2</a>.</p>
+
+<p>S&#233;miologie Graphique. Les diagrammes, les r&#233;seaux, les cartes. With Marc Barbut [et al.]. Paris : Gauthier-Villars. (Translation 1983. Semiology of Graphics by William J. Berg.)</p>
+
+<p>The Visual Display of Quantitative Information (pictures of numbers). Edward Rolf Tufte. ISBN 0-9613921-0-X.</p>
+
+<p>Estudos de Iconologia, por Erwin Panofsky.</p>
+
+<p>Beautiful Data, The Stories Behind Elegant Data Solutions, By Toby Segaran, Jeff Hammerbacher.</p>
+
+<p>M&#233;tricas de marketing, por Paul W. Farris &#38; Neil T. Bendle &#38; Phillip E. PFeifer &#38; et al.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Agradecimentos"
+>Agradecimentos</a></h1>
+
+<p>Pela revis&#227;o do artigo, conversas e id&#233;ias:</p>
+
+<p>Alexei &#34;russo&#34; Znamensky</p>
+
+<p>Breno &#34;garu&#34; Oliveira.</p>
+
+<p>Todos os gr&#225;ficos, foram retiradas do Wikipedia.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Autor"
+>Autor</a></h1>
+
+<p>Thiago Rondon, &#60;thiago.rondon no e-mail gratuito do google&#62;</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="POD_ERRORS"
+>POD ERRORS</a></h1>
+
+<p>Hey! <b>The above document had some coding errors, which are explained below:</b></p>
+
+<dl>
+<dt><a name="Around_line_243:"
+>Around line 243:</a></dt>
+
+<dd>
+<p>=back doesn&#39;t take any parameters, but you said =back % : Porcentagem ; </p>
+
+<p>=back without =over</p>
+
+<dt><a name="Around_line_245:"
+>Around line 245:</a></dt>
+
+<dd>
+<p>=back doesn&#39;t take any parameters, but you said =back N : Quantidade, Medidas unit&#225;rias ;</p>
+
+<p>=back without =over</p>
+
+<dt><a name="Around_line_247:"
+>Around line 247:</a></dt>
+
+<dd>
+<p>=back doesn&#39;t take any parameters, but you said =back C : Classifica&#231;&#227;o ; </p>
+
+<p>=back without =over</p>
+
+<dt><a name="Around_line_249:"
+>Around line 249:</a></dt>
+
+<dd>
+<p>=back doesn&#39;t take any parameters, but you said =back I : &#205;ndice .</p>
+
+<p>=back without =over</p>
+
+<dt><a name="Around_line_251:"
+>Around line 251:</a></dt>
+
+<dd>
+<p>=back without =over</p>
+</dd>
+</dl>
+
+</body></html>

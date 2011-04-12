@@ -1,0 +1,442 @@
+<html><head><title>Lendo XLS e XLSX</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#Lendo_XLS_e_XLSX'>Lendo XLS e XLSX</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Spreadsheet%3A%3AParseExcel'>Spreadsheet::ParseExcel</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Lendo_arquivos_com_cabe%E7alhos_vari%E1veis'>Lendo arquivos com cabe&#231;alhos vari&#225;veis</a>
+      <li class='indexItem indexItem3'><a href='#Encoding'>Encoding</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#XLSX'>XLSX</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Sobre_o_autor'>Sobre o autor</a>
+  <li class='indexItem indexItem1'><a href='#LICENSE_AND_COPYRIGHT'>LICENSE AND COPYRIGHT</a>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Lendo_XLS_e_XLSX"
+>Lendo XLS e XLSX</a></h1>
+
+<p>Neste artigo,
+irei apresentar como fa&#231;o para extrair os dados de XLS e XLSX,
+um dos formatos mais adorados do seu cliente!</p>
+
+<p>Geralmente,
+os clientes t&#234;m grande parte das suas informa&#231;&#245;es em planilhas de Excel,
+e precisam que voc&#234; as leia.</p>
+
+<p>At&#233; 2000,
+a unica forma de ler XLS com perl,
+era usando o <a href="http://search.cpan.org/perldoc?Win%3A%3AOLE" class="podlinkpod"
+>Win::OLE</a>,
+e no Linux...
+n&#227;o era poss&#237;vel!
+Mas em 2001,
+o Takanori Kawai e o John McNamara criaram o <a href="http://search.cpan.org/perldoc?Spreadsheet%3A%3AWriteExcel" class="podlinkpod"
+>Spreadsheet::WriteExcel</a> e o <a href="http://search.cpan.org/perldoc?Spreadsheet%3A%3AParseExcel" class="podlinkpod"
+>Spreadsheet::ParseExcel</a>,
+que al&#233;m de oferecer mais opera&#231;&#245;es para manipula&#231;&#227;o dos dados,
+era mais r&#225;pido e funciona no Linux!</p>
+
+<p>Alem disso tudo,
+quem usava Windows tamb&#233;m saiu ganhando,
+pois n&#227;o &#233; mais necess&#225;rio ter o Excel instalado/com a licen&#231;a no computador.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Spreadsheet::ParseExcel"
+>Spreadsheet::ParseExcel</a></h2>
+
+<p><a href="http://search.cpan.org/perldoc?Spreadsheet%3A%3AParseExcel" class="podlinkpod"
+>Spreadsheet::ParseExcel</a> &#233; um m&#243;dulo que permite leitura de XLS.
+Na sua forma mais b&#225;sica,
+&#233; poss&#237;vel ler os arquivos .xls e acess&#225;-los dizendo qual a planilha,
+linha e coluna:</p>
+
+<p><b>workbook</b>: &#233; o documento inteiro,
+nele existem varias worksheets.</p>
+
+<p><b>worksheet</b>: qual a planilha de verdade voc&#234; vai utilizar,
+isto equivale a cada folha (ou aba) que &#233; exibida no Excel.</p>
+
+<p>Cada <b>worksheet</b> disponibiliza os m&#233;todos <i>row_range()</i> e <i>col_range()</i>,
+ambos retornam arrays,
+com o m&#237;nimo e m&#225;ximo de seus respectivos nomes (linhas/colunas).</p>
+
+<p>Outro m&#233;todo disponibilizado pelo worksheet &#233; o <code>get_cell($row,
+$col)</code>,
+ele retorna a c&#233;lula daquela posi&#231;&#227;o/planilha.
+O retorno do <code>get_cell</code> &#233; um objeto <a href="http://search.cpan.org/perldoc?Spreadsheet%3A%3AParseExcel%3A%3ACell" class="podlinkpod"
+>Spreadsheet::ParseExcel::Cell</a> e voc&#234; pode,
+entre outros,
+os m&#233;todos <i>value()</i> e <i>formatted()</i>.</p>
+
+<p>A principal diferen&#231;a &#233; que o <i>unformatted()</i> retorna os valores da forma que eles foram salvos,
+e o <i>value()</i> &#233; o valor que o Excel exibe.</p>
+
+<p>Quem usa bastante Excel sabe que as datas s&#227;o como os n&#250;meros,
+e que apenas a exibi&#231;&#227;o da c&#233;lula que muda.</p>
+
+<p>Voc&#234; pode ver mais detalhes em <a href="http://search.cpan.org/perldoc?Spreadsheet%3A%3AParseExcel%3A%3ACell" class="podlinkpod"
+>Spreadsheet::ParseExcel::Cell</a>.</p>
+
+<p>Veja um exemplo de c&#243;digo abaixo:</p>
+
+<pre>    #!/usr/bin/perl -w
+
+    use strict;
+    use Spreadsheet::ParseExcel;
+
+    my $parser   = Spreadsheet::ParseExcel-&#62;new();
+    my $workbook = $parser-&#62;parse(&#39;nome_do_arquivo.xls&#39;);
+
+    if ( !defined $workbook ) {
+        die $parser-&#62;error(), &#34;.\n&#34;;
+    }
+
+    for my $worksheet ( $workbook-&#62;worksheets() ) {
+
+        my ( $row_min, $row_max ) = $worksheet-&#62;row_range();
+        my ( $col_min, $col_max ) = $worksheet-&#62;col_range();
+
+        for my $row ( $row_min .. $row_max ) {
+            for my $col ( $col_min .. $col_max ) {
+
+                my $cell = $worksheet-&#62;get_cell( $row, $col );
+                next unless $cell;
+
+                print &#34;Row, Col    = ($row, $col)\n&#34;;
+                print &#34;Value       = &#34;, $cell-&#62;value(),       &#34;\n&#34;;
+                print &#34;Unformatted = &#34;, $cell-&#62;unformatted(), &#34;\n&#34;;
+                print &#34;\n&#34;;
+            }
+        }
+    }</pre>
+
+<p>Um grande problema em XLS &#233; a quantidade de mem&#243;ria utilizada. Por isso, se voc&#234; precisa apenas extrair as informa&#231;&#245;es b&#225;sicas do XLS (como o valor da c&#233;lula) voc&#234; n&#227;o precisa montar tudo na mem&#243;ria.</p>
+
+<p>No manual, diz que um arquivo de 10mb &#233; um arquivo grande para uma m&#225;quina com 256MB de RAM, portanto, um de 60mb &#233; um arquivo <b>bem</b> grande para uma m&#225;quina com 1GB de RAM.</p>
+
+<p>A solu&#231;&#227;o usada pelo modulo &#233; chamar uma fun&#231;&#227;o a cada c&#233;lula lida, passando como par&#226;metro, a workbook, o &#237;ndex da planilha, a linha, a coluna e o objeto da c&#233;lula.</p>
+
+<p>Exemplo:</p>
+
+<pre>        #!/usr/bin/perl -w
+
+    use strict;
+    use Spreadsheet::ParseExcel;
+
+    my $parser = Spreadsheet::ParseExcel-&#62;new(
+        CellHandler =&#62; \&#38;cell_handler,
+        NotSetCell  =&#62; 1
+    );
+
+    my $workbook = $parser-&#62;parse(&#39;file.xls&#39;);
+
+    sub cell_handler {
+
+        my $workbook    = $_[0];
+        my $sheet_index = $_[1];
+        my $row         = $_[2];
+        my $col         = $_[3];
+        my $cell        = $_[4];
+
+        # pula alguns registros
+        return if $sheet_index == 3;
+        return if $row == 10;
+
+        # imprime o valores formatados
+        print $cell-&#62;value(), &#34;\n&#34;;
+
+    }</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Lendo_arquivos_com_cabe&#231;alhos_vari&#225;veis"
+>Lendo arquivos com cabe&#231;alhos vari&#225;veis</a></h3>
+
+<p>Uma das piores coisas do mundo &#233; quando o cliente envia a planilha numa ordem diferente, ou at&#233; mesmo completamente diferente, onde &#233; necess&#225;rio recriar o parsing.</p>
+
+<p>Se voc&#234; n&#227;o conseguir alinhar isso com o cliente, ainda h&#225; uma solu&#231;&#227;o que costumo usar: procurar pelos cabe&#231;alhos.</p>
+
+<p>Para isto, vamos criar uma planilha conforme abaixo:</p>
+
+<pre>        NOME   | IDADE | TWITTER
+        Renato | 19    | @renato_cron
+        Eden   |       | @edenc
+        Glupo  | 33    | </pre>
+
+<p>Por&#233;m, crie voc&#234; em qualquer lugar de qualquer planilha, voc&#234; que escolhe, o twitter pode estar antes da idade, etc..</p>
+
+<pre>        #!/usr/bin/perl -w
+
+        use strict;
+        use Spreadsheet::ParseExcel;
+
+        my $parser   = Spreadsheet::ParseExcel-&#62;new();
+        my $workbook = $parser-&#62;parse(&#39;teste.xls&#39;);
+
+        if ( !defined $workbook ) {
+                die $parser-&#62;error(), &#34;.\n&#34;;
+        }
+
+        my %expected_header = (
+                twitter =&#62; qr /\btwitter\b/io,
+                idade   =&#62; qr /\bidade\b/io,
+                nome    =&#62; qr /\bnome\b/io
+        );
+
+        # apenas para exibir
+        my $reg_num        = 0;
+
+        for my $worksheet ( $workbook-&#62;worksheets() ) {
+
+                my ( $row_min, $row_max ) = $worksheet-&#62;row_range();
+                my ( $col_min, $col_max ) = $worksheet-&#62;col_range();
+
+                my $header_map     = {};
+                my $header_found   = 0;
+
+                for my $row ( $row_min .. $row_max ) {
+
+                        if (!$header_found){
+                                for my $col ( $col_min .. $col_max ) {
+                                        my $cell = $worksheet-&#62;get_cell( $row, $col );
+                                        next unless $cell;
+                                        
+                                        foreach my $header_name (keys %expected_header){
+                                                if ($cell-&#62;value() =~ $expected_header{$header_name}){
+                                                        $header_found++;
+                                                        # mais informa&#231;&#245;es poderia ser salvas, como por exemplo
+                                                        # qual &#233; o valor que est&#225; escrito e bateu com a regexpr
+
+                                                        $header_map-&#62;{$header_name} = $col;
+                                                }
+                                        }
+                                }
+                        }else{
+
+                                # aqui voc&#234; pode verificar se foram encontrados todos os campos que voc&#234; precisa
+                                # neste caso, achar apenas 1 cabe&#231;alho j&#225; &#233; o suficiente
+
+                                my $registro = {};
+                                
+                                foreach my $header_name (keys %$header_map){
+                                        my $col = $header_map-&#62;{$header_name};
+
+                                        my $cell = $worksheet-&#62;get_cell( $row, $col );
+                                        next unless $cell;
+
+                                        my $value = $cell-&#62;value();
+                                        
+                                        # aqui &#233; uma regra que voc&#234; escolhe, pois as vezes o valor da c&#233;lula pode ser nulo
+                                        next unless $value;
+
+                                        $registro-&#62;{$header_name} = $value;
+                                }
+
+                                # se existe alguma chave, algum conteudo foi encontrado
+                                if (keys %$registro){
+                                        $reg_num++;
+                                        print &#34;row $row, registro $reg_num\n&#34;;
+                                        print &#34;$_ = $registro-&#62;{$_}\n&#34; for keys %$registro;
+                                        print &#34;------------------\n&#34;;
+                                }
+                        }
+
+                }
+        }</pre>
+
+<p>o resultado ser&#225; alguma coisa como:</p>
+
+<pre>        row 5, registro 1
+        nome = Renato 
+        twitter =  @renato_cron
+        idade =  19    
+        ------------------
+        row 6, registro 2
+        nome = Eden   
+        twitter =  @edenc
+        idade =        
+        ------------------
+        row 7, registro 3
+        nome = Glupo  
+        twitter =  
+        idade =  33    
+        ------------------</pre>
+
+<p>Voc&#234; deve alterar o c&#243;digo para ajudar a sua necessidade, pois cada caso &#233; um caso.</p>
+
+<p>Reparem que foi adicionado um <code>next unless $value;</code> pois geralmente, v&#234;m muita linha completamente em branco.</p>
+
+<p>Estas linhas s&#227;o criadas (quase) que sozinhas pelo Excel.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Encoding"
+>Encoding</a></h3>
+
+<p>Vamos brincar um pouco com <i>encoding</i>. Abra a planilha e troque o cabe&#231;alho &#34;nome&#34; por &#34;nome para valida&#231;&#227;o&#34;. &#201; apenas um teste.</p>
+
+<p>Se voc&#234; rodar o programa, ver&#225; que continua funcionado, ent&#227;o teremos que trocar a regexpr:</p>
+
+<pre>        qr /\bnome para valida&#231;&#227;o\b/io</pre>
+
+<p>Lembre-se de salvar o arquivo em <b>UTF-8</b>. Se voc&#234; rodar novamente, voc&#234; n&#227;o ir&#225; conseguir encontrar o campo, pois ele &#233; um texto em perl (portanto est&#225; em UTF8) e o perl considera como padr&#227;o o c&#243;digo sendo como Latin1. Para resolver este problema, voc&#234; precisa adicionar no topo (junto com o <code>use strict</code>) o <code>use utf8</code>:</p>
+
+<pre>        use strict;
+        use Spreadsheet::ParseExcel;
+        use utf8;
+
+        ...</pre>
+
+<p>Na verdade, n&#227;o h&#225; segredo nenhum! Se quiser mais informa&#231;&#245;es sobre encoding, leia o &#243;timo <a href="http://sao-paulo.pm.org/equinocio/2011/mar/4" class="podlinkurl"
+>artigo do Stanislaw Pusep sobre encoding</a>.</p>
+
+<p>Uma dica que deixo &#233;, deixe apenas se necess&#225;rio as regexpr do cabe&#231;alhos com o acento, pois o cliente pode mudar sem querer:</p>
+
+<pre>        qr /\bnome\s+(para\s+)?valida(r|[&#231;c][&#227;a]o)\b/io</pre>
+
+<p>Assim, pode ser escrito &#39;nome para validar&#39;, &#39;nome valida&#231;ao&#39;, &#39;nome validacao&#39;, etc.. e todos ser&#227;o aceitos.</p>
+
+<p>Para mais detalhes sobre compara&#231;&#227;o de textos, leia outro artigo deste equin&#243;cio, <a href="http://sao-paulo.pm.org/equinocio/2011/mar/6" class="podlinkurl"
+>Comparando textos por Blabos de Blebe</a>.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="XLSX"
+>XLSX</a></h2>
+
+<p>At&#233; pouco tempo, apenas existia apenas o modulo <a href="http://search.cpan.org/perldoc?SimpleXlsx" class="podlinkpod"
+>SimpleXlsx</a>. Mas vamos falar sobre o <a href="http://search.cpan.org/perldoc?Spreadsheet%3A%3AWriteExcel" class="podlinkpod"
+>Spreadsheet::WriteExcel</a>.</p>
+
+<p>McNamara tamb&#233;m criou o <a href="http://search.cpan.org/perldoc?Spreadsheet%3A%3AWriteExcel" class="podlinkpod"
+>Spreadsheet::WriteExcel</a>, e com pequenas e r&#225;pidas modifica&#231;&#245;es, voc&#234; consegue ler arquivos XLSX usando algumas das classes do XLS!</p>
+
+<p>Uma das poucas desvantagens que temos no XLSX &#233; que voc&#234; n&#227;o consegue utilizar o m&#233;todo para economizar mem&#243;ria, portanto, se precisar ler um arquivo maior, se prepare para fazer telas de loading bonitas para seu cliente.</p>
+
+<p>Vou colocar o c&#243;digo modificado aqui e explicar cada modifica&#231;&#227;o.</p>
+
+<pre>        #!/usr/bin/perl -w
+
+        use strict;
+        use utf8;
+        use Spreadsheet::XLSX;
+
+        use Text::Iconv;
+        my $converter = Text::Iconv -&#62; new (&#34;utf-8&#34;, &#34;latin1&#34;);
+
+        my $excel  = Spreadsheet::XLSX-&#62;new(&#39;teste.xlsx&#39;, $converter);
+
+        my %expected_header = (
+                twitter =&#62; qr /\btwitter\b/io,
+                idade   =&#62; qr /\bidade\b/io,
+                nome    =&#62; qr /\bnome\s+(para\s*)?valida(r|[&#231;c][&#227;a]o)\b/io
+        );
+
+        # apenas para exibir
+        my $reg_num        = 0;
+
+        for my $worksheet ( @{$excel -&#62; {Worksheet}} ) {
+
+                my ( $row_min, $row_max ) = $worksheet-&#62;row_range();
+                my ( $col_min, $col_max ) = $worksheet-&#62;col_range();
+
+                my $header_map     = {};
+                my $header_found   = 0;
+
+                for my $row ( $row_min .. $row_max ) {
+
+                        if (!$header_found){
+                                for my $col ( $col_min .. $col_max ) {
+                                        my $cell = $worksheet-&#62;get_cell( $row, $col );
+                                        next unless $cell;
+                                        
+                                        foreach my $header_name (keys %expected_header){
+
+                                                if ($cell-&#62;value() =~ $expected_header{$header_name}){
+                                                        $header_found++;
+                                                        $header_map-&#62;{$header_name} = $col;
+                                                }
+                                        }
+                                }
+                        }else{
+
+                                # aqui voc&#234; pode verificar se foram encontrados todos os campos que voc&#234; precisa
+                                # neste caso, achar apenas 1 cabe&#231;alho j&#225; &#233; o suficiente
+
+                                my $registro = {};
+                                
+                                foreach my $header_name (keys %$header_map){
+                                        my $col = $header_map-&#62;{$header_name};
+
+                                        my $cell = $worksheet-&#62;get_cell( $row, $col );
+                                        next unless $cell;
+
+                                        my $value = $cell-&#62;value();
+                                        
+                                        # aqui &#233; uma regra que voc&#234; escolhe, pois as vezes o valor da c&#233;lula pode ser nulo
+                                        next unless $value;
+
+                                        $registro-&#62;{$header_name} = $value;
+                                }
+
+                                if (keys %$registro){
+                                        $reg_num++;
+                                        print &#34;row $row, registro $reg_num\n&#34;;
+                                        print &#34;$_ = $registro-&#62;{$_}\n&#34; for keys %$registro;
+                                        print &#34;------------------\n&#34;;
+                                }
+                        }
+
+                }
+        }</pre>
+
+<p>Pois bem, al&#233;m do <code>use utf8</code>, &#233; recomendado utilizar o modulo <a href="http://search.cpan.org/perldoc?Text%3A%3AIconv" class="podlinkpod"
+>Text::Iconv</a> para n&#227;o ter problemas com encoding.</p>
+
+<pre>        use Spreadsheet::XLSX;
+
+        use Text::Iconv;
+        my $converter = Text::Iconv -&#62; new (&#34;utf-8&#34;, &#34;latin1&#34;);
+
+        my $excel  = Spreadsheet::XLSX-&#62;new(&#39;teste.xlsx&#39;, $converter);</pre>
+
+<p>Isso &#233; meio bizarro, mas o &#250;nico jeito que consegui fazer funciona foi trocando o windows-1251 por latin1 (iso-8859-1).</p>
+
+<p>O windows-1251 est&#225; na documenta&#231;&#227;o do <a href="http://search.cpan.org/perldoc?Spreadsheet%3A%3AXLSX" class="podlinkpod"
+>Spreadsheet::XLSX</a>, por&#233;m as regexpr n&#227;o funcionavam nem com <code>use utf8</code> nem sem. Mesmo removendo o iconv da jogada, o erro persistia. Tamb&#233;m soltava um warning, e ent&#227;o resolvi trocar para latin1 e funcionou. Se voc&#234; tiver algum problema, mande um e-mail para lista ou comente logo baixo!</p>
+
+<p>A outra altera&#231;&#227;o &#233; que n&#227;o existe mais a vari&#225;vel <code>$parser</code>, e sim <code>$excel</code>, que contem o Worksheet inteiro.</p>
+
+<pre>        for my $worksheet ( @{$excel -&#62; {Worksheet}} ) {
+                ...</pre>
+
+<p>Espero que voc&#234; tenha aprendido um pouco sobre estes modulos.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Sobre_o_autor"
+>Sobre o autor</a></h1>
+
+<p><i>Renato CRON</i>, <a href="http://renatocron.com" class="podlinkurl"
+>http://renatocron.com</a></p>
+
+<p>CPANID: RENTOCRON</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="LICENSE_AND_COPYRIGHT"
+>LICENSE AND COPYRIGHT</a></h1>
+
+<p>Este artigo &#233; Software Livre; voc&#234; pode redistribu&#237;-lo e/ou modific&#225;-lo sob os termos da GNU Public License como publicada pela Free Software Foundation; vers&#227;o 2 datada a Junho, 1991, ou qualquer vers&#227;o mais recente, &#224; sua discri&#231;&#227;o.</p>
+
+<p>Este artigo &#233; distribu&#237;do na esperan&#231;a de que ele pode ser &#250;til, mas SEM QUALQUER GARANTIA; mesmo a garantia implicada de COMERCIABILIDADE ou ADEQUA&#199;&#195;O PAR UMA FINALIDADE EM PARTICULAR. Veja a GNU Public License para mais detailhes.</p>
+
+<p>Uma c&#243;pia da GNU General Public License (deveria) estar dispon&#237;vel com este artigo; se n&#227;o, escreva para a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.</p>
+
+</body></html>

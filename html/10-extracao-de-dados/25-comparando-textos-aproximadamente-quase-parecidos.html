@@ -1,0 +1,367 @@
+<html><head><title>Comparando textos aproximadamente quase parecidos</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#Comparando_textos_aproximadamente_quase_parecidos'>Comparando textos aproximadamente quase parecidos</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Introdu%E7%E3o'>Introdu&#231;&#227;o</a>
+    <li class='indexItem indexItem2'><a href='#Quase_certo_%E9_igual_a_diferente%3F'>Quase certo &#233; igual a diferente?</a>
+    <li class='indexItem indexItem2'><a href='#Alguns_algoritmos_de_compara%E7%E3o_parcial'>Alguns algoritmos de compara&#231;&#227;o parcial</a>
+    <li class='indexItem indexItem2'><a href='#Implementa%E7%F5es_no_CPAN'>Implementa&#231;&#245;es no CPAN</a>
+    <li class='indexItem indexItem2'><a href='#Conclus%F5es'>Conclus&#245;es</a>
+    <li class='indexItem indexItem2'><a href='#Ap%EAndice_I_-_BioPerl'>Ap&#234;ndice I - BioPerl</a>
+    <li class='indexItem indexItem2'><a href='#Ap%EAndice_II_-_Soundex'>Ap&#234;ndice II - Soundex</a>
+    <li class='indexItem indexItem2'><a href='#Refer%EAncias'>Refer&#234;ncias</a>
+    <li class='indexItem indexItem2'><a href='#Autor'>Autor</a>
+  </ul>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Comparando_textos_aproximadamente_quase_parecidos"
+>Comparando textos aproximadamente quase parecidos</a></h1>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Introdu&#231;&#227;o"
+>Introdu&#231;&#227;o</a></h2>
+
+<p>Quando lidamos com grandes quantidades de informa&#231;&#227;o,
+e principalmente com grandes quantidades de texto,
+obter esses dados &#233; apenas o primeiro passo,
+pois extrair significado desse amontoado de strings &#233; muito mais complicado do que parece.</p>
+
+<p>Algumas vezes obtemos acesso a informa&#231;&#245;es que est&#227;o incompletas,
+incorretas ou ainda adulteradas.
+Um exemplo cl&#225;ssico &#233; quando precisamos analisar cadastros de pessoas,
+empresas ou ainda endere&#231;os,
+cujos dados foram inseridos atrav&#233;s de sistemas distintos,
+ou ainda manualmente,
+seja por digita&#231;&#227;o ou scanner.</p>
+
+<p>Um caso real &#233; o meu nome (o de verdade!
+Ok,
+a minha identidade intern&#233;tica tamb&#233;m n&#227;o ajuda...),
+que vem grafado de v&#225;rias formas dependendo da empresa que envia a fatura.
+Mas este nem &#233; o pior caso,
+meu nome no Cadastro de Pessoa F&#237;sica est&#225; registrado com uma grafia diferente da que est&#225; no Cadastro de Eleitores.
+J&#225; tive v&#225;rios problemas com a Receita Federal por causa de ap&#243;strofos e espa&#231;os que existem no meu sobrenome (longa hist&#243;ria...).
+Certa vez em um cadastro online meu nome ativou um SQL Injection e eu nem me chamo <i>Bobby Tables</i>[1]!
+Da&#237; eu mesmo resolvi adotar uma grafia simplificada,
+mas isso &#233; outro papo...</p>
+
+<p>Ainda falando de documentos,
+se apenas de Certid&#227;o de Nascimento para RG e em seguida para T&#237;tulo de Eleitor j&#225; houve um erro.
+Imagine em cadastros digitados em contextos que exigem menos rigor ou ainda aqueles feitos por telefone!
+&#201; uma confus&#227;o sem limites.</p>
+
+<p>Outro caso curioso que recentemente acertou a minha cabe&#231;a foi o de um artigo no site de determinada universidade sobre determinado assunto.
+Al&#233;m dele n&#227;o ser muito preciso,
+nem mesmo possu&#237;a uma lista decente de refer&#234;ncias o que me levou a olhar com mais cuidado.
+Ao pesquisar o &#250;nico artigo citado na refer&#234;ncia encontrei outro artigo que apontava para a mesma refer&#234;ncia.
+Ent&#227;o quando comecei a ler o <i>abstract</i> desse outro artigo fiquei com aquela sensa&#231;&#227;o de <i>dejavu</i> &#34;...
+j&#225; vi isso em algum lugar...&#34;.
+E vi mesmo.
+O primeiro artigo era pl&#225;gio do segundo.
+Bastou colocar ambos os <i>abstracts</i> lado a lado para perceber que haviam pequenas inser&#231;&#245;es,
+dele&#231;&#245;es e altera&#231;&#245;es pontuais,
+que se propagavam pelo restante do trabalho.
+Descoberto o artigo original o texto passou a fazer sentido.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Quase_certo_&#233;_igual_a_diferente?"
+>Quase certo &#233; igual a diferente?</a></h2>
+
+<p>Um dos grandes problemas ao se analisar textos computacionalmente &#233; que a natureza bin&#225;ria da computa&#231;&#227;o nos leva a perguntas e respostas exatas.
+E para piorar,
+computadores (pelo menos os deste lado da Matrix) n&#227;o possuem <i>dejavu</i>.</p>
+
+<p>Veja nossas identifica&#231;&#245;es em documentos,
+como RG,
+CPF,
+matr&#237;cula,
+etc.
+S&#227;o sempre n&#250;meros especiais.
+Esses n&#250;meros existem porque uma identifica&#231;&#227;o oficial n&#227;o deve,
+pelo menos em teoria,
+falhar nunca.
+Ent&#227;o eles implementam controles,
+que s&#227;o os d&#237;gitos de verifica&#231;&#227;o.
+Eles servem para detectar erros de digita&#231;&#227;o ou combina&#231;&#245;es inv&#225;lidas,
+entre outras coisas.</p>
+
+<p>Com uma certa licen&#231;a po&#233;tica,
+podemos dizer que um sistema &#233; robusto conforme ele suporta as intemp&#233;ries do ambiente a sua volta,
+e arrisco-me a dizer (pagando o pre&#231;o das exce&#231;&#245;es) que,
+quanto mais robusto,
+mais complexo.</p>
+
+<p>O sistema de d&#237;gitos verificadores por exemplo,
+oferece um certo grau de robustez no sentido que detecta erros de digita&#231;&#227;o.
+Mas quando processamos texto,
+estamos lidando com s&#237;mbolos que carregam muito mais informa&#231;&#227;o para ser computada do que n&#250;meros.
+Um n&#250;mero pode ocupar apenas uma c&#233;lula da mem&#243;ria da m&#225;quina,
+mas uma palavra em geral n&#227;o; ela ainda possui uma sintaxe,
+uma s&#233;rie de sin&#244;nimos e v&#225;rias interpreta&#231;&#245;es dependendo do contexto.</p>
+
+<p>Nossos textos s&#227;o tradu&#231;&#245;es em caracteres das coisas que percebemos e da forma como nos comunicamos.
+Muitas vezes essas percep&#231;&#245;es e tradu&#231;&#245;es s&#227;o imprecisas,
+o que por um lado &#233; bom,
+mas por outro nem tanto (ui!).</p>
+
+<p>Enquanto que os c&#233;rebros humanos s&#227;o capazes de se adaptar a novos c&#243;digos de comunica&#231;&#227;o,
+aprender outros idiomas e adquirir sotaques (assim como Perl),
+os processadores atuais ainda s&#227;o dispositivos primitivos capazes de compreender somente o seu espec&#237;fico c&#243;digo de m&#225;quina.</p>
+
+<p>Vejam do que os primatas s&#227;o capazes[2]:</p>
+
+<pre>    3ST3 P3QU3N0 T3XT0 53RV3 4P3N45 P4R4 M05TR4R C0M0 4
+    N0554 C4B3&#199;4 C0N53GU3 F4Z3R C0I545 IMPR355I0N4NT35! 
+    R3P4R3 NI550! N0 C0M3&#199;0 35T4V4 M3I0 C0MPLIC4DO, M4S
+    4G0R4 N35T4 LINH4 5U4 M3NT3 V4I D3CIFR4ND0 0 C0DIGO
+    QU4S3 QU3 AUT0M4TIC4M3NT3 S3M PR3CI54R P3NS4R MUIT0
+    C3RT0? P0D3 FIC4R 83M 0RGULH05O DI550!
+    5U4 C4P4CID4D3 M3R3&#199;3!</pre>
+
+<p>... ou ainda ...</p>
+
+<pre>    De aorcdo com uma pqsieusa de uma uinrvesriddae ignlsea,
+    n&#227;o ipomtra em qaul odrem as lrteas de uma plravaa et&#227;so,
+    a &#250;ncia csioa iprotmatne &#233; que a piremria e &#250;tmlia lrteas
+    etejasm no lgaur crteo. O rseto pdoe ser uma ttaol b&#231;guana
+    que vco&#234; cnocseguee anida ler sem pobrlmea. Itso &#233; poqrue
+    n&#243;s n&#227;o lmeos cdaa ltrea szoinha, mas a plravaa cmoo um tdoo.
+    Lgeal, n&#227;o &#233; msemo?</pre>
+
+<p>Como humanos s&#227;o bichos bem confusos e textos s&#227;o representa&#231;&#245;es de id&#233;ias, (in)felizmente elas n&#227;o precisam estar necessariamente completas para que sejam ao menos parcialmente entendidas, e por consequ&#234;ncia tamb&#233;m os textos que as codificam. Por essas e outras, os computadores tem certa dificuldade em lidar conosco e as compara&#231;&#245;es caractere a caractere falham miseravelmente. Entra em cena a compara&#231;&#227;o parcial.</p>
+
+<p>Numa compara&#231;&#227;o parcial estamos interessados em saber o qu&#227;o id&#234;nticas ou qu&#227;o diferentes s&#227;o duas strings e n&#227;o somente se elas s&#227;o completamente iguais ou diferentes.</p>
+
+<p>Essa &#233; uma &#225;rea onde s&#227;o estudados diversos m&#233;todos matem&#225;ticos e varia&#231;&#245;es que buscam otimiz&#225;-los, pois a compara&#231;&#227;o parcial &#233; normalmente muito custosa para os coitadinhos dos &#39;silicas&#39;.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Alguns_algoritmos_de_compara&#231;&#227;o_parcial"
+>Alguns algoritmos de compara&#231;&#227;o parcial</a></h2>
+
+<p>Dentre os v&#225;rios m&#233;todos de compara&#231;&#227;o parcial podemos destacar o Largest Common Subsequence (LCS), as v&#225;rias dist&#226;ncias de edi&#231;&#227;o (Edit Distances) e o m&#233;todo dos n-gramas.</p>
+
+<p>O LCS busca a similaridade entre strings procurando a maior substring em comum entre ambas. Quanto maior a similaridade entre elas, maior a LCS.</p>
+
+<p>Por exemplo as strings &#39;abacate&#39; e &#39;abacaxi&#39; possuem &#39;abaca&#39; (5 caracteres) como maior substring em comum. J&#225; as strings &#39;porta&#39; e &#39;janela&#39; possuem como maior substring em comum apenas o &#39;a&#39; (1 caractere). Portanto &#39;abacaxi&#39; &#233; mais parecido com &#39;abacate&#39; do que &#39;porta&#39; &#233; parecida com &#39;janela&#39;.</p>
+
+<p>A t&#237;tulo de curiosidade, uma varia&#231;&#227;o do LCS &#233; utilizada no comando Unix <code>diff</code>, utilizado para comparar dois arquivos e dedurar as linhas que s&#227;o diferentes.</p>
+
+<p>Por outro lado os algoritmos de dist&#226;ncia de edi&#231;&#227;o buscam a similaridade entre as strings contando quantas opera&#231;&#245;es de inser&#231;&#227;o, dele&#231;&#227;o e altera&#231;&#227;o s&#227;o necess&#225;rias para que a partir de uma string encontremos a outra. Quanto menor a dist&#226;ncia, mais parecidas s&#227;o as strings. Exemplos:</p>
+
+<p>Partindo de &#39;abacate&#39;, alterando o &#39;t&#39; para &#39;x&#39; e em seguida o &#39;e&#39; para &#39;i&#39; obtemos &#39;abacaxi&#39;, portanto uma dist&#226;ncia de edi&#231;&#227;o igual a 2.</p>
+
+<p>Come&#231;ando com &#39;porta&#39;, trocando o &#39;p&#39; por &#39;j&#39;, o &#39;o&#39; por &#39;a&#39;, o &#39;r&#39; por &#39;n&#39;, o &#39;t&#39; por &#39;e&#39; e finalmente inserindo um &#39;l&#39;, chegamos em &#39;janela&#39;, o que d&#225; uma dist&#226;ncia de 5 opera&#231;&#245;es.</p>
+
+<p>Por &#250;ltimo, o algoritmo dos n-gramas quebra as strings em tokens de comprimento n e conta quantos tokens em comum elas possuem. Vamos a dois exemplos com n = 3:</p>
+
+<pre>    &#39;abacate&#39; =&#62; &#39;aba&#39;, &#39;bac&#39;, &#39;aca&#39;, &#39;cat&#39;, &#39;ate&#39;;
+    &#39;abacaxi&#39; =&#62; &#39;aba&#39;, &#39;bac&#39;, &#39;aca&#39;, &#39;cax&#39;, &#39;axi&#39;;
+    
+    Total:      7   =&#62; &#39;aba&#39;, &#39;bac&#39;, &#39;aca&#39;, &#39;cat&#39;, &#39;ate&#39;, &#39;cax&#39;, &#39;axi&#39;;
+    Comuns:     3   =&#62; &#39;aba&#39;, &#39;bac&#39;, &#39;aca&#39;;
+    Semelhan&#231;a: 3/7 =&#62; 42,86%;
+    
+    &#39;porta&#39;   =&#62; &#39;por&#39;, &#39;ort&#39;, &#39;rta&#39;;
+    &#39;janela&#39;  =&#62; &#39;jan&#39;, &#39;ane&#39;, &#39;nel&#39;, &#39;ela&#39;;
+    
+    Total:      7
+    Comuns:     0
+    Semelhan&#231;a: 0/7 =&#62; 0%</pre>
+
+<p>Note que cada algoritmo mede a semelhan&#231;a ou a diferen&#231;a de formas bastante distintas, o que leva muitas vezes a resultados bem diferentes. Em todos os casos, &#39;abacate&#39; &#233; mais parecido com &#39;abacaxi&#39; do que &#39;porta&#39; &#233; parecida com &#39;janela&#39;, mas a intensidade com que isso &#233; determinado varia bastante.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Implementa&#231;&#245;es_no_CPAN"
+>Implementa&#231;&#245;es no CPAN</a></h2>
+
+<p>No CPAN[3] encontramos m&#243;dulos que trabalham com cada um desses algoritmos aplicando um ou outra otimiza&#231;&#227;o e fornecendo variados conjuntos de APIs. Est&#225; al&#233;m do escopo deste texto esgotar o assunto sobre suas APIs, portanto vamos a um breve overview:</p>
+
+<p>Do m&#243;dulos que utilizam LCS podemos citar o <a href="http://search.cpan.org/perldoc?Algorithm%3A%3ALCS" class="podlinkpod"
+>Algorithm::LCS</a>[4] e o <a href="http://search.cpan.org/perldoc?Algorithm%3A%3ADiff" class="podlinkpod"
+>Algorithm::Diff</a>[5], entre outros. A id&#233;ia b&#225;sica aqui &#233; calcular o tamanho da maior substring em comum e comparar com as strings completas.</p>
+
+<pre>    #!/usr/bin/env perl
+
+    use Modern::Perl;
+    use Algorithm::LCS;
+
+    my @word1 = split //, &#34;abacate&#34;;
+    my @word2 = split //, &#34;abacaxi&#34;;
+    my @word3 = split //, &#34;porta&#34;;
+    my @word4 = split //, &#34;janela&#34;;
+
+    my $alg = Algorithm::LCS-&#62;new;
+
+    my (@res, $substr);
+
+    @res = $alg-&#62;LCS(\@word1, \@word2);
+    $substr = join &#34;&#34;, map {$word1[$_-&#62;[0]]} @res;
+    say &#39;LCS between &#39;, @word1, &#39; and &#39;, @word2, &#39;: &#39;, $substr;
+
+    @res = $alg-&#62;LCS(\@word3, \@word4);
+    $substr = join &#34;&#34;, map {$word3[$_-&#62;[0]]} @res;
+    say &#39;LCS between &#39;, @word3, &#39; and &#39;, @word4, &#39;: &#39;, $substr;</pre>
+
+<p>Aplicando o algoritmo de dist&#226;ncia de edi&#231;&#227;o temos o <a href="http://search.cpan.org/perldoc?Text%3A%3ALevenshtein" class="podlinkpod"
+>Text::Levenshtein</a>[6], <a href="http://search.cpan.org/perldoc?String%3A%3ASimilarity" class="podlinkpod"
+>String::Similarity</a>[7], o <a href="http://search.cpan.org/perldoc?String%3A%3AApprox" class="podlinkpod"
+>String::Approx</a>[8], entre outros. De modo semelhante, basta comparar a dist&#226;ncia entre as strings com as pr&#243;prias strings. O destaque fica com o String::Similarity que calcula a semelhan&#231;a entre as strings em uma escala de 0 (totalmente diferentes) a 1 (totalmente iguais).</p>
+
+<pre>    #!/usr/bin/env perl
+
+    use Modern::Perl;
+    use String::Similarity qw(similarity);
+    use Text::Levenshtein qw(distance);
+
+    my ($word1, $word2, $sim, $dist);
+
+    ($word1, $word2) = qw(abacate abacaxi);
+    $sim  = similarity($word1, $word2);
+    $dist = distance($word1, $word2);
+    say &#34;Similarity between &#39;$word1&#39; and &#39;$word2&#39;: &#34;, $sim;
+    say &#34;Distance   between &#39;$word1&#39; and &#39;$word2&#39;: &#34;, $dist;
+
+    ($word1, $word2) = qw(porta janela);
+    $sim  = similarity($word1, $word2);
+    $dist = distance($word1, $word2);
+    say &#34;Similarity between &#39;$word1&#39; and &#39;$word2&#39;: &#34;, $sim;
+    say &#34;Distance   between &#39;$word1&#39; and &#39;$word2&#39;: &#34;, $dist;</pre>
+
+<p>Utilizando o m&#233;todo dos n-gramas temos o <a href="http://search.cpan.org/perldoc?String%3A%3ATrigram" class="podlinkpod"
+>String::Trigram</a>[9], o <a href="http://search.cpan.org/perldoc?Algorithm%3A%3ANgrams" class="podlinkpod"
+>Algorithm::Ngrams</a>[10], o <a href="http://search.cpan.org/perldoc?Text%3A%3ANgram" class="podlinkpod"
+>Text::Ngram</a>[11].</p>
+
+<p>Em especial o String::Trigram permite a compara&#231;&#227;o entre uma determinada string contra um dicion&#225;rio. Com o aux&#237;lio de um cache interno, os n-grams do dicion&#225;rio s&#227;o calculados somente uma vez o que acelera as buscas. Veja um exemplo t&#237;pico:</p>
+
+<pre>    #!/usr/bin/env perl
+    
+    use Modern::Perl;
+    use String::Trigram;
+    
+    my @dict = qw(
+     rato boi tigre
+     coelho dragao serpente
+     cavalo carneiro macaco
+     galo cao porco
+    );
+    
+    my @words = qw(ratos drogao cavalo caval carneir camelo galinha);
+    
+    my $min_sim = 0.20;
+    
+    my $trig = String::Trigram-&#62;new(
+       &#34;cmpBase&#34;        =&#62; \@dict,
+       &#34;minSim&#34;         =&#62; $min_sim,
+       &#34;warp&#34;           =&#62; 2,
+       &#34;ignoreCase&#34;     =&#62; 1,
+       &#34;keepOnlyAlNums&#34; =&#62; 1,
+       &#34;ngram&#34;          =&#62; 3,
+       &#34;debug&#34;          =&#62; 0,
+     );
+    
+    foreach my $animal (@words) {
+       my ( @best_matches, $sim );
+    
+       $sim = $trig-&#62;getBestMatch( $animal, \@best_matches );
+    
+       $sim = int( 0.5 + 100 * $sim );
+       say &#34;Similaridade entre $animal e $best_matches[0]: $sim%&#34;
+         if $sim &#62;= $min_sim;
+    }</pre>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Conclus&#245;es"
+>Conclus&#245;es</a></h2>
+
+<p>Note que cada um desses m&#243;dulos &#233; especializado em um determinado tipo de busca. Enquanto que uns s&#227;o otimizados para buscas em strings, outros s&#227;o melhores para textos longos, enquanto que alguns podem ser utilizados para buscas em arrays.</p>
+
+<p>No CPAN h&#225; v&#225;rios outros m&#243;dulos que tratam do assunto e podem ser at&#233; melhores que os citados dependendo da situa&#231;&#227;o.</p>
+
+<p>A busca utilizado compara&#231;&#245;es parciais &#233; uma &#225;rea bem extensa, com estudos, algoritmos e artigos sendo sendo desenvolvidos e aplica&#231;&#245;es nas mais diversas &#225;reas, desde corre&#231;&#227;o ortogr&#225;fica at&#233; engenharia gen&#233;tica. Ainda n&#227;o existe uma solu&#231;&#227;o universal que responda bem para todos os casos. Alguns algoritmos comportam-se melhores com certos tipos de dados do que com outros, portanto teste mais de um at&#233; encontrar um que atenda bem &#224;s suas necessidades.</p>
+
+<p>Este texto provavelmente possui muitos erros de digita&#231;&#227;o que pasar&#227;o (ou no&#227;) despercebidos, mas os erros de concord&#226;ncia ou os de reg&#234;ncia &#233; mais f&#225;cil de pegar porque isso afeta a forma como a gente percebemos a id&#233;ia. Pense nisso!</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Ap&#234;ndice_I_-_BioPerl"
+>Ap&#234;ndice I - BioPerl</a></h2>
+
+<p>T&#233;cnicas de similaridade de strings podem ser aplicadas na detec&#231;&#227;o de padr&#245;es ou altera&#231;&#245;es em sequ&#234;ncias g&#234;nicas, entretanto existe um framework em Perl especializado no assunto, chamado BioPerl.</p>
+
+<p>Com ele &#233; poss&#237;vel fazer alinhamentos, interagir com o BLAST[12] e muito mais.</p>
+
+<p>D&#234; uma conferida no site do projeto[13] onde voc&#234; pode encontrar uma extensa documenta&#231;&#227;o.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Ap&#234;ndice_II_-_Soundex"
+>Ap&#234;ndice II - Soundex</a></h2>
+
+<p>O algoritmo do <i>Soundex</i> codifica as palavras de acordo a sua pron&#250;ncia em ingl&#234;s. Entretanto ele n&#227;o garante que palavras c&#243;digos <i>Soundex</i> parecidos sejam sempre semelhantes.</p>
+
+<p>D&#234; uma olhada na documenta&#231;&#227;o do m&#243;dulo <a href="http://search.cpan.org/perldoc?Text%3A%3ASoundex" class="podlinkpod"
+>Text::Soundex</a>[14] para maiores detalhes.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Refer&#234;ncias"
+>Refer&#234;ncias</a></h2>
+
+<p>[1] xkcd <a href="http://xkcd.com/327/" class="podlinkurl"
+>&#34;Exploits of a Mom&#34;</a> - http://xkcd.com/327/</p>
+
+<p>[2] <a href="http://www.mrc-cbu.cam.ac.uk/people/matt.davis/cmabridge/" class="podlinkurl"
+>MRC Cognition and Brain Sciences Unit, University of Cambridge</a> - http://www.mrc-cbu.cam.ac.uk/people/matt.davis/cmabridge/</p>
+
+<p>[3] <a href="http://www.cpan.org" class="podlinkurl"
+>CPAN</a> - http://www.cpan.org</p>
+
+<p>[4] <a href="http://search.cpan.org/perldoc?Algorithm%3A%3ALCS" class="podlinkpod"
+>Algorithm::LCS</a> - http://search.cpan.org/perldoc?Algorithm::LCS</p>
+
+<p>[5] <a href="http://search.cpan.org/perldoc?Algorithm%3A%3ADiff" class="podlinkpod"
+>Algorithm::Diff</a> - http://search.cpan.org/perldoc?Algorithm::Diff</p>
+
+<p>[6] <a href="http://search.cpan.org/perldoc?Text%3A%3ALevenshtein" class="podlinkpod"
+>Text::Levenshtein</a> - http://search.cpan.org/perldoc?Text::Levenshtein</p>
+
+<p>[7] <a href="http://search.cpan.org/perldoc?String%3A%3ASimilarity" class="podlinkpod"
+>String::Similarity</a> - http://search.cpan.org/perldoc?String::Similarity</p>
+
+<p>[8] <a href="http://search.cpan.org/perldoc?String%3A%3AApprox" class="podlinkpod"
+>String::Approx</a> - http://search.cpan.org/perldoc?String::Approx</p>
+
+<p>[9] <a href="http://search.cpan.org/perldoc?String%3A%3ATrigram" class="podlinkpod"
+>String::Trigram</a> - http://search.cpan.org/perldoc?String::Trigram</p>
+
+<p>[10] <a href="http://search.cpan.org/perldoc?Algorithm%3A%3ANgrams" class="podlinkpod"
+>Algorithm::Ngrams</a> - http://search.cpan.org/perldoc?Algorithm::Ngrams</p>
+
+<p>[11] <a href="http://search.cpan.org/perldoc?Text%3A%3ANgram" class="podlinkpod"
+>Text::Ngram</a> - http://search.cpan.org/perldoc?Text::Ngram</p>
+
+<p>[12] <a href="http://www.bioperl.org/wiki/BLAST" class="podlinkurl"
+>BLAST</a> - http://www.bioperl.org/wiki/BLAST</p>
+
+<p>[13] <a href="http://www.bioperl.org/wiki/Main_Page" class="podlinkurl"
+>BioPerl</a> - http://www.bioperl.org/wiki/Main_Page</p>
+
+<p>[14] <a href="http://search.cpan.org/perldoc?Text%3A%3ASoundex" class="podlinkpod"
+>Text::Soundex</a> - http://search.cpan.org/perldoc?Text::Soundex</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Autor"
+>Autor</a></h2>
+
+<p>Blabos de Blebe - <a href="http://blabos.org" class="podlinkurl"
+>http://blabos.org</a></p>
+
+</body></html>

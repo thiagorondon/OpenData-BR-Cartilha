@@ -1,0 +1,197 @@
+<html><head><title>Come&#231;ando com RDF e Perl.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#Come%E7ando_com_RDF_e_Perl.'>Come&#231;ando com RDF e Perl.</a>
+  <li class='indexItem indexItem1'><a href='#Abstra%E7%E3o'>Abstra&#231;&#227;o</a>
+  <li class='indexItem indexItem1'><a href='#Ontologias'>Ontologias</a>
+  <li class='indexItem indexItem1'><a href='#Criando_um_documento_em_RDF.'>Criando um documento em RDF.</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#FOAF'>FOAF</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Buscando_informa%E7%F5es.'>Buscando informa&#231;&#245;es.</a>
+  <li class='indexItem indexItem1'><a href='#Conclus%E3o'>Conclus&#227;o</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Refer%EAncias'>Refer&#234;ncias</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Autor'>Autor</a>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Come&#231;ando_com_RDF_e_Perl."
+>Come&#231;ando com RDF e Perl.</a></h1>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Abstra&#231;&#227;o"
+>Abstra&#231;&#227;o</a></h1>
+
+<p>A web pode ser considerada um local universal para armazenar documentos e isto significa que podemos ter isto para dados,
+e tornar a web uma tabela de dados din&#226;mica definindo um formato para eles.</p>
+
+<p>Utilizando a infra-estrutura da web,
+os dados podem ir crescendo desde que haja uma identifica&#231;&#227;o esperta para isto e a melhor forma &#233; utilizado o esquema que &#233; ofercido pelas URIs,
+ou seja os nossos dados ser&#227;o identificandos por endere&#231;os na web.</p>
+
+<p>RDF &#233; um modelo padr&#227;o para troca de informa&#231;&#245;es na WEB,
+isto significa que com este modelo &#233; possivel facilitar tarefas como facilitar o merge de dados testando em schemas diferentes e como facilitar a evolu&#231;&#227;o dos dados e esquemas.</p>
+
+<p>O RDF extende o modelo de estrutura de &#34;liga&#231;&#227;o&#34; (links) da Web para usar o relacionamento de documentos via nomes de URI&#39;s e interligar eles entre si,
+com este simples modelo &#233; possivel criar estruturadas de dados que possam ser misturadas,
+compilados,
+interpretados e compartilhados atrav&#233;s de diferentes tipos de aplicativos.</p>
+
+<p>O conceito essencial do RDF &#233; a tripla,
+no qual definie o sujeito,
+a propriedade e o valor,
+que representam afirma&#231;&#245;es.</p>
+
+<p>Os conceitos usados por RDF - <a href="http://www.w3.org/TR/rdf-concepts" class="podlinkurl"
+>http://www.w3.org/TR/rdf-concepts</a> -,
+s&#227;o:</p>
+
+<dl>
+<dt><a name="Grafo_de_modelo_de_dados_;"
+>Grafo de modelo de dados ;
+<dt><a name="Vocabul&#225;rio_baseado_em_URIs_;"
+>Vocabul&#225;rio baseado em URIs ;
+<dt><a name="Tipos_de_dados_;"
+>Tipos de dados ;
+<dt><a name="Literais_;"
+>Literais ;
+<dt><a name="Sintaxe_de_serializa&#231;&#227;o_XML_;"
+>Sintaxe de serializa&#231;&#227;o XML ;
+<dt><a name="Express&#227;o_de_fatos_simples_;"
+>Express&#227;o de fatos simples ;
+<dt><a name="Entailment"
+>Entailment</a></dt>
+</dl>
+
+<p>O conceito de arquitetura de metadata &#233; que ele seja de f&#225;cil compreens&#227;o por m&#225;quinas,
+e neste caso em especifico que os dados sejam interpretados que est&#227;o na web de forma trivial por m&#225;quinas.</p>
+
+<p>Recursos na web s&#227;o chamados de documentos que est&#227;o dispostos na web,
+no qual em muitos casos s&#227;o compreensiveis por humanos.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Ontologias"
+>Ontologias</a></h1>
+
+<p>Na filosofia,
+ontologia &#233; o estudo da exist&#234;ncia ou do ser,
+que significa a maneira de compreender as identidades e grupos de identidades.</p>
+
+<p>Na ciencias da computa&#231;&#227;o,
+&#233; um modelo de dados que representa um conjunto de conceitos dentro de um dom&#237;nio e os relacionamentos.</p>
+
+<p>Isto &#233; basicamente o que iremos descrever com o RDF,
+um conjunto de dados e os seus relacionamentos em formas de triplas.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Criando_um_documento_em_RDF."
+>Criando um documento em RDF.</a></h1>
+
+<p>Existem v&#225;rios m&#243;dulos no <a href="http://search.cpan.org" class="podlinkurl"
+>http://search.cpan.org</a> dispon&#237;veis,
+mas abaixo um exemplo simple:</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="FOAF"
+>FOAF</a></h2>
+
+<p>Uma prova de conceito interessante,
+&#233; criarmos um documento RDF para demonstrar a facilidade que a linguagem Perl oferece nestes casos.
+Vamos utilizar um tipo de dataset que &#233; o FOAF j&#225; comentado em um artigo anterior.</p>
+
+<p>FOAF &#233; um acronimo para Friend of Friend,
+que &#233; um ontologia para descrever dados de pesssoas,
+suas atividades,
+o relacionamento com outras pessoas e objetos,
+no qual sejam interpretador por m&#225;quinas.</p>
+
+<p>Existe alguns m&#243;dulos para tratar deste tipo de dataset no CPAN,
+<a href="http://search.cpan.org/perldoc?XML%3A%3AFOAF" class="podlinkpod"
+>XML::FOAF</a>,
+<a href="http://search.cpan.org/perldoc?Gedcom%3A%3AFOAF" class="podlinkpod"
+>Gedcom::FOAF</a> e <a href="http://search.cpan.org/perldoc?XML%3A%3AFOAF%3A%3APerson" class="podlinkpod"
+>XML::FOAF::Person</a>.</p>
+
+<p>Por&#233;m vamos utilizar neste exemplo o <a href="http://search.cpan.org/perldoc?RDF%3A%3ASimple%3A%3ASerialiser" class="podlinkpod"
+>RDF::Simple::Serialiser</a>.</p>
+
+<pre>        use RDF::Simple::Serialiser;
+
+        my $ser = RDF::Simple::Serialiser-&#62;new;
+        
+        # Qual o vocabul&#225;rio que ser&#225; usado ? Veja o RDF::Simple::NS
+        # para mais detalhes.
+        $ser-&#62;addns( foaf =&#62; &#39;http://xmlns.com/foaf/0.1/&#39; );
+
+        # Gerar um identificador randomico.
+        my $node1 = $ser-&#62;genid;
+        my $node2 = $ser-&#62;genid;
+
+        # Informa&#231;&#245;es na estrutura perl.
+        my @triples = (
+                [ $node1, &#39;foaf:name&#39;, &#39;Thiago Rondon&#39;],
+                [ $node1, &#39;foaf:know&#39;, $node2 ],
+                [ $node2, &#39;foaf:name&#39;, &#39;Alice Rondon&#39;],
+                [ $node2, &#39;foaf:type&#39;, &#39;foaf:Person&#39;],
+        );
+        
+        # Serializando em RDF.
+        print $ser-&#62;serialise(@triples);</pre>
+
+<p>O resultdo do c&#243;digo ser&#225;:</p>
+
+<pre>        &#60;rdf:RDF
+        xmlns:foaf=&#34;http://xmlns.com/foaf/0.1/&#34;
+        xmlns:rdf=&#34;http://www.w3.org/1999/02/22-rdf-syntax-ns#&#34;
+        &#62;
+        &#60;rdf:Description rdf:about=&#34;_id:85623079&#34;&#62;
+        &#60;foaf:name&#62;Alice Rondon&#60;/foaf:name&#62;
+        &#60;foaf:type&#62;foaf:Person&#60;/foaf:type&#62;
+        &#60;/rdf:Description&#62;
+        &#60;rdf:Description rdf:about=&#34;_id:38921350&#34;&#62;
+        &#60;foaf:name&#62;Thiago Rondon&#60;/foaf:name&#62;
+        &#60;foaf:know rdf:nodeID=&#34;_id:85623079&#34;/&#62;
+        &#60;/rdf:Description&#62;
+        &#60;/rdf:RDF&#62;</pre>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Buscando_informa&#231;&#245;es."
+>Buscando informa&#231;&#245;es.</a></h1>
+
+<p>Com os dados disponiveis em RDF, agora precisamos de um padr&#227;o para buscar estes dados de forma esperta e uma das respostas para esta necessidade &#233; a SPARQL que &#233; uma linguagem de consulta. (TODO: Escrever um artigo sobre isto).</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Conclus&#227;o"
+>Conclus&#227;o</a></h1>
+
+<p>Podemos utilizar a linguagem Perl para agilizar a cria&#231;&#227;o de documentos RDF, assim como para consultar dados em p&#225;ginas que j&#225; utilizam o RDF.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Refer&#234;ncias"
+>Refer&#234;ncias</a></h2>
+
+<p>Resource Description Framework (RDF): Concepts and Abstract Syntax - http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/</p>
+
+<p>RDF Semantics - http://www.w3.org/TR/2004/REC-rdf-mt-20040210/</p>
+
+<p>RDF Primer - http://www.w3.org/TR/2004/REC-rdf-primer-20040210/</p>
+
+<p>Metadata Architecture - http://www.w3.org/DesignIssues/Metadata</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Autor"
+>Autor</a></h1>
+
+<p><i>Thiago Rondon</i>, <b>thiago.rondon no e-mail gratuito do google</b></p>
+
+</body></html>

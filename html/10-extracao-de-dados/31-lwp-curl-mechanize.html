@@ -1,0 +1,258 @@
+<html><head><title>LWP, Curl e Mechanize!</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#LWP%2C_Curl_e_Mechanize!'>LWP, Curl e Mechanize!</a>
+  <li class='indexItem indexItem1'><a href='#Introdu%E7%E3o'>Introdu&#231;&#227;o</a>
+  <li class='indexItem indexItem1'><a href='#cURL'>cURL</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Hist%F3ria'>Hist&#243;ria</a>
+    <li class='indexItem indexItem2'><a href='#Funcionamento'>Funcionamento</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#LWP_-_libwww-perl'>LWP - libwww-perl</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Historia'>Historia</a>
+    <li class='indexItem indexItem2'><a href='#Funcionamento'>Funcionamento</a>
+    <li class='indexItem indexItem2'><a href='#Mechanize'>Mechanize</a>
+    <li class='indexItem indexItem2'><a href='#Qual_o_melhor%3F'>Qual o melhor?</a>
+    <li class='indexItem indexItem2'><a href='#Conclus%E3o'>Conclus&#227;o</a>
+  </ul>
+  <li class='indexItem indexItem1'><a href='#Bibliografia'>Bibliografia</a>
+  <li class='indexItem indexItem1'><a href='#AUTHOR'>AUTHOR</a>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="LWP,_Curl_e_Mechanize!"
+>LWP,
+Curl e Mechanize!</a></h1>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Introdu&#231;&#227;o"
+>Introdu&#231;&#227;o</a></h1>
+
+<p>Nesse artigo iremos ver os tr&#234;s principais engines para spider/crawler,
+todos os exemplos ser&#227;o feitos em Perl,
+mas 2 dos 3 engines ( cURL,
+Mechanize ) tem ports e implementa&#231;&#245;es em outras linguagens.</p>
+
+<p>cURL tem a libcurl em C,
+com isso fica muito facil voc&#234; encaixar ela em qualquer linguagem,
+linguagens que n&#227;o implemetam a pilha de rede usam o cURL para ter comodidade para fazer seus spiders.</p>
+
+<p>cURL &#233; o crawler default para C,
+C++,
+PHP e tem binds para todas as linguagens mais populares</p>
+
+<p>A ideia do Mechanize &#233; t&#227;o boa,
+e voc&#234; saber&#225; o porque &#233; boa/util,
+que foi portado para Ruby e Python falta algumas coisas mais a ideia base est&#225; l&#225;</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="cURL"
+>cURL</a></h1>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Hist&#243;ria"
+>Hist&#243;ria</a></h2>
+
+<p>Na segunda metade de 1997,
+Daniel Stenberg veio com a ideia de fazer uma ferramenta de cambio para usu&#225;rios do IRC ( provavelmente um bot ).
+Todos os dados necess&#225;rios eram publicados na web; Ele apenas precisava automatizar a recupera&#231;&#227;o desses dados.</p>
+
+<p>A necessidade &#233; a m&#227;e de todas as inven&#231;&#245;es n&#227;o &#233; mesmo?</p>
+
+<p>Eu aprendi Perl para fazer Bots de IRC,
+e o ciclo continua,
+por isso o IRC n&#227;o pode acabar :)</p>
+
+<p>No inicio Daniel adotou uma ferramente de linha de comando chamda httpget,
+feita por um *Brasileiro* Rafael Sagula.
+Ele alterou algumas coisas e pronto o pessoal do IRC n&#227;o precisava mais sair do IRC para ver o valor de sua moeda.</p>
+
+<p>Logo depois ele achou dados de cambio em um site GOPHER,
+por causa disso ele adicionou o suporte a GOPHER e logo depois o suporte a FTP.
+O nome do projeto mudou de httpget para urlget,
+porque agora ele n&#227;o fazia get apenas de HTTP.</p>
+
+<p>Suporte a SSL foi adicionado usando a biblioteca SSLeay em Maio de 1998 o urlget mudou de nome de novo e foi para curl,
+em agosto de 1998 ele finalmente saiu na midia nerd,
+na epoca o freshmeat.net.</p>
+
+<p>O resto,
+como dizem,
+&#233; hist&#243;ria e pode ser conferida em mais detalhes no site do cURL</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Funcionamento"
+>Funcionamento</a></h2>
+
+<p>O funcionamento do cURL &#233; uma coisa complicada :) a maioria dos binds dele para as linguagens &#233; apenas um wrapper em cima da libcurl,
+ent&#227;o algumas coisas simples como um get fica bem complicado confome o exemplo abaixo</p>
+
+<pre>  use strict;
+  use warnings;
+  use WWW::Curl::Easy;
+
+  my $curl = WWW::Curl::Easy-&#62;new;
+
+  $curl-&#62;setopt(CURLOPT_HEADER,1);
+  $curl-&#62;setopt(CURLOPT_URL, &#39;http://www.cpan.org&#39;);
+
+  # A filehandle, reference to a scalar or reference to a typeglob can be used here.
+  my $response_body;
+  $curl-&#62;setopt(CURLOPT_WRITEDATA,\$response_body);
+
+  # Starts the actual request
+  my $retcode = $curl-&#62;perform;
+
+  # Looking at the results...
+  if ($retcode == 0) {
+          print(&#34;Transfer went ok\n&#34;);
+          my $response_code = $curl-&#62;getinfo(CURLINFO_HTTP_CODE);
+          # judge result and next action based on $response_code
+          print(&#34;Received response: $response_body\n&#34;);
+  } else {
+          # Error code, type of error, error message
+          print(&#34;An error happened: $retcode &#34;.$curl-&#62;strerror($retcode).&#34; &#34;.$curl-&#62;errbuf.&#34;\n&#34;);
+  }</pre>
+
+<p>Complicado n&#227;o? para resolver esse problema existem 2 modulos &#39;auxiliares&#39; que fazem a vida com cURL ficar mais f&#225;cil, LWP::Curl e WWW::Curl::Simple o primeiro foi feito por esse que vos escreve e acredite quando era prototipo ele tinha o nome de WWW::Curl::Simple :P quando conversei sobre esse namespace com o Breno ( garu ) ele me sugeriu que ficasse no namespace da LWP e assim nasceu o LWP::Curl, anos depois foi criado o WWW::Curl::Simple</p>
+
+<p>O exemplo em LWP::Curl ficaria assim:</p>
+
+<pre>    use LWP::Curl;
+    my $lwpcurl = LWP::Curl-&#62;new();
+    my $content = $lwpcurl-&#62;get(&#39;http://www.cpan.org&#39;);</pre>
+
+<p>Bem mais simples n&#227;o? em WWW::Curl::Simple ficaria assim:</p>
+
+<pre>    use WWW::Curl::Simple;
+    my $curl = WWW::Curl::Simple-&#62;new();
+    my $content  = $curl-&#62;get(&#39;http://www.cpan.org/&#39;);</pre>
+
+<p>O unico problema do cURL &#233; que voc&#234; precisa ter instalado as libs de desenvolvimento para compilar esses modulos porque eles s&#227;o tudo um wrapper em cima da lib em C</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="LWP_-_libwww-perl"
+>LWP - libwww-perl</a></h1>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Historia"
+>Historia</a></h2>
+
+<p>O LWP &#233; um projeto que come&#231;ou na primeira conferencia de Internet em Geneve no ano de 1994. Nessa conferencia Martijn Koster conheceu Roy Fielding que estava apresentando o trabalho que ele havia feito chamado MOMspider, que era um programa Perl que navegava na web procurando links quebrados e construia um indice dos documentos e links descobertos. Martijn sugeriu que ele refatorasse seu programa e o transformasse em uma biblioteca com componentes reutilizaveis.</p>
+
+<p>O resultado, libwww-perl para Perl 4 mantido pelo Roy.</p>
+
+<p>Mais tarde no mesmo ano, Larry Wall lancou o Perl 5. O novo sistema de modulos e a orienta&#231;&#227;o a objeto que a nova vers&#227;o do Perl tinha deixou a biblioteca de Roy ainda melhor. Em um certo ponto tanto Roy quando Martijn tinham modifica&#231;&#245;es diferentes da libwww-perl. Eles juntaram for&#231;as e fizeram um merge de codigo e varios lancamentos alphas do que seria a nova vers&#227;o do LWP. Infelizmente Martijn teve um problema legal com seu empregador que dizia que ele era dono da propriedade intelectual que o Martjin fez fora do horario de trabalho (!!!) para garantir que o codigo continuasse disponivel para comunidade Perl Roy assumiu totalmente o LWP.</p>
+
+<p>O namespace LWP:: foi feito pelo Martijn em uma das vers&#245;es alphas que foram liberadas. Essa escolha de nome foi bem discutida na lista da libwww. Na epoca houve uma certa confus&#227;o na lista porque havia uma implemtacao de threads com o nome parecido, mas como nenhuma alternativa foi sugerida o nome ficou at&#233; hoje..</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Funcionamento"
+>Funcionamento</a></h2>
+
+<p>O LWP tamb&#233;m &#39;sofre&#39; do mesmo mal do cURL, a vers&#227;o baixo nivel dele &#233; baixo nivel mesmo mas tem uma vantagem bem interessante basta voc&#234; ter Perl para instalar o LWP ele n&#227;o tem nenhuma dependencia externa e assim com o cURL tamb&#233;m tem uma vers&#227;o mais alto nivel e direta :)</p>
+
+<pre>    use LWP::UserAgent;
+    my $ua = LWP::UserAgent-&#62;new;
+    $ua-&#62;agent(&#34;MyApp/0.1 &#34;);
+    
+    # Create a request
+    my $req = HTTP::Request-&#62;new(POST =&#62; &#39;http://search.cpan.org/search&#39;);
+    $req-&#62;content_type(&#39;application/x-www-form-urlencoded&#39;);
+    $req-&#62;content(&#39;query=libwww-perl&#38;mode=dist&#39;);
+    
+    # Pass request to the user agent and get a response back
+    my $res = $ua-&#62;request($req);
+    
+    # Check the outcome of the response
+    if ($res-&#62;is_success) {
+        print $res-&#62;content;
+    }
+    else {
+        print $res-&#62;status_line, &#34;\n&#34;;
+    }</pre>
+
+<p>Vers&#227;o simples</p>
+
+<pre>    require LWP::UserAgent;
+    my $ua = LWP::UserAgent-&#62;new;
+    $ua-&#62;timeout(10);
+    my $response = $ua-&#62;get(&#39;http://www.cpan.org/&#39;);</pre>
+
+<p>Saber da existencia do objeto HTTP::Request</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Mechanize"
+>Mechanize</a></h2>
+
+<p>O Mechanize, j&#225; come&#231;a com uma vers&#227;o simples :) ele usa o LWP por baixo dos panos mais tem muita vantagem em cima dele</p>
+
+<pre>  use WWW::Mechanize;
+  my $mech = WWW::Mechanize-&#62;new();
+
+  $mech-&#62;get( &#34;http://www.cpan.org&#34; );</pre>
+
+<p>S&#243; que o Mechanize &#233; muito mais que um simples spider/crawler ele &#39;implementa&#39; uma ideia basica de browser ent&#227;o voc&#234; tem o bot&#227;o voltar, faz cliques em &#39;boto&#245;es&#39; ( n&#227;o boto&#245;es de verdade, mas ele entende um form com bot&#227;o e pode &#39;clicar&#39; nesse bot&#227;o do form para voc&#234; ) por exemplo com isso voc&#234; consegue navegar no site que est&#225; explorando sem saber a url que voc&#234; estava, navega apenas manipulando o objeto como se fosse um browser</p>
+
+<p>Exemplo</p>
+
+<p>Imagine que voc&#234; est&#225; em um site que tem um link chamado Pr&#243;xima e Anterior, links normais quando se tem pagina&#231;&#227;o de conteudo resultado de busca etc, o que voc&#234; faria no browser para navegar nessa pagina? clicaria no link Pr&#243;xima ou Anterior e vez ou outra usaria o bot&#227;o Voltar do browser para voltar a pagina principal, vou emular esse cenario com o Mechanize</p>
+
+<pre>  use WWW::Mechanize;
+  my $mech = WWW::Mechanize-&#62;new();
+
+  $mech-&#62;get( &#34;http://www.cpan.org&#34; );
+  $mech&#8722;&#62;follow_link( text_regex =&#62; qr/Pr&#243;xima/i ); 
+  # faz alguma coisa com o conteudo da pagina proxima aqui
+  $mech-&#62;back(); # volta para pagina que voc&#234; estava
+  $mech&#8722;&#62;follow_link( text_regex =&#62; qr/Anterior/i ); 
+  # acessa a pagina Anterior e assim por diante
+  #
+  #</pre>
+
+<p>Quer procurar na pagina atual o link que tenha a palavara Download? Mechanize facilita isso para voc&#234;</p>
+
+<pre>    my $link = $mech&#8722;&#62;find_link( text_regex =&#62; qr/download/i ); </pre>
+
+<p>Lembrando que a busca de link no Mechanize, retorna um array de objetos do tipo WWW::Mechanize::Link o para acessar a informa&#231;&#227;o voc&#234; precisa tratar o retorno como um WWW::Mechanize::Link</p>
+
+<p>WWW::Mechanize::Link $link&#8722;&#62;url()</p>
+
+<p>Quer retornar todas as imagens da pagina que tenham o alt de &#39;informacao&#39; ?</p>
+
+<pre>    $mech&#8722;&#62;find_image( alt_regex =&#62; qr/informacao/i );  </pre>
+
+<p>Nesse caso o retorno &#233; um WWW::Mechanize::Image contendo todas as informa&#231;&#245;es da imagem</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Qual_o_melhor?"
+>Qual o melhor?</a></h2>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Conclus&#227;o"
+>Conclus&#227;o</a></h2>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Bibliografia"
+>Bibliografia</a></h1>
+
+<p>http://curl.haxx.se/docs/history.html</p>
+
+<p>http://lwp.interglacial.com/ch01_02.htm</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="AUTHOR"
+>AUTHOR</a></h1>
+
+<p>Lindolfo &#34;Lorn&#34; Rodrigues - lorn at cpan.org</p>
+
+</body></html>

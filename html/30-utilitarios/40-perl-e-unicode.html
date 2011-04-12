@@ -1,0 +1,573 @@
+<html><head><title>PERL E UNICODE (ENTRE OUTRAS CODIFICA&#199;&#213;ES DE TEXTO)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#PERL_E_UNICODE_(ENTRE_OUTRAS_CODIFICA%C7%D5ES_DE_TEXTO)'>PERL E UNICODE (ENTRE OUTRAS CODIFICA&#199;&#213;ES DE TEXTO)</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#INTRODU%C7%C3O'>INTRODU&#199;&#195;O</a>
+    <li class='indexItem indexItem2'><a href='#MITOS_E_VERDADES'>MITOS E VERDADES</a>
+    <li class='indexItem indexItem2'><a href='#O_QUE_%C9_UNICODE%2C_AFINAL%3F'>O QUE &#201; UNICODE, AFINAL?</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#E_O_QUE_%C9_UTF-8%3F'>E O QUE &#201; UTF-8?</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#CONVERS%C3O_DE_CODIFICA%C7%C3O_EM_PERL'>CONVERS&#195;O DE CODIFICA&#199;&#195;O EM PERL</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Usando_PerlIO'>Usando PerlIO</a>
+      <li class='indexItem indexItem3'><a href='#Usando_Encode'>Usando Encode</a>
+      <li class='indexItem indexItem3'><a href='#Gotchas'>Gotchas</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#RESUMO'>RESUMO</a>
+    <li class='indexItem indexItem2'><a href='#REFER%CANCIAS'>REFER&#202;NCIAS</a>
+    <li class='indexItem indexItem2'><a href='#AUTOR'>AUTOR</a>
+    <li class='indexItem indexItem2'><a href='#LICEN%C7A'>LICEN&#199;A</a>
+  </ul>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="PERL_E_UNICODE_(ENTRE_OUTRAS_CODIFICA&#199;&#213;ES_DE_TEXTO)"
+>PERL E UNICODE (ENTRE OUTRAS CODIFICA&#199;&#213;ES DE TEXTO)</a></h1>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="INTRODU&#199;&#195;O"
+>INTRODU&#199;&#195;O</a></h2>
+
+<p>Em primeiro lugar: qual &#233; o objetivo desse artigo,
+j&#225; que a documenta&#231;&#227;o oficial do Perl &#233; acompanhada de <a href="http://search.cpan.org/perldoc?perlunitut" class="podlinkpod"
+>perlunitut</a> e <a href="http://search.cpan.org/perldoc?perlunifaq" class="podlinkpod"
+>perlunifaq</a>?
+Simples: um amplo espectro de erros relacionados &#224; codifica&#231;&#227;o observados em nossos scripts,
+desde um inofensivo <i>Wide character in print at ...</i> e at&#233; o enigm&#225;tico <i>Parsing of undecoded UTF-8 will give garbage when decoding entities at ...</i>.
+Se,
+por um lado,
+para quem quer que o tenha implementado,
+o suporte de Unicode do Perl &#233; trivial,
+para n&#243;s,
+reles mortais,
+aquelas linhas de c&#243;digo da documenta&#231;&#227;o oficial mais parecem f&#243;rmulas m&#225;gicas que copiamos e colamos at&#233; que encontremos uma que d&#234; um resultado aceit&#225;vel no nosso caso espec&#237;fico (atire a primeira pedra...).
+N&#227;o que isso seja um crit&#233;rio de complexidade,
+mas o fato do m&#243;dulo <a href="http://search.cpan.org/perldoc?Encode" class="podlinkpod"
+>Encode</a> ocupar mais de 10MB instalado j&#225; indica que a&#237; tem coisa.</p>
+
+<p>Agora,
+cronologicamente: o suporte <b>nativo</b> a Unicode surgiu na vers&#227;o 5.6 do Perl,
+lan&#231;ada em meados de 2000.
+Passou por v&#225;rias corre&#231;&#245;es e refinamentos,
+sendo que eu,
+pessoalmente,
+s&#243; confiaria em Unicode do Perl 5.10,
+lan&#231;ado 7 anos (!) depois.
+Outra compara&#231;&#227;o duvidosa: PHP que,
+no momento da escrita desse artigo,
+est&#225; na vers&#227;o 5.3.5,
+n&#227;o possui suporte <b>nativo</b> a Unicode.
+E,
+convenhamos,
+a sua extens&#227;o <code>mbstring</code> faz um excelente trabalho.</p>
+
+<p>Ent&#227;o por que toda essa confus&#227;o no Perl?
+Vamos por partes.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="MITOS_E_VERDADES"
+>MITOS E VERDADES</a></h2>
+
+<ul>
+<li><b>Unicode nada mais &#233; do que usar 2 bytes no lugar de 1 s&#243; para representar texto,
+tendo assim um alfabeto de at&#233; 65,536 caracteres</b>
+<p><b>FALSO</b>.
+Arrisco a dizer que essa &#233; a origem de 49% da confus&#227;o ao redor do Unicode.
+No momento,
+<code>The Unicode Standard 6.0</code> possui cerca de 109 mil caracteres.
+Entretanto,
+de fato,
+o padr&#227;o <code>UCS-2</code>,
+adotado no Windows NT,
+era quase exatamente isso: 2 bytes por caractere,
+com 63,488 possibilidades no total.
+Depois,
+no Windows 2000,
+passou-se a usar o <code>UTF-16</code>,
+que <b>na maioria</b> dos casos tinha 2 bytes por caractere,
+mas podia ter mais (assim como o <code>utf8</code> <i>aparenta</i> &#34;representar os caracteres com acentos com 2 bytes&#34;).</p>
+</li>
+
+<li><b>Caracteres codificados com <code>utf8</code> sempre tem 2 bytes</b>
+<p><b>FALSO</b>.
+A raz&#227;o &#233; a mesma que para o item anterior.</p>
+</li>
+
+<li><b>Para deixar um script compat&#237;vel com <code>utf8</code>,
+deve-se empregar o pragma <code>use utf8</code></b>
+<p>Verdadeiro para Perl 5.6.
+<b>FALSO</b> para o resto.
+Atualmente,
+esse pragma serve para indicar que strings constantes presentes no c&#243;digo-fonte empregam <code>utf8</code>.
+Ali&#225;s,
+programar Perl em um sistema <code>utf8</code> e <b>n&#227;o</b> usar esse pragma &#233; a origem dos outros 49% da confus&#227;o: por raz&#245;es hist&#243;ricas,
+o Perl &#34;entende&#34; os scripts como <code>latin1</code> por default.
+Portanto,
+enquanto voc&#234; enxerga &#34;&#174;&#34; no seu c&#243;digo,
+o Perl enxergar&#225; &#34;&#194;&#174;&#34;.
+No melhor caso,
+isso n&#227;o muda absolutamente nada,
+por que todo o resto do seu sistema &#34;espera&#34; por <code>utf8</code> e est&#225; pouco se lixando para o que o Perl &#34;acha&#34;.
+J&#225; no pior caso,
+um script aonde regexp <code>/\bPre&#231;o:\s+(\d+)/i</code> &#233; cr&#237;tica deixa de funcionar em um sistema configurado como <code>iso-8859-1</code>.</p>
+</li>
+
+<li><b>Mesma coisa,
+para <code>use Encode</code>,
+<code>use encoding &#39;...&#39;</code>,
+<code>use open &#39;...&#39;</code>,
+etc.</b>
+<p>Cada caso &#233; um caso (tentarei esclarecer adiante qual &#233; qual),
+e n&#227;o existe uma &#34;linha milagrosa&#34; que resolver&#225; todos os problemas de uma vez.</p>
+</li>
+
+<li><b>Dane-se a codifica&#231;&#227;o,
+viva o <code>use bytes</code> e/ou <code>binmode(FH,
+&#39;:bytes&#39;)!</code></b>
+<p><b>FALSO</b>.
+Isso se chama &#34;escapismo&#34; <code>:)</code></p>
+
+<p>Tratando-se de textos em portugu&#234;s,
+&#233; insensato desprezar o poder de processamento textual do Perl.
+Por exemplo: para tokenizar um texto devidamente codificado,
+pode-se empregar o seguinte script:</p>
+
+<pre> #!/usr/bin/perl -w
+ use strict;
+ use utf8;
+
+ use Data::Dumper;
+ use Text::Unaccent;
+
+ my $texto = &#39;&#192; noite, vov&#244; Kowalsky v&#234; o &#237;m&#227; cair no p&#233; do ping&#252;im queixoso e vov&#243; p&#245;e a&#231;&#250;car no ch&#225; de t&#226;maras do jabuti feliz.&#39;;
+ my @token;
+ push @token, unac_string(&#39;utf8&#39;, lc $_) foreach (split /\W+/, $texto);
+
+ print Dumper \@token;</pre>
+
+<p>J&#225; sem a codifica&#231;&#227;o...</p>
+
+<pre> #!/usr/bin/perl -w
+ use strict;
+
+ use Data::Dumper;
+
+ my $texto = &#39;&#192; noite, vov&#244; Kowalsky v&#234; o &#237;m&#227; cair no p&#233; do ping&#252;im queixoso e vov&#243; p&#245;e a&#231;&#250;car no ch&#225; de t&#226;maras do jabuti feliz.&#39;;
+ $texto =~ y/&#199;&#231;&#209;&#241;&#195;&#213;&#227;&#245;&#194;&#202;&#206;&#212;&#219;&#226;&#234;&#238;&#244;&#251;&#192;&#200;&#204;&#210;&#217;&#224;&#232;&#236;&#242;&#249;&#193;&#201;&#205;&#211;&#218;&#225;&#233;&#237;&#243;&#250;&#196;&#203;&#207;&#214;&#220;&#228;&#235;&#239;&#246;&#252;/ccnnaoaoaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiou/;
+ my @token = split /\W+/, lc $texto;
+
+ print Dumper \@token;</pre>
+
+<p>Detalhe important&#237;ssimo: somente o primeiro script foi salvo com a codifica&#231;&#227;o <code>utf8</code>. Se existisse a necessidade do segundo tratar dados em <code>utf8</code>, antes de usar a translitera&#231;&#227;o teria que dar um jeito de converter manualmente (sequ&#234;ncia de v&#225;rios <code>s///g</code>) os caracteres de <code>utf8</code> para <code>latin1</code>, o que seria deveras laboroso e ineficiente (imagina se precisasse de contemplar os quase 200 caracteres do <code>iso-8859-1</code>?!).</p>
+</li>
+
+<li><b><code>iso-8859-1</code>, <code>iso-8859-15</code> e <code>win-1252</code> s&#227;o tudo a mesma coisa</b>
+<p><b>FALSO</b>. Se fossem, n&#227;o teriam nomes diferentes <code>:P</code></p>
+
+<p>Apesar de todos serem <i>Western Latin character sets</i> e apresentarem similaridades, tamb&#233;m tem diferen&#231;as. Entretanto, para os fins de processamento de texto em portugu&#234;s, <i>podem ser considerados iguais</i>, pois todos os caracteres usadas em palavras em portugu&#234;s coincidem. O que muda s&#227;o as letrinhas bonitinhas como &#34;&#8364;&#34;, &#34;&#8482;&#34; ou &#34;&#376;&#34;, que interessam mais &#224; juventude na hora da elabora&#231;&#227;o do nickname <code>:)</code></p>
+
+<p><b>Observa&#231;&#227;o</b>: j&#225; <code>iso-8859-1</code> e <code>latin1</code>, s&#227;o sin&#244;nimos.</p>
+</li>
+
+<li><b>Unicode &#233; a codifica&#231;&#227;o que oferece maior compatibilidade</b>
+<p><b>VERDADEIRO</b>. Infelizmente (ou n&#227;o), texto sem codifica&#231;&#227;o n&#227;o existe. Muitos chamam ASCII de &#34;texto puro&#34;, talvez por ser uma das codifica&#231;&#245;es mais antigas. Mas tamb&#233;m temos o EBCDIC, e por que n&#227;o c&#243;digo Morse? Nos tempos mais prim&#243;rdios, o esfor&#231;o era acomodar a maior quantidade poss&#237;vel de caracteres em 7 ou 8 bits, o que garantidamente resultava em colis&#245;es (ver o item anterior).</p>
+</li>
+</ul>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="O_QUE_&#201;_UNICODE,_AFINAL?"
+>O QUE &#201; UNICODE, AFINAL?</a></h2>
+
+<p>Trocando em mi&#250;dos: um alfabeto ideal (no sentido plat&#244;nico), com potencial para representar todo e qualquer sistema de escrita real ou fict&#237;cio que j&#225; existiu ou vir&#225; a existir, desde o tibetano arcaico e at&#233; vogon. Para isso, foi reservado um &#237;ndice n&#227;o de 256 e nem de 65,536, mas de 2**31 posi&#231;&#245;es (<i>code points</i>). Dentro desse espa&#231;o, existe uma divis&#227;o por categorias e <i>scripts</i>, al&#233;m de um mapeamento de equival&#234;ncia (por exemplo: Unicode &#34;sabe&#34; que &#34;&#169;&#34; &#233; aproximadamente equivalente a &#34;C&#34;, e &#34;&#246;&#34; &#233; similar a &#34;o&#34;). Por&#233;m, o mais importante a saber &#233; que Unicode ainda pode ser abstra&#237;do como um &#237;ndice unidimensional: quem mexe com XML (e HTML) j&#225; viu <i>entities</i> no formato <code>&#38;#8305;</code>, que renderiza como &#34;&#8305;&#34;, e nada mais &#233; do que o caractere Unicode com &#237;ndice decimal 8305, e, respectivamente, hexadecimal <code>&#34;\x{2071}&#34;</code>. Um formato padronizado, independente da linguagem (XML ou Perl, no caso) &#233; <code>U+2071</code>. Voltando ao Perl; este trata os dados textuais como Unicode, e armazena internamente como <code>utf8</code>.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="E_O_QUE_&#201;_UTF-8?"
+>E O QUE &#201; UTF-8?</a></h3>
+
+<p>Cada caractere de Unicode pode ter &#237;ndice de at&#233; 31 bits, mas, historicamente, linguagens de programa&#231;&#227;o e <i>markup</i> usam apenas os primeiros 7 bits do ASCII, suficientes para representar os textos em ingl&#234;s. Ent&#227;o, <code>utf8</code> nada mais &#233; do que uma codifica&#231;&#227;o capaz de acomodar todos os 31 bits do Unicode, por&#233;m mantendo o <i>backward compatibility</i> com ASCII. Simplificando, funciona da seguinte forma (sendo que &#34;1&#34; representa bit setado, &#34;0&#34; - n&#227;o-setado, e &#34;x&#34; &#233; o espa&#231;o reservado para o &#237;ndice do caractere codificado):</p>
+
+<pre>  BYTE 1   BYTE 2   BYTE 3   BYTE 4   BYTE 5   BYTE 6
+
+ 0xxxxxxx
+ 110xxxxx 10xxxxxx
+ 1110xxxx 10xxxxxx 10xxxxxx
+ 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+ 111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+ 1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</pre>
+
+<p>Assim, se o &#237;ndice do caractere a ser codificado couber em 7 bits, ser&#225; utilizado apenas 1 byte, mantendo a compatibilidade com ASCII. Se couber em 13 bits, ser&#227;o 2 bytes; 16 bits - 3 bytes; e assim por diante. Para dar uma pista de que o arquivo <b>n&#227;o &#233;</b> ASCII, existe o BOM (<i>Byte Order Mark</i>): sequ&#234;ncia de 3 bytes <code>(0xEF, 0xBB, 0xBF)</code> no come&#231;o do arquivo, no caso do <code>utf8</code>. &#34;Coincidentemente&#34;, essa sequ&#234;ncia traduz para caractere Unicode <code>U+FEFF</code>, tamb&#233;m conhecido como <i>zero-width non-breaking space</i>.</p>
+
+<p><b>OBSERVA&#199;&#195;O</b>: apesar do espa&#231;o reservado ser de 2**31, nem todos os &#237;ndices decodificam para caracteres Unicode v&#225;lidos!!!</p>
+
+<p>Voltando ao exemplo anterior, o caractere <code>U+2071</code> (&#34;&#8305;&#34;), representado em <code>utf8</code>, &#233; sequencia de bytes <code>(0xE2, 0x81, 0xB1)</code>. Eis um aparente paradoxo: string &#34;&#237;m&#227;&#34; tem 3 caracteres, mas, codificada em <code>utf8</code>, ocupa 5 bytes! Outro ponto importante &#233; que <code>utf8</code> &#233; interpret&#225;vel em uma s&#243; dire&#231;&#227;o, j&#225; que &#233; o primeiro byte da sequencia que determina o tamanho do bloco todo. Ent&#227;o, para que a coisa toda d&#234; certo, e <code>substr(&#34;&#237;m&#227;&#34;, 1, 1)</code> retorne &#34;m&#34;, Perl armazena metadados juntamente com strings em <code>utf8</code>. Vejamos:</p>
+
+<pre> #!/usr/bin/perl
+ use utf8;
+ use Devel::Peek;
+
+ my $str = &#34;&#237;m&#227;&#34;;
+ Dump $str;</pre>
+
+<p>Retorna:</p>
+
+<pre> SV = PV(0x1c61b78) at 0x1c80850
+   REFCNT = 1
+   FLAGS = (PADMY,POK,pPOK,UTF8)
+   PV = 0x1c7b150 &#34;\303\255m\303\243&#34;\0 [UTF8 &#34;\x{ed}m\x{e3}&#34;]
+   CUR = 5
+   LEN = 8</pre>
+
+<p>Para compara&#231;&#227;o, se <code>$str = &#34;teste&#34;</code>, temos:</p>
+
+<pre> SV = PV(0x75fb78) at 0x77e850
+   REFCNT = 1
+   FLAGS = (PADMY,POK,pPOK)
+   PV = 0x779150 &#34;teste&#34;\0
+   CUR = 5
+   LEN = 8</pre>
+
+<p>Obviamente, este <i>flag</i> de <code>utf8</code> &#233; leg&#237;vel e configur&#225;vel a partir do c&#243;digo-fonte; apesar de <a href="http://search.cpan.org/perldoc?perlunifaq" class="podlinkpod"
+>perlunifaq</a> condenar isso (com raz&#227;o ou n&#227;o, n&#227;o vem ao caso).</p>
+
+<p>Ent&#227;o, concluindo sobre a rela&#231;&#227;o do Perl com <code>utf8</code>. O Perl a partir da vers&#227;o 5.8 armazena e trata strings Unicode <b>internamente</b> codificadas com <code>utf8</code>. Entretanto, <b>externamente</b>, o Perl, por default e visando <i>backward compatibility</i>, emprega... <code>latin1</code> no c&#243;digo-fonte e <i>&#34;literal bytes&#34;</i> para I/O! Ou seja: &#233; de se esperar encrenca em OS moderno, tal como Ubuntu, a menos que os devidos cuidados sejam tomados.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="CONVERS&#195;O_DE_CODIFICA&#199;&#195;O_EM_PERL"
+>CONVERS&#195;O DE CODIFICA&#199;&#195;O EM PERL</a></h2>
+
+<p>Recapitulando: Perl, apesar de empregar Unicode (e com grande &#234;xito) e armazenar strings como <code>utf8</code> internamente, &#233; um tanto quanto inconsistente ao se comunicar com o &#34;mundo exterior&#34;. O pr&#243;prio interpretador espera que o c&#243;digo-fonte esteja em <code>latin1</code>, a menos que seja empregado o pragma <code>use utf8</code> (o que n&#227;o implica que I/O deixe de ser visto como <i>&#34;literal bytes&#34;</i>!!!). Portanto, a codifica&#231;&#227;o do texto precisa ser especificada explicitamente.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Usando_PerlIO"
+>Usando PerlIO</a></h3>
+
+<p>Frequentemente, a entrada de dados se d&#225; por meio dos filehandles. Se o seu Perl foi compilado com suporte a <a href="http://search.cpan.org/perldoc?perlio" class="podlinkpod"
+>perlio</a> (e quem, em s&#227; consci&#234;ncia, n&#227;o o faria?), este &#233; o jeito mais natural de codificar (at&#233; mesmo encriptar!) os dados. &#201; importante destacar que o Perl n&#227;o seleciona layer de <code>utf8</code> automaticamente mesmo que o arquivo a ser aberto contenha o <i>Byte Order Mark</i>. Ent&#227;o, para abrir um arquivo em <code>utf8</code>:</p>
+
+<pre> open(my $fh, &#39;&#60;:encoding(UTF-8)&#39;, &#39;lista.txt&#39;);</pre>
+
+<p><code>utf8</code> em especial possui um atalho:</p>
+
+<pre> open(my $fh, &#39;&#60;:utf8&#39;, &#39;lista.txt&#39;);</pre>
+
+<p>Se o arquivo tem o BOM ou qualquer outra marca&#231;&#227;o de codifica&#231;&#227;o (como no caso do XML), &#233; poss&#237;vel abrir o arquivo, verificar a codifica&#231;&#227;o s&#243; depois aplicar layer de codifica&#231;&#227;o:</p>
+
+<pre> open(my $fh, &#39;&#60;:bytes&#39;, &#39;lista.xml&#39;); # &#39;:bytes&#39; &#233; o inverso do &#39;:utf8&#39;!
+ my $header = &#60;$fh&#62;;
+ # exemplo tosqu&#237;ssimo de detector de codifica&#231;&#227;o para XML relativamente bem-formatado:
+ if ($header =~ /\butf-?8\b/i) {
+     binmode $fh, &#39;:utf8&#39;;
+ } elsif ($header =~ /\b(iso-?8859-?1|latin1)\b/i) {
+     binmode $fh, &#39;:latin1&#39;;
+ }</pre>
+
+<p>Algumas vezes, &#233; interessante configurar um layer de codifica&#231;&#227;o padr&#227;o. Para isso, temos o pragma <a href="http://search.cpan.org/perldoc?open" class="podlinkpod"
+>open</a>:</p>
+
+<pre> use open IO    =&#62; &#39;:encoding(utf8)&#39;;</pre>
+
+<p>Por outro lado, muitas vezes sabe-se que a entrada &#233; sempre em <code>utf8</code>, enquanto a sa&#237;da depende da configura&#231;&#227;o do <i>locale</i> do sistema em quest&#227;o. Neste caso:</p>
+
+<pre> use open IN    =&#62; &#39;:utf8&#39;;
+ use open OUT   =&#62; &#39;:locale&#39;;</pre>
+
+<p>Ali&#225;s, o pragma <a href="http://search.cpan.org/perldoc?open" class="podlinkpod"
+>open</a> s&#243; atua em open()/readpipe()/afins que se situam no mesmo escopo l&#233;xico. Para propagar o efeito para os handles STDIN/STDOUT/STDERR, &#233; necess&#225;rio acrescentar:</p>
+
+<pre> use open &#39;:std&#39;;</pre>
+
+<p>E, por fim, temos a cl&#225;ssica situa&#231;&#227;o em que precisamos mexer com um c&#243;digo-macarronada herdado de um sistema arcaico. Para ajudar, o Perl tem o argumento <code>-C</code> que controla o emprego dos layers. Por exemplo: <code>perl -CSDA script_das_trevas.pl --buscar=a&#231;a&#237;</code> vai for&#231;ar STD(IN|OUT|ERR) e todos os demais filehandles a serem <code>utf8</code>, al&#233;m de interpretar <code>@ARGV</code> como <code>utf8</code>. Ver <a href="http://search.cpan.org/perldoc?perlrun" class="podlinkpod"
+>perlrun</a> para maiores detalhes, mas lembre-se: isso &#233; uma <b>gambiarra</b>.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Usando_Encode"
+>Usando Encode</a></h3>
+
+<p>J&#225; que nem sempre &#233; poss&#237;vel empregar PerlIO (por exemplo, o cl&#225;ssico erro <i>Parsing of undecoded UTF-8 will give garbage when decoding entities at ...</i> se deve ao fato do <a href="http://search.cpan.org/perldoc?LWP%3A%3AUserAgent" class="podlinkpod"
+>LWP::UserAgent</a> pegar HTML como <i>octets</i>, mas <a href="http://search.cpan.org/perldoc?HTML%3A%3AParser" class="podlinkpod"
+>HTML::Parser</a> esperar como entrada Unicode), pode-se usar o <a href="http://search.cpan.org/perldoc?Encode" class="podlinkpod"
+>Encode</a> para fazer a convers&#227;o diretamente em mem&#243;ria, <i>&#34;ad hoc&#34;</i>. Sabendo a codifica&#231;&#227;o de uma string &#34;crua&#34;, ela primeiro deve ser &#34;Unicodificada&#34;:</p>
+
+<pre> $string = decode(&#39;iso-8859-1&#39;, $octets);</pre>
+
+<p>No caso, <code>$octets</code> &#233; o que veio <b>de fora</b> e <code>$string</code> ser&#225; uma c&#243;pia com qual o Perl pode trabalhar normalmente, fazendo match com <code>/\w+/</code>, ou <code>ucfirst($string)</code>, ou <i>whatever</i>. O processo inverso seria:</p>
+
+<pre> $octets = encode(&#39;iso-8859-1&#39;, $string);</pre>
+
+<p>E eis que surge um problema bastante comum e chato: digamos que voc&#234; baixou uma p&#225;gina HTML pelo protocolo HTTP. Se o servidor remoto teve a bondade de especificar a codifica&#231;&#227;o na tag &#34;Content-type&#34;, seja nos headers, seja nos <code>&#60;META</code>&#62; &#243;timo. Caso contr&#225;rio, forma-se o caso do ovo e da galinha: para processar o dado, precisa saber a codifica&#231;&#227;o, e, para saber a codifica&#231;&#227;o, precisa processar o dado. Muitos citam o <a href="http://search.cpan.org/perldoc?Encode%3A%3AGuess" class="podlinkpod"
+>Encode::Guess</a> nessa hora, entretanto, ele &#233; bastante incompat&#237;vel com a realidade dos falantes do idioma portugu&#234;s. Isso por que uma string em <code>utf8</code> &#233; considerada pelo autor do m&#243;dulo como amb&#237;gua: pode ser tanto <code>utf8</code> quanto <code>latin1</code>. De um modo geral, faz sentido: &#34;&#194;&#174;&#34; <b>pode ser</b> tanto a letra &#194; seguida de s&#237;mbolo de marca registrada, quanto apenas marca registrada. Mas, convenhamos, &#233; pouco prov&#225;vel o emprego de &#34;&#194;&#174;&#34; em um texto <b>human-readable</b>. Por outro lado, &#34;&#231;&#227;&#34; est&#225; definitivamente fora do padr&#227;o <code>utf8</code>. Ent&#227;o, segue aqui o script que exemplifica a heur&#237;stica da diferencia&#231;&#227;o entre <code>latin1</code> e <code>utf8</code>. Neste caso particular, &#233; um t&#237;pico &#34;html2text.pl&#34;:</p>
+
+<pre> #!/usr/bin/perl
+ use strict;
+
+ # Para ter certeza absoluta de que nenhum warning de &#39;Wide character&#39; escapou
+ use warnings &#39;all&#39;;
+
+ # Somente indica que este arquivo .pl est&#225; na codifica&#231;&#227;o UTF-8!!!
+ use utf8;
+
+ # Ignora codifica&#231;&#227;o de entrada
+ use open IN =&#62; &#39;:raw&#39;;
+ # Usa a codifica&#231;&#227;o de sa&#237;da padr&#227;o do sistema
+ use open OUT =&#62; &#39;:locale&#39;;
+
+ use Encode;
+ use HTML::Entities;
+ use Regexp::Common qw(balanced comment);
+
+ # L&#234; arquivo inteiro de uma vez, ao inv&#233;s de ler linha por linha
+ local $/ = undef;
+ while (my $buf = &#60;&#62;) {
+     # Se n&#227;o for UTF-8 v&#225;lido, assume ISO-8859-1
+     my $encoding = detect_utf8(\$buf) ? &#39;utf8&#39; : &#39;iso-8859-1&#39;;
+     # Processa a codifica&#231;&#227;o
+     $buf = decode($encoding, $buf);
+
+     # Trata tags HTML
+     $buf =~ s%$RE{comment}{HTML}%%gos;
+     $buf =~ s%&#60;(script|style)\b[^&#62;]*?&#62;.*?&#60;/\1&#62;% %gis;
+     $buf =~ s%$RE{balanced}{-parens=&#62;&#39;&#60;&#62;&#39;}% %gios;
+     $buf = decode_entities($buf);
+
+     # Extrai somente as palavras, normaliza e imprime
+     print &#34;\L$1 &#34; while $buf =~ m%([\w\-]+)%g;
+ }
+ print &#34;\n&#34;;
+
+
+ # detect_utf8(\$string)
+ # Recebe refer&#234;ncia para escalar com string a ser analisada e retorna:
+ # 0 - $string tem caracteres de 8 bits, n&#227;o valida como UTF-8;
+ # 1 - $string tem somente caracteres de 7 bits;
+ # 2 - $string tem caracteres de 8 bits, valida como UTF-8.
+ # Algoritmo original em PHP: http://www.php.net/manual/en/function.utf8-encode.php#85293
+ # F&#243;rmula da convers&#227;o: http://home.tiscali.nl/t876506/utf8tbl.html#algo
+ sub detect_utf8 {
+     use bytes;
+
+     my $str = shift;
+     my $d = 0;
+     my $c = 0;
+     my $b = 0;
+     my $bits = 0;
+     my $len = length ${$str};
+
+     for (my $i = 0; $i &#60; $len; $i++) {
+         $c = ord(substr(${$str}, $i, 1));
+         if ($c &#62;= 128) {
+             $d++;
+
+             if ($c &#62;= 254) {
+                 return 0;
+             } elsif ($c &#62;= 252) {
+                 $bits = 6;
+             } elsif ($c &#62;= 248) {
+                 $bits = 5;
+             } elsif ($c &#62;= 240) {
+                 $bits = 4;
+             } elsif ($c &#62;= 224) {
+                 $bits = 3;
+             } elsif ($c &#62;= 192) {
+                 $bits = 2;
+             } else {
+                 return 0;
+             }
+
+             if (($i + $bits) &#62; $len) {
+                 return 0;
+             }
+
+             while ($bits &#62; 1) {
+                 $i++;
+                 $b = ord(substr(${$str}, $i, 1));
+                 if (($b &#60; 128) || ($b &#62; 191)) {
+                     return 0;
+                 }
+                 $bits--;
+             }
+         }
+     }
+
+     return $d ? 2 : 1;
+ }</pre>
+
+<p>A fun&#231;&#227;o <code>detect_utf8()</code>, que &#34;emprestei&#34; dos coment&#225;rios da p&#225;gina de documenta&#231;&#227;o online do PHP, faz uma verifica&#231;&#227;o <b>aproximada</b> se o &#34;protocolo&#34; de <code>utf8</code> de guardar 31 bits por caractere &#233; respeitado. Se n&#227;o &#233;, das duas uma: os <i>octets</i> s&#227;o <code>ascii</code>, se nenhum exceder 7 bits por byte; ou a codifica&#231;&#227;o &#233; &#34;qualquer outra coisa&#34;. Se estamos trabalhando com textos em portugu&#234;s, a chance da &#34;outra coisa&#34; ser <code>latin1</code> &#233; de 99.9%. Se n&#227;o for suficiente, &#233; poss&#237;vel combinar o poder do <a href="http://search.cpan.org/perldoc?Encode%3A%3AGuess" class="podlinkpod"
+>Encode::Guess</a> com esta muleta; ou mesmo elaborar uma heur&#237;stica que leve em considera&#231;&#227;o a frequ&#234;ncia da ocorr&#234;ncia das letras em um texto. Esse &#250;ltimo caso &#233; realmente <b>o &#250;ltimo caso</b>: al&#233;m da complexidade, a quantidade de falsos-positivos chega a ser irritante. Quem mais se lembra como era navegar na Web l&#225; em 1996? Ao menos para mim, apareciam letrinhas &#225;rabes no lugar dos acentos <code>:P</code></p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Gotchas"
+>Gotchas</a></h3>
+
+<ul>
+<li>O <i>entity</i> <code>&#38;nbsp;</code>, tamb&#233;m conhecido como <i>non-breaking space</i>, <b>N&#195;O &#201; A MESMA COISA QUE UM ESPA&#199;O</b>!!! Ou seja: n&#227;o d&#225; <i>match</i> com <code>/\s/</code>. Ent&#227;o, infelizmente, tem que trat&#225;-lo como <code>\xa0</code>.</li>
+
+<li><a href="http://search.cpan.org/perldoc?DBD%3A%3Amysql" class="podlinkpod"
+>DBD::mysql</a> possui um mecanismo pr&#243;prio para &#34;conversar&#34; em <code>utf8</code>:
+<pre> use DBI;
+
+ my $dbh = DBI-&#62;connect(&#34;DBI:mysql:${database}:${hostname}&#34;, $username, $password) 
+    or die &#34;Erro de conex&#227;o: $DBI::errstr&#34;;
+
+ $dbh-&#62;{&#39;mysql_enable_utf8&#39;} = 1;
+
+ $dbh-&#62;do(&#39;SET NAMES utf8&#39;);</pre>
+</li>
+
+<li>A documenta&#231;&#227;o em POD &#233; codificada como <code>latin1</code> por padr&#227;o. Se o seu c&#243;digo-fonte est&#225; em <code>utf8</code>, precisa explicitar essa codifica&#231;&#227;o tamb&#233;m para se&#231;&#245;es POD:
+<pre> =encoding utf8</pre>
+
+<p>Entretanto, &#233; comum <a href="http://search.cpan.org/perldoc?perldoc" class="podlinkpod"
+>perldoc</a> ter problemas com documenta&#231;&#227;o n&#227;o-ASCII (por causa do <a href="http://search.cpan.org/perldoc?ngroff" class="podlinkpod"
+>ngroff</a> que tende a gerar aproxima&#231;&#227;o ASCII dos caracteres). Se for o caso, <code>perldoc -t</code> ajuda, apesar de perder &#34;frescuras&#34; da formata&#231;&#227;o.</p>
+</li>
+
+<li>Para saber os nomes das codifica&#231;&#245;es que o seu Perl suporta:
+<pre> perl -MEncode -le &#39;print for Encode-&#62;encodings(&#34;:all&#34;)&#39;</pre>
+
+<p>Repare que <code>latin1</code> n&#227;o est&#225; a&#237;, apesar do <code>iso-8859-1</code> estar. Isto por que &#233; um <i>alias</i>; assim como <code>utf-8</code> &#233; <i>alias</i> para <code>utf8</code>.</p>
+</li>
+
+<li>Nunca &#233; demais testar o seu script com <i>locales</i> diferentes:
+<pre> LANG=pt_BR.ISO-8859-1 perl extractor.pl
+ LANG=en_US.UTF-8 perl extractor.pl</pre>
+
+<p>Mas, curiosamente, no meu Ubuntu, que instalei e uso somente em ingl&#234;s, primeira linha d&#225; erro. <code>locale -a</code> revelou que s&#243; tenho en_US. A&#237; que entra <a href="http://search.cpan.org/perldoc?locale-gen" class="podlinkpod"
+>locale-gen</a>, citando a p&#225;gina manual do mesmo:</p>
+
+<pre> Compiled locale files take about 50MB of disk space, and most users only need few locales.  In order to save disk space, compiled locale files are not distributed in the locales package, but selected locales are automatically generated when this package is installed by running the locale-gen program.</pre>
+
+<p>Ent&#227;o &#233; s&#243; uma quest&#227;o de rodar:</p>
+
+<pre> sudo locale-gen pt_BR.ISO-8859-1</pre>
+</li>
+
+<li>Mesmo que o Perl tenha suporte a m&#250;ltiplas codifica&#231;&#245;es, tem hora em que a filosofia de UN*X se aplica bem e &#233; vantajoso pr&#233;-processar os dados <b>antes</b> de enviar para o Perl. Para o caso gen&#233;rico, temos o <a href="http://search.cpan.org/perldoc?iconv" class="podlinkpod"
+>iconv</a>:
+<pre> cat enc-iso8859-1.txt | iconv -f l1 -t utf8 | perl ...</pre>
+
+<p>Neste caso, o input &#233; convertido de <code>latin1</code> para <code>utf8</code> (<code>l1</code> &#233; abrevia&#231;&#227;o para <code>latin1</code>).</p>
+
+<p>J&#225; para HTML e XML, o <a href="http://search.cpan.org/perldoc?tidy" class="podlinkpod"
+>tidy</a> resolve o problema da codifica&#231;&#227;o, junto com virtualmente qualquer outro problema <code>;)</code></p>
+
+<pre> curl http://www.uol.com.br | tidy --input-encoding latin1 --output-encoding utf8 | perl ...</pre>
+
+<p>Sendo que no momento da escrita deste artigo UOL empregava <code>latin1</code> na sua home, essa linha &#34;normalizou&#34; para <code>utf8</code>. E, se o HTML for particularmente chato, <code>--output-encoding ascii</code> converter&#225; os caracteres em <i>numeric entities</i>, os quais <i>parsers</i> do Perl tratam particularmente bem.</p>
+
+<p><b>AVISO</b>: <a href="http://search.cpan.org/perldoc?tidy" class="podlinkpod"
+>tidy</a> processa o documento inteiro na RAM; enquanto isso n&#227;o afeta em nada HTML, XML de 2GB ser&#225; um problema s&#233;rio.</p>
+</li>
+
+<li>Um cuidado especial deve ser tomado com m&#243;dulos que empregam <a href="http://search.cpan.org/perldoc?perlxs" class="podlinkpod"
+>XS</a>; se s&#227;o interfaces para bibliotecas n&#227;o-Unicode, existe uma boa chance de que retornem <i>octets</i>.</li>
+</ul>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="RESUMO"
+>RESUMO</a></h2>
+
+<ul>
+<li>O script <i>aparentar</i> n&#227;o produzir erros relativos &#224; codifica&#231;&#227;o ainda n&#227;o significa que est&#225; tratando todos os dados coerentemente, ou seja, em Unicode.</li>
+
+<li>&#201; fortemente recomendado processar todos os dados em <code>utf8</code>, mesmo que entradas/sa&#237;das sejam qualquer outra coisa. Motivo: <b>qualquer coisa</b> converte para <code>utf8</code>; j&#225; a rec&#237;proca n&#227;o &#233; v&#225;lida.</li>
+
+<li><i>Locale</i> do sistema existe para ser respeitado. Ent&#227;o, nada mais justo do que come&#231;ar os scripts com:
+<pre> #!/usr/bin/perl
+ use strict;
+ use utf8;
+ use warnings &#39;all&#39;;
+ use open IO =&#62; &#39;:locale&#39;;</pre>
+
+<p>E, &#233; claro, salvar o arquivo em <code>utf8</code>.</p>
+</li>
+
+<li>Mesmo salvando o script em <code>utf8</code>, &#233; melhor evitar copiar &#38; colar a torto e a direito, <b>especialmente</b> para dentro das express&#245;es regulares! Pois veja s&#243;:
+<pre> s/[\-&#8208;&#8209;&#8210;&#8211;&#8722;]/-/g;</pre>
+
+<p>Dependendo da fonte, s&#227;o 6 caracteres <b>parecidos</b>, enquanto na realidade s&#227;o distintos:</p>
+
+<ul>
+<li><code>U+002D</code> HYPHEN-MINUS</li>
+
+<li><code>U+2010</code> HYPHEN</li>
+
+<li><code>U+2011</code> NON-BREAKING HYPHEN</li>
+
+<li><code>U+2012</code> FIGURE DASH</li>
+
+<li><code>U+2013</code> EN DASH</li>
+
+<li><code>U+2212</code> MINUS SIGN</li>
+</ul>
+
+<p>Ent&#227;o, escrever <b>por extenso</b> pode lhe poupar longas horas de <i>debugging</i>, futuramente:</p>
+
+<pre> s/[\x2d\x{2010}-\x{2013}\x{2212}]/-/g;</pre>
+</li>
+
+<li>Citei aqui apenas um apunhalado de t&#233;cnicas as quais desenvolvi empiricamente. Traduzindo: bati a cabe&#231;a at&#233; que deu certo, <b>para mim</b> <code>:P</code>
+<p>Ent&#227;o n&#227;o citei codifica&#231;&#245;es obscuras (como o <code>EBCDIC</code> que tive oportunidade de usar), e propositalmente omiti as coisas que, na pr&#225;tica, atrapalharam mais do que ajudaram (como <code>Encode::_utf8_on()</code>).</p>
+</li>
+</ul>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="REFER&#202;NCIAS"
+>REFER&#202;NCIAS</a></h2>
+
+<ul>
+<li><a href="http://search.cpan.org/perldoc?perlunicode" class="podlinkpod"
+>perlunicode</a>, <a href="http://search.cpan.org/perldoc?perluniintro" class="podlinkpod"
+>perluniintro</a>, <a href="http://search.cpan.org/perldoc?perlunitut" class="podlinkpod"
+>perlunitut</a> e <a href="http://search.cpan.org/perldoc?perlunifaq" class="podlinkpod"
+>perlunifaq</a></li>
+
+<li><a href="http://search.cpan.org/perldoc?perlio" class="podlinkpod"
+>PerlIO</a></li>
+
+<li><a href="http://search.cpan.org/perldoc?Encode" class="podlinkpod"
+>Encode</a></li>
+
+<li><a href="http://xpoint.ru/know-how/Perl/PodderzhkaUnicode" class="podlinkurl"
+>&#1055;&#1086;&#1076;&#1076;&#1077;&#1088;&#1078;&#1082;&#1072; Unicode</a></li>
+
+<li><a href="http://www.php.net/manual/en/function.utf8-encode.php#85293" class="podlinkurl"
+>is_utf8 function, to detect valid UTF-8 text</a></li>
+
+<li><a href="http://home.tiscali.nl/t876506/utf8tbl.html" class="podlinkurl"
+>Unicode UTF-8 encoding</a></li>
+
+<li><a href="http://www.gyford.com/phil/writing/2008/04/25/utf8_mysql_perl.php" class="podlinkurl"
+>UTF8, MySQL, Perl and PHP (Phil Gyford&#8217;s website)</a></li>
+
+<li><a href="http://www.joelonsoftware.com/articles/Unicode.html" class="podlinkurl"
+>The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)</a></li>
+</ul>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="AUTOR"
+>AUTOR</a></h2>
+
+<p>Stanislaw Pusep <a href="mailto:stas@sysd.org" class="podlinkurl"
+>&#60; stas@sysd.org &#62;</a></p>
+
+<p>Blog: <a href="http://sysd.org/" class="podlinkurl"
+>sysd.org</a></p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="LICEN&#199;A"
+>LICEN&#199;A</a></h2>
+
+<p>Este texto est&#225; licenciado sob os termos da Creative Commons by-sa, <a href="http://creativecommons.org/licenses/by-sa/3.0/br/" class="podlinkurl"
+>http://creativecommons.org/licenses/by-sa/3.0/br/</a></p>
+
+</body></html>
