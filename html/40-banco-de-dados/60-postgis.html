@@ -87,7 +87,7 @@ mas isso est&#225; sendo solucionado com o passar do tempo &#224; medida que nov
 <dd>
 <p>POINT( -20.1929 -44.11221 )</p>
 
-  <img src="../../images/postfix/point.png">
+  <img src="../../images/postgis/point.png">
 
 
 
@@ -97,7 +97,7 @@ mas isso est&#225; sendo solucionado com o passar do tempo &#224; medida que nov
 <dd>
 <p>LINESTRING(0 0,1 1,1 2)</p>
 
-  <img src="../../images/postfix/linestring.png">
+  <img src="../../images/postgis/linestring.png">
 
 
 
@@ -110,7 +110,7 @@ mas isso est&#225; sendo solucionado com o passar do tempo &#224; medida que nov
 2 2,
 1 2,1 1))</p>
 
-  <img src="../../images/postfix/polygon.png">
+  <img src="../../images/postgis/polygon.png">
 
 
 
@@ -120,7 +120,7 @@ mas isso est&#225; sendo solucionado com o passar do tempo &#224; medida que nov
 <dd>
 <p>MULTIPOINT(0 0,1 2)</p>
 
-  <img src="../../images/postfix/multipoint.png">
+  <img src="../../images/postgis/multipoint.png">
 
 
 
@@ -130,7 +130,7 @@ mas isso est&#225; sendo solucionado com o passar do tempo &#224; medida que nov
 <dd>
 <p>MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))</p>
 
-  <img src="../../images/postfix/multilinestring.png">
+  <img src="../../images/postgis/multilinestring.png">
 
 
 
@@ -141,7 +141,7 @@ mas isso est&#225; sendo solucionado com o passar do tempo &#224; medida que nov
 <p>MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)),
 ((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1)))</p>
 
-  <img src="../../images/postfix/multipolygon.png">
+  <img src="../../images/postgis/multipolygon.png">
 
 
 
@@ -151,7 +151,7 @@ mas isso est&#225; sendo solucionado com o passar do tempo &#224; medida que nov
 <dd>
 <p>GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))</p>
 
-  <img src="../../images/postfix/geometrycollection.png">
+  <img src="../../images/postgis/geometrycollection.png">
 
 
 </dd>
@@ -222,20 +222,25 @@ name="Exemplo:_Antenas_de_telefonia_celular_no_estado_de_S&#227;o_Paulo"
 >IBGE</a> [<a href="#IBGE" class="podlinkpod"
 >1</a>] como mapa base para o nosso exemplo com dados reais. Cruzaremos esses mapas com os dados obtidos do projeto <a href="http://http://www.opencellid.org/" class="podlinkurl"
 >OpenCellID</a> [<a href="#OpenCellID" class="podlinkpod"
->2</a>], que &#233; um projeto open source que cataloga informa&#231;&#245;es sobre antenas de celulares no mundo todo.</p>
+>2</a>], um projeto open source que cataloga informa&#231;&#245;es sobre antenas de celulares no mundo todo.</p>
 
 <h2><a class='u' href='#___top' title='click to go to top of document'
 name="Criando_banco_dados_com_suporte_ao_PostGIS"
 >Criando banco dados com suporte ao PostGIS</a></h2>
 
-<p>Em nome da brevidade, omitiremos os passos que envolvem a instala&#231;&#227;o e configura&#231;&#227;o do PostGIS. Essas informa&#231;&#245;es est&#227;o dispon&#237;veis no site oficial do projeto[<a href="#PostGIS_-_Site_Oficial" class="podlinkpod"
->3</a>].</p>
+<p>Para ilustrar nosso exemplo, uma m&#225;quina com Debian 6.0 (Squeeze) ser&#225; usada.</p>
 
-<p>Os comandos a seguir habilitam o suporte ao PostGIS no PostgreSQL:</p>
+<p>Primeiro, a instala&#231;&#227;o do PostGis:</p>
 
-<pre>  $ createdb exemplo
-  $ psql -d exemplo -f postgis.sql
-  $ psql -d exemplo -f spatial_ref_sys.sql</pre>
+<pre>  root@debian6:~# apt-get install postgresql-8.4-postgis</pre>
+
+<p>Os comandos a seguir habilitam o suporte ao PostGIS no banco &#34;exemplo&#34;, criado no PostgreSQL:</p>
+
+<pre>  root@debian6:~# su postgres
+  $ createdb exemplo
+  $ createlang plpgsql exemplo
+  $ psql -d exemplo -f /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
+  $ psql -d exemplo -f /usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql</pre>
 
 <h2><a class='u' href='#___top' title='click to go to top of document'
 name="Populando_o_banco_com_dados"
@@ -251,17 +256,18 @@ name="Populando_o_banco_com_dados"
 
 <pre>  id,lat,lon,mcc,mnc,lac,cellid,range,nbSamples,created_at,updated_at</pre>
 
-<p>O arquivo &#233; imenso e possui informa&#231;&#245;es de antenas de telefonia m&#243;vel do mundo inteiro. A n&#243;s, interessa somente as colunas &#34;lat&#34; e &#34;lon&#34; das linhas que possuam o &#34;mcc&#34; igual a 724, que s&#227;o as antenas localizadas no Brasil e ser&#227;o inseridas na tabela cel(id,position) (onde &#34;position&#34; &#233; do tipo geometry) usando a nota&#231;&#227;o WKT &#34;POINT( longitude latitude )&#34;. Notem que nessa nota&#231;&#227;o a ordem das coordenadas geogr&#225;ficas &#233; diferente da que estamos acostumados:</p>
+<p>O arquivo &#233; imenso e possui informa&#231;&#245;es de antenas de telefonia m&#243;vel do mundo inteiro. Nos interessa somente as colunas &#34;lat&#34; e &#34;lon&#34; das linhas que possuam o &#34;mcc&#34; igual a 724, que s&#227;o as antenas localizadas no Brasil e ser&#227;o inseridas na tabela cel(id,position) (onde &#34;position&#34; &#233; do tipo geometry) usando a nota&#231;&#227;o WKT &#34;POINT( longitude latitude )&#34;. Notem que nessa nota&#231;&#227;o a ordem das coordenadas geogr&#225;ficas &#233; diferente da que estamos acostumados. A seguir, alguns one-liners em Perl fazem a filtragem dos dados que ser&#227;o inseridos no banco:</p>
 
 <pre>  $ perl -F&#39;,&#39; -anE &#39;print if $F[4] == 724&#39; cells.txt &#62; br_cells.txt
   $ perl -F&#39;,&#39; -anE &#39;say qq/INSERT INTO cell(position) VALUES(&#34;POINT( $F[2]  $F[1] )&#34;::geometry);/&#39; br_cells.txt &#62; cell.sql
   $ psql -d exemplo -f cell.sql</pre>
 
-<p>A tabela &#34;cell&#34; agora possui posi&#231;&#245;es de toda as antenas do Brasil, ainda podemos fazer outra filtragem, desta vez utilizando as condi&#231;&#245;es de jun&#231;&#227;o dispon&#237;veis no PostGIS, para filtrar somente as antenas do estado de S&#227;o Paulo. Vamos criar uma tabela contendo somente as antenas presentes em SP:</p>
+<p>A tabela &#34;cell&#34; agora possui posi&#231;&#245;es de todas as antenas do Brasil. Ainda podemos fazer outra filtragem, desta vez utilizando as condi&#231;&#245;es de jun&#231;&#227;o dispon&#237;veis no PostGIS para filtrar somente as antenas do estado de S&#227;o Paulo. Vamos criar uma tabela contendo somente as antenas presentes em SP:</p>
 
-<pre>  exemplo=# CREATE TABLE sp_cell AS 
-  exemplo-# SELECT cell.* FROM cell
-  exemplo-# JOIN mapa_sp on ST_Within(cell.position,mapa_sp.the_geom);</pre>
+<pre>  exemplo=# CREATE TABLE sp_cell AS
+  exemplo-#   SELECT cell.*
+  exemplo-#   FROM cell
+  exemplo-#   JOIN mapa_sp on ST_Within(cell.position, mapa_sp.the_geom);</pre>
 
 <h2><a class='u' href='#___top' title='click to go to top of document'
 name="Consultas_interessantes"
@@ -310,7 +316,7 @@ name="Consultas_interessantes"
 name="Visualizando_dados_geogr&#225;ficos"
 >Visualizando dados geogr&#225;ficos</a></h2>
 
-<p>Como pudemos ver, s&#227;o grandes as possibilidades de consultas e informa&#231;&#245;es obtidas, e abrem um horizonte para diversas combina&#231;&#245;es de diferentes tipos de dados que podem ser cruzados e relacionados espacialmente. Mas o acesso e visualiza&#231;&#227;o somente em modo texto n&#227;o tem muita gra&#231;a. E pra isso foram desenvolvidas ferramentas que possibilitam a plotagem de dados e rasteriza&#231;&#227;o de mapas. Muitos desses projetos oferecem suporte ao PostGIS como fonte de dados e dividem-se em aplica&#231;&#245;es baseadas em web ou desktop.</p>
+<p>Como pudemos ver, s&#227;o grandes as possibilidades de consultas e informa&#231;&#245;es obtidas e abrem um horizonte para diversas combina&#231;&#245;es de diferentes tipos de dados que podem ser cruzados e relacionados espacialmente. &#192; primeira vista, para um usu&#225;rio final os resultados em forma de texto podem parecer &#34;crus&#34; e carecem de uma representa&#231;&#227;o gr&#225;fica t&#227;o comumente associada a dados espaciais. Para isso foram desenvolvidas ferramentas que possibilitam a plotagem de dados e rasteriza&#231;&#227;o de mapas obtidos de resultados de consultas ou de tabelas inteiras. Muitos desses projetos oferecem suporte ao PostGIS como fonte de dados e dividem-se em aplica&#231;&#245;es baseadas em web ou desktop.</p>
 
 <p>Clique nos links e conhe&#231;a esses projetos, com destaque para o TerraView, desenvolvido aqui mesmo no Brasil, pelo INPE:</p>
 
