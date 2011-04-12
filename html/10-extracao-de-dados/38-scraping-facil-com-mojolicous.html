@@ -1,0 +1,610 @@
+<html><head><title>Scraping f&#225;cil com Mojolicious (e feeds Atom!)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#Scraping_f%E1cil_com_Mojolicious_(e_feeds_Atom!)'>Scraping f&#225;cil com Mojolicious (e feeds Atom!)</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#O_Cen%E1rio'>O Cen&#225;rio</a>
+    <li class='indexItem indexItem2'><a href='#Obtendo_a_p%E1gina'>Obtendo a p&#225;gina</a>
+    <li class='indexItem indexItem2'><a href='#O_%22DOM%22_de_ler_o_conte%FAdo_de_sites'>O &#34;DOM&#34; de ler o conte&#250;do de sites</a>
+    <li class='indexItem indexItem2'><a href='#Acessando_o_DOM'>Acessando o DOM</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Seletores_CSS%3F'>Seletores CSS?</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#Extraindo_as_informa%E7%F5es'>Extraindo as informa&#231;&#245;es</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Pulando_etapas'>Pulando etapas</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#O_Desafio%3A_Transformando_os_dados_em_um_Feed_RSS%2FAtom'>O Desafio: Transformando os dados em um Feed RSS/Atom</a>
+    <li class='indexItem indexItem2'><a href='#Conclus%E3o'>Conclus&#227;o</a>
+    <li class='indexItem indexItem2'><a href='#Guia_de_Refer%EAncia_R%E1pida%3A_Seletores_CSS'>Guia de Refer&#234;ncia R&#225;pida: Seletores CSS</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Seletores_simples'>Seletores simples</a>
+      <ul   class='indexList indexList4'>
+        <li class='indexItem indexItem4'><a href='#*'>*</a>
+        <li class='indexItem indexItem4'><a href='#E'>E</a>
+        <li class='indexItem indexItem4'><a href='#E%5Bfoo%5D'>E[foo]</a>
+        <li class='indexItem indexItem4'><a href='#E%5Bfoo%3D%22bar%22%5D'>E[foo=&#34;bar&#34;]</a>
+        <li class='indexItem indexItem4'><a href='#E%5Bfoo~%3D%22bar%22%5D'>E[foo~=&#34;bar&#34;]</a>
+        <li class='indexItem indexItem4'><a href='#E%5Bfoo%5E%3D%22bar%22%5D'>E[foo^=&#34;bar&#34;]</a>
+        <li class='indexItem indexItem4'><a href='#E%5Bfoo%24%3D%22bar%22%5D'>E[foo$=&#34;bar&#34;]</a>
+        <li class='indexItem indexItem4'><a href='#E%5Bfoo*%3D%22bar%22%5D'>E[foo*=&#34;bar&#34;]</a>
+        <li class='indexItem indexItem4'><a href='#E%5Bfoo%3Dbar%5D%5Bbar%3Dbaz%5D'>E[foo=bar][bar=baz]</a>
+        <li class='indexItem indexItem4'><a href='#E_F'>E F</a>
+        <li class='indexItem indexItem4'><a href='#E_%3E_F'>E &#62; F</a>
+        <li class='indexItem indexItem4'><a href='#E_%2B_F'>E + F</a>
+        <li class='indexItem indexItem4'><a href='#E_~_F'>E ~ F</a>
+        <li class='indexItem indexItem4'><a href='#E%2C_F%2C_G'>E, F, G</a>
+      </ul>
+      <li class='indexItem indexItem3'><a href='#Seletores_Avan%E7ados'>Seletores Avan&#231;ados</a>
+      <ul   class='indexList indexList4'>
+        <li class='indexItem indexItem4'><a href='#E%3Aroot'>E:root</a>
+        <li class='indexItem indexItem4'><a href='#E%3Achecked'>E:checked</a>
+        <li class='indexItem indexItem4'><a href='#E%3Aempty'>E:empty</a>
+        <li class='indexItem indexItem4'><a href='#E%3Anth-child(n)'>E:nth-child(n)</a>
+        <li class='indexItem indexItem4'><a href='#E%3Anth-last-child(n)'>E:nth-last-child(n)</a>
+        <li class='indexItem indexItem4'><a href='#E%3Anth-of-type(n)'>E:nth-of-type(n)</a>
+        <li class='indexItem indexItem4'><a href='#E%3Anth-last-of-type(n)'>E:nth-last-of-type(n)</a>
+        <li class='indexItem indexItem4'><a href='#E%3Afirst-child'>E:first-child</a>
+        <li class='indexItem indexItem4'><a href='#E%3Alast-child'>E:last-child</a>
+        <li class='indexItem indexItem4'><a href='#E%3Afirst-of-type'>E:first-of-type</a>
+        <li class='indexItem indexItem4'><a href='#E%3Alast-of-type'>E:last-of-type</a>
+        <li class='indexItem indexItem4'><a href='#E%3Aonly-child'>E:only-child</a>
+        <li class='indexItem indexItem4'><a href='#E%3Aonly-of-type'>E:only-of-type</a>
+        <li class='indexItem indexItem4'><a href='#E%3Anot(s)'>E:not(s)</a>
+      </ul>
+    </ul>
+  </ul>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Scraping_f&#225;cil_com_Mojolicious_(e_feeds_Atom!)"
+>Scraping f&#225;cil com Mojolicious (e feeds Atom!)</a></h1>
+
+<p>A su&#237;te Mojolicious de m&#243;dulos para web pode ser mais conhecida por permitir a <a href="http://sao-paulo.pm.org/artigo/2010/Mojolicious" class="podlinkurl"
+>cria&#231;&#227;o r&#225;pida e f&#225;cil de sites din&#226;micos</a>,
+mas oferece muitas outras facilidades,
+em particular para varredura e coleta de dados de outros sites - ou <i>Web Scraping</i>.</p>
+
+<p>Neste artigo,
+vamos mostrar como &#233; f&#225;cil escrever um scraper em Perl sabendo apenas seletores CSS.
+Para completar,
+vamos adicionar um pequeno desafio - a cria&#231;&#227;o de <a href="https://secure.wikimedia.org/wikipedia/en/wiki/Atom_%28standard%29" class="podlinkurl"
+>feeds Atom</a> - e mostrar como o <a href="http://search.cpan.org" class="podlinkurl"
+>CPAN</a> nos ajuda a desenvolver software como se fossem pe&#231;as de Lego esperando para serem conectadas!</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="O_Cen&#225;rio"
+>O Cen&#225;rio</a></h2>
+
+<p>Digamos,
+por exemplo,
+que queremos obter uma lista de <a href="http://sao-paulo.pm.org/artigos" class="podlinkurl"
+>todos os artigos publicados no site da S&#227;o Paulo Perl Mongers</a>.</p>
+
+<p>A primeira coisa a fazer &#233; entender a estrutura do documento HTML em que as informa&#231;&#245;es est&#227;o.
+Para isso,
+abrimos a p&#225;gina que lista os artigos e olhamos o c&#243;digo fonte.
+Abaixo,
+um trecho do que foi encontrado:</p>
+
+<pre>   &#60;div class=&#34;top&#34;&#62;
+     &#60;h2&#62;Artigos&#60;/h2&#62;
+     &#60;div class=&#34;whois&#34;&#62;
+       &#60;h3&#62;2010&#60;/h3&#62;
+       &#60;ul&#62;
+         &#60;li&#62;
+           &#60;a href=&#34;/artigo/2010/comoescreverperlescalavelparaoseuclustermysql&#34;&#62;Como Escrever Perl Escal&#225;vel para o seu Cluster MySQL&#60;/a&#62;&#60;span class=&#34;autor&#34;&#62; [Luis Motta Campos]&#60;/span&#62;
+         &#60;/li&#62;
+         &#60;li&#62;
+           &#60;a href=&#34;/artigo/2010/orliteumaabordagemsimplesparautilizarsqlite&#34;&#62;ORLite - Uma abordagem simples para utilizar SQLite&#60;/a&#62;&#60;span class=&#34;autor&#34;&#62; [Daniel Vinciguerra]&#60;/span&#62;
+         &#60;/li&#62;
+         ...
+       &#60;/ul&#62;
+       &#60;h3&#62;2009&#60;/h3&#62;
+       &#60;ul&#62;
+         ...</pre>
+
+<p>&#211;timo, a p&#225;gina parece ter toda a informa&#231;&#227;o que precisamos. Hora de automatizar!</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Obtendo_a_p&#225;gina"
+>Obtendo a p&#225;gina</a></h2>
+
+<p>Fazer um programa que acessa a p&#225;gina em quest&#227;o (<a href="http://sao-paulo.pm.org/artigos" class="podlinkurl"
+>http://sao-paulo.pm.org/artigos</a>) &#233; muito simples:</p>
+
+<pre>   use strict;
+   use warnings;
+   use Mojo::UserAgent;
+
+   my $client = Mojo::UserAgent-&#62;new-&#62;get( &#39;http://sao-paulo.pm.org/artigos&#39; );</pre>
+
+<p>Pronto. <a href="http://search.cpan.org/perldoc?Mojo::UserAgent" class="podlinkurl"
+>Mojo::UserAgent</a> &#233; um cliente HTTP 1.1 e WebSocket completo, com E/S ass&#237;ncrona e suporte transparente a TLS, epoll e kqueue. Sua API &#233; bastante simples e direta, como pudemos observar, e a partir desse ponto em nosso c&#243;digo o objeto <code>$client</code> j&#225; carregou o site e estamos prontos para acessar seu conte&#250;do.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="O_&#34;DOM&#34;_de_ler_o_conte&#250;do_de_sites"
+>O &#34;DOM&#34; de ler o conte&#250;do de sites</a></h2>
+
+<p>Ap&#243;s uma requisi&#231;&#227;o web, o que nos interessa &#233; a resposta obtida, ou, mais especificamente, o &#34;DOM&#34; da p&#225;gina recebida como resposta. O <a href="https://secure.wikimedia.org/wikipedia/pt/wiki/Modelo_de_Objeto_de_Documentos" class="podlinkurl"
+>Modelo de Objetos de Documentos</a> - ou DOM, <i>Document Object Model</i> - &#233; uma <a href="http://www.w3.org/DOM/" class="podlinkurl"
+>especifica&#231;&#227;o do W3C</a> que possibilita acesso e atualiza&#231;&#227;o din&#226;micas do conte&#250;do, estrutura e estilo de documentos. &#201; o que o seu navegador constr&#243;i e interpreta para exibir o conte&#250;do de sites, e que vai nos ajudar imensamente na obten&#231;&#227;o dos dados desejados.</p>
+
+<p>Se voc&#234; n&#227;o est&#225; familiarizado com o conceito, imagine um documento HTML como uma grande &#225;rvore hier&#225;rquica de tags, agrupadas e tratadas mais ou menos como a &#225;rvore de diret&#243;rios do seu sistema de arquivos. Veja novamente o trecho da p&#225;gina que queremos analisar:</p>
+
+<pre>   &#60;div class=&#34;top&#34;&#62;
+     &#60;h2&#62;Artigos&#60;/h2&#62;
+     &#60;div class=&#34;whois&#34;&#62;
+       &#60;h3&#62;2010&#60;/h3&#62;
+       &#60;ul&#62;
+         &#60;li&#62;
+           &#60;a href=&#34;/artigo/2010/comoescreverperlescalavelparaoseuclustermysql&#34;&#62;Como Escrever Perl Escal&#225;vel para o seu Cluster MySQL&#60;/a&#62;&#60;span class=&#34;autor&#34;&#62; [Luis Motta Campos]&#60;/span&#62;
+         &#60;/li&#62;
+         &#60;li&#62;
+           &#60;a href=&#34;/artigo/2010/orliteumaabordagemsimplesparautilizarsqlite&#34;&#62;ORLite - Uma abordagem simples para utilizar SQLite&#60;/a&#62;&#60;span class=&#34;autor&#34;&#62; [Daniel Vinciguerra]&#60;/span&#62;
+         &#60;/li&#62;
+         ...
+       &#60;/ul&#62;
+       &#60;h3&#62;2009&#60;/h3&#62;
+       &#60;ul&#62;
+         ...</pre>
+
+<p>No c&#243;digo acima, o primeiro <code>&#60;div&#62;</code> possui a classe &#34;top&#34; como atributo e podemos ver dois filhos: o <code>&#60;h2&#62;</code>, sem atributos, com o texto &#34;Artigos&#34; e nenhum filho; e o outro <code>&#60;div&#62;</code>, com a classe &#34;whois&#34; como atributo e v&#225;rios filhos. Desses filhos, vemos dois <code>&#60;h3&#62;</code> e dois <code>&#60;ul&#62;</code>, e se voc&#234; abrir o c&#243;digo completo da p&#225;gina ver&#225; muitos outros. Tags no mesmo n&#237;vel s&#227;o irm&#227;s entre si, mesmo tendo tipos diferentes. Podemos seguir a estrutura adiante, ver que cada <code>&#60;ul&#62;</code> tem v&#225;rios filhos do tipo <code>&#60;li&#62;</code>, que por sua vez cont&#233;m tags <code>&#60;a&#62;</code> com o link e t&#237;tulo dos artigos, e tags <code>&#60;span&#62;</code> com o nome dos autores entre colchetes.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Acessando_o_DOM"
+>Acessando o DOM</a></h2>
+
+<p>Sabendo a nomenclatura, podemos solicitar o <i>DOM</i> da resposta obtida por nosso cliente Web e acessar cada um desses elementos facilmente atrav&#233;s be buscas por seletores CSS!</p>
+
+<pre>  my $dom = $client-&#62;res-&#62;dom;</pre>
+
+<p>A chamada acima nos retorna um objeto <a href="http://search.cpan.org/perldoc?Mojo::DOM" class="podlinkurl"
+>Mojo::DOM</a>, que oferece o conte&#250;do do site j&#225; devidamente processado como uma &#225;rvore DOM XML/HTML5 minimalista e bastante relaxada, ou seja, funcional mesmo que o site em quest&#227;o n&#227;o tenha um html em conformidade com os padr&#245;es do W3C - o que, infelizmente, parece praxe nos dias de hoje.</p>
+
+<p>O Mojo::DOM nos fornece dois m&#233;todos principais para obten&#231;&#227;o de elementos de uma p&#225;gina:</p>
+
+<dl>
+<dt><a name="$dom-&#62;at(_&#39;seletor&#39;_)"
+>$dom-&#62;at( &#39;seletor&#39; )</a></dt>
+
+<dd>
+<p>Retorna objeto representando o primeiro elemento que casa com o seletor especificado.</p>
+
+<dt><a name="$dom-&#62;find(_&#39;seletor&#39;_)"
+>$dom-&#62;find( &#39;seletor&#39; )</a></dt>
+
+<dd>
+<p>Retorna uma lista de objetos representando todos os elementos que casam com o seletor especificado.</p>
+</dd>
+</dl>
+
+<p>Portanto, para obter a lista de elementos representando artigos publicados, podemos fazer algo como:</p>
+
+<pre>   my $artigos = $dom-&#62;find( &#39;div[class=&#34;whois&#34;] &#62; ul &#62; li&#39; );</pre>
+
+<p>Ou seja, queremos todos os elementos &#34;li&#34; filhos de tags &#34;ul&#34; que sejam por sua vez filhas de tags &#34;div&#34; com a classe &#34;whois&#34;. Confuso? Experimente ler da esquerda para a direita ent&#227;o: queremos ir de tags &#34;div&#34; com a classe &#34;whois&#34; para os &#34;ul&#34; filhos dela, e destes para os &#34;li&#34;. Melhor?</p>
+
+<p>Note que assim o DOM vai pegar todos os &#34;ul&#34; dispon&#237;veis no documento, ou seja, todos os artigos, independente do ano - exatamente como queremos!</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Seletores_CSS?"
+>Seletores CSS?</a></h3>
+
+<p>Seletores como o acima s&#227;o utilizados em CSS para associar um estilo de formata&#231;&#227;o a uma determinada tag - ou conjunto de tags - HTML. &#201; uma nota&#231;&#227;o simples e ao mesmo tempo muito vers&#225;til, que h&#225; alguns anos vem sendo usada com sucesso por bibliotecas javascript como o <a href="http://jquery.com" class="podlinkurl"
+>jQuery</a>, especialmente porque podemos combinar seletores da forma que acharmos mais adequada para acessarmos o(s) elemento(s) desejado(s).</p>
+
+<p>Essa naturalmente n&#227;o &#233; a &#250;nica forma de se chegar aos elementos em quest&#227;o, mas &#233; a que vamos usar aqui. Sinta-se &#224; vontade para experimentar <a href="http://search.cpan.org/perldoc?outros%20seletores#Seletores_Simples" class="podlinkpod"
+>&#34;Seletores Simples&#34; in outros seletores</a> :)</p>
+
+<p>Para quem ainda n&#227;o est&#225; acostumado com a sintaxe de seletores, colocamos um <a href="http://search.cpan.org/perldoc?guia%20de%20refer%EAncia%20r%E1pida%20com%20os%20principais%20seletores%20CSS#Guia_de_Refer%EAncia_R%E1pida%3A_Seletores_CSS" class="podlinkpod"
+>&#34;Guia de Refer&#234;ncia R&#225;pida: Seletores CSS&#34; in guia de refer&#234;ncia r&#225;pida com os principais seletores CSS</a>.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Extraindo_as_informa&#231;&#245;es"
+>Extraindo as informa&#231;&#245;es</a></h2>
+
+<p>Pronto para pegar o que nos interessa? Vamos l&#225;! Primeiro, lembre-se que colocamos na vari&#225;vel <code>$artigos</code> todos os elementos <code>&#60;li&#62;</code> e o que eles cont&#233;m. Assim, podemos utilizar os m&#233;todos auxiliares do Mojo::DOM para obter, de cada um deles, o t&#237;tulo, a url e o autor:</p>
+
+<pre>    foreach my $artigo (@$artigos) {
+        my $titulo = $artigo-&#62;at(&#39;a&#39;)-&#62;text;
+        my $url    = $artigo-&#62;at(&#39;a&#39;)-&#62;attrs-&#62;{&#39;href&#39;};
+        my $autor  = $artigo-&#62;at(&#39;span&#39;)-&#62;text;
+
+        # vamos retirar os &#34;[&#34; e &#34;]&#34; dos nomes dos autores,
+        # e aproveitar para eliminar espa&#231;os desnecess&#225;rios.
+        $autor =~ s/\s*[\[\]]//g;
+
+        # agora vamos exibir o que encontramos
+        print &#34;$titulo ($url) &#39;$autor&#39;\n&#34;;
+    }</pre>
+
+<p>A primeira linha do la&#231;o acima diz para colocarmos em <code>$titulo</code> o texto que estiver dentro da tag <code>&#60;a&#62;</code>. Em outras palavras, se temos algo como:</p>
+
+<pre>   &#60;a href=&#34;link&#34;&#62;isso &#233; um texto&#60;/a&#62;</pre>
+
+<p>a chamada <code>at(&#39;a&#39;)-&#62;text</code> retornar&#225; &#34;<code>isso &#233; um texto</code>&#34;.</p>
+
+<p>Para obter a URL, precisamos do attributo &#34;<code>href</code>&#34; desta tag, portanto escrevemos <code>at(&#39;a&#39;)-&#62;attrs-&#62;{&#39;href&#39;}</code>.</p>
+
+<p>Finalmente, como o autor est&#225; envolvido em uma tag <code>&#60;span&#62;</code>, utilizamos <code>-&#62;text</code> exatamente como fizemos para o t&#237;tulo.</p>
+
+<p>O c&#243;digo completo de nosso crawler fica:</p>
+
+<pre>   use strict;
+   use warnings;
+   use Mojo::UserAgent;
+
+   my $client = Mojo::UserAgent-&#62;new-&#62;get( &#39;http://sao-paulo.pm.org/artigos&#39; );
+   my $dom = $client-&#62;res-&#62;dom;
+   my $artigos = $dom-&#62;find( &#39;div[class=&#34;whois&#34;] &#62; ul &#62; li&#39; );
+
+   
+   foreach my $artigo (@$artigos) {
+       my $titulo = $artigo-&#62;at(&#39;a&#39;)-&#62;text;
+       my $url = $artigo-&#62;at(&#39;a&#39;)-&#62;attrs-&#62;{&#39;href&#39;};
+       my $autor = $artigo-&#62;at(&#39;span&#39;)-&#62;text;
+
+       # vamos retirar os &#34;[&#34; e &#34;]&#34; dos nomes dos autores,
+       # e aproveitar para eliminar espa&#231;os desnecess&#225;rios.
+       $autor =~ s/\s*[\[\]]//g;
+
+       # agora vamos exibir o que encontramos
+       print &#34;$titulo ($url) &#39;$autor&#39;\n&#34;;
+   }</pre>
+
+<p>Simples, n&#227;o?</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Pulando_etapas"
+>Pulando etapas</a></h3>
+
+<p>Voc&#234; deve ter reparado que fazemos algumas chamadas encadeadas, como <code>-&#62;new-&#62;get</code> e <code>-&#62;res-&#62;dom</code>. De fato, Mojo::UserAgent e Mojo::DOM retornam sempre o pr&#243;prio objeto, de modo que podemos encadear todas as chamadas! Mais ainda, o m&#233;todo <code>find()</code> possui seus pr&#243;prios iteradores para que n&#227;o precisemos fazer o foreach n&#243;s mesmos. Assim, o mesmo c&#243;digo acima poderia ser escrito da seguinte forma:</p>
+
+<pre>   use strict;
+   use warnings;
+   use Mojo::UserAgent;
+
+   Mojo::UserAgent-&#62;new-&#62;get( &#39;http://sao-paulo.pm.org/artigos&#39; )
+               -&#62;res-&#62;dom-&#62;find( &#39;div[class=&#34;whois&#34;] &#62; ul &#62; li&#39; )
+               -&#62;each( sub {
+                    my $artigo = shift;
+
+                    my $titulo = $artigo-&#62;at(&#39;a&#39;)-&#62;text;
+                    my $url = $artigo-&#62;at(&#39;a&#39;)-&#62;attrs-&#62;{&#39;href&#39;};
+                    my $autor = $artigo-&#62;at(&#39;span&#39;)-&#62;text;
+
+                    # vamos retirar os &#34;[&#34; e &#34;]&#34; dos nomes dos autores,
+                    # e aproveitar para eliminar espa&#231;os desnecess&#225;rios.
+                    $autor =~ s/\s*[\[\]]//g;
+
+                    # agora vamos exibir o que encontramos
+                    print &#34;$titulo ($url) &#39;$autor&#39;\n&#34;;
+               });</pre>
+
+<p>Existe sempre mais de uma maneira de se fazer as coisas :)</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="O_Desafio:_Transformando_os_dados_em_um_Feed_RSS/Atom"
+>O Desafio: Transformando os dados em um Feed RSS/Atom</a></h2>
+
+<p>Quando falamos de <a href="http://opendatabr.org" class="podlinkurl"
+>OpenData</a>, pensamos em dados facilmente dispon&#237;veis e em formato livre. Suponha que voc&#234; tenha feito o scraping deste site justamente porque reparou que ele n&#227;o oferece um feed listando os artigos dispon&#237;veis. Temos que resolver este problema!</p>
+
+<p>Nosso web crawler j&#225; est&#225; pronto, mas estamos apenas imprimindo o conte&#250;do na tela. O desafio &#233; portanto transformar os dados obtidos em um feed <a href="https://secure.wikimedia.org/wikipedia/en/wiki/Atom_%28standard%29" class="podlinkurl"
+>Atom</a>.</p>
+
+<p>E agora? Novamente o CPAN vem ao nosso aux&#237;lio, com o <a href="http://search.cpan.org/perldoc?XML::Atom::SimpleFeed" class="podlinkurl"
+>XML::Atom::SimpleFeed</a>.</p>
+
+<p>O processo &#233; bem simples: Primeiro, criamos nosso objeto de feed no in&#237;cio do programa. Depois, para cada artigo encontrado, adicionamos uma nova entrada. Ao terminarmos, imprimimos todo o feed.</p>
+
+<p>Vale notar que feeds Atom precisam de um identificador &#250;nico, que n&#227;o pode mudar. Para criar um no formato aceito pelo padr&#227;o, utilizamos um UUID gerado pelo m&#243;dulo <a href="http://search.cpan.org/perldoc?Data::UUID" class="podlinkurl"
+>Data::UUID</a> a partir de um namespace (&#39;sao-paulo.pm.org&#39;) e um nome (&#39;artigo&#39;).</p>
+
+<p>Veja como precisamos apenas colocar os trechos relacionados ao feed, sem modificar em nada o crawler. Colocamos um &#34;+&#34; no in&#237;cio de cada linha nova para que as modifica&#231;&#245;es fiquem mais vis&#237;veis:</p>
+
+<pre>    use strict;
+    use warnings;
+    use Mojo::UserAgent;
+  + use XML::Atom::SimpleFeed;
+  + use Data::UUID;
+
+  + # criamos nosso feed Atom
+  + my $feed = XML::Atom::SimpleFeed-&#62;new(
+  +     title =&#62; &#39;Artigos Publicados na SPPM&#39;,
+  +     id    =&#62; &#39;urn:uuid:&#39; . Data::UUID-&#62;new-&#62;create_from_name_str(&#39;sao-paulo.pm.org&#39;, &#39;artigos&#39;),
+  + );
+
+    # crawling pelo site da SPPM
+    Mojo::UserAgent-&#62;new-&#62;get( &#39;http://sao-paulo.pm.org/artigos&#39; )-&#62;res
+                -&#62;dom-&#62;find( &#39;div[class=&#34;whois&#34;] &#62; ul &#62; li&#39; )
+                -&#62;each( sub {
+                     my $artigo = shift;
+                     my $titulo = $artigo-&#62;at(&#39;a&#39;)-&#62;text;
+                     my $url = $artigo-&#62;at(&#39;a&#39;)-&#62;attrs-&#62;{&#39;href&#39;};
+                     my $autor = $artigo-&#62;at(&#39;span&#39;)-&#62;text;
+
+                     # vamos retirar os &#34;[&#34; e &#34;]&#34; dos nomes dos autores,
+                     # e aproveitar para eliminar espa&#231;os desnecess&#225;rios.
+                     $autor =~ s/\s*[\[\]]//g;
+
+  +                  # agora vamos adicionar o que encontramos
+  +                  $feed-&#62;add_entry(
+  +                      &#39;author&#39; =&#62; $autor,
+  +                      &#39;title&#39;  =&#62; $titulo,
+  +                      &#39;link&#39;   =&#62; $url,
+  +                  );
+                });
+
+    # agora que temos os artigos no feed,
+    # podemos imprimir
+  + $feed-&#62;print;</pre>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Conclus&#227;o"
+>Conclus&#227;o</a></h2>
+
+<p>Criamos um webcrawler que extrai artigos de um site e gera um feed Atom completo com direito a UUID, tudo isso em apenas 36 linhas - incluindo linhas em branco, coment&#225;rios e formata&#231;&#227;o!</p>
+
+<p>Imagine agora o que voc&#234; tamb&#233;m pode fazer :)</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Guia_de_Refer&#234;ncia_R&#225;pida:_Seletores_CSS"
+>Guia de Refer&#234;ncia R&#225;pida: Seletores CSS</a></h2>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Seletores_simples"
+>Seletores simples</a></h3>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="*"
+><code>*</code></a></h4>
+
+<p>Qualquer elemento.</p>
+
+<pre>  &#39;*&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E"
+><code>E</code></a></h4>
+
+<p>Um elemento qualquer do tipo <code>E</code> especificado - title, a, head, div, span, tr, ...</p>
+
+<pre>  &#39;td&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E[foo]"
+><code>E[foo]</code></a></h4>
+
+<p>Um elemento <code>E</code> qualquer com um atributo <code>foo</code> qualquer. Por exemplo, &#34;<code>a[alt]</code>&#34; retorna os elementos &#34;<code>&#60;a&#62;</code>&#34; que possuem o atributo &#34;<code>alt</code>&#34;.</p>
+
+<pre>  &#39;a[alt]&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E[foo=&#34;bar&#34;]"
+><code>E[foo=&#34;bar&#34;]</code></a></h4>
+
+<p>Um elemento <code>E</code> qualquer com um atributo <code>foo</code> possu&#237;ndo valor exatamente igual a<code>bar</code>.</p>
+
+<pre>  &#39;input[class=&#34;obrigatorio&#34;]&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E[foo~=&#34;bar&#34;]"
+><code>E[foo~=&#34;bar&#34;]</code></a></h4>
+
+<p>Um elemento <code>E</code> cujo atributo <code>foo</code> &#233; uma lista de valores separados por espa&#231;o, e um desses valores &#233; exatamente igual a <code>bar</code>.</p>
+
+<pre>  &#39;input[class~=&#34;obrigatorio&#34;]&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E[foo^=&#34;bar&#34;]"
+><code>E[foo^=&#34;bar&#34;]</code></a></h4>
+
+<p>Um elemento <code>E</code> cujo atributo <code>foo</code> come&#231;a exatamente com a string <code>bar</code>.</p>
+
+<pre>  &#39;input[name^=&#34;obrig&#34;]&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E[foo$=&#34;bar&#34;]"
+><code>E[foo$=&#34;bar&#34;]</code></a></h4>
+
+<p>Um elemento <code>E</code> cujo atributo <code>foo</code> termina exatamente com a string <code>bar</code>.</p>
+
+<pre>  &#39;input[name$=&#34;orio&#34;]&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E[foo*=&#34;bar&#34;]"
+><code>E[foo*=&#34;bar&#34;]</code></a></h4>
+
+<p>Um elemento <code>E</code> cujo atributo <code>foo</code> cont&#233;m a substring <code>bar</code>.</p>
+
+<pre>  &#39;input[name*=&#34;gato&#34;]&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E[foo=bar][bar=baz]"
+><code>E[foo=bar][bar=baz]</code></a></h4>
+
+<p>Elemento <code>E</code> cujos atributos casam com o que for especificado - seguindo as mesmas regras de busca por atributo definidas acima.</p>
+
+<pre>  &#39;a[foo^=&#34;obrig&#34;][foo$=&#34;ado&#34;]&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E_F"
+><code>E F</code></a></h4>
+
+<p>Um elemento <code>F</code> descendente de um elemento <code>E</code>.</p>
+
+<pre>  &#39;div h1&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E_&#62;_F"
+><code>E &#62; F</code></a></h4>
+
+<p>Um elemento <code>F</code> filho de um elemento <code>E</code>.</p>
+
+<pre>  &#39;html &#62; body &#62; div &#62; h1&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E_+_F"
+><code>E + F</code></a></h4>
+
+<p>Um elemento <code>F</code> precedido imediatamente por um elemento <code>E</code>.</p>
+
+<pre>  &#39;h1 + h2&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E_~_F"
+><code>E ~ F</code></a></h4>
+
+<p>Um elemento <code>F</code> precedido (em algum momento) por um elemento <code>E</code>.</p>
+
+<pre>  &#39;h1 ~ h2&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E,_F,_G"
+><code>E, F, G</code></a></h4>
+
+<p>Elementos do tipo <code>E</code>, <code>F</code> e <code>G</code>.</p>
+
+<pre>  &#39;h1, h2, h3&#39;</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Seletores_Avan&#231;ados"
+>Seletores Avan&#231;ados</a></h3>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:root"
+><code>E:root</code></a></h4>
+
+<p>O elemento <code>E</code> ra&#237;z do documento. Em HTML4, &#233; sempre o elemento <code>&#60;html&#62;</code>.</p>
+
+<pre>  &#39;:root&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:checked"
+><code>E:checked</code></a></h4>
+
+<p>Um elemento <code>E</code> marcado (ou ativado) no momento, como um radio-button ou uma checkbox.</p>
+
+<pre>  &#39;:checked&#39;
+  &#39;input:checked&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:empty"
+><code>E:empty</code></a></h4>
+
+<p>Um elemento <code>E</code> que n&#227;o possui texto nem subtags (&#34;filhos&#34;).</p>
+
+<pre>  &#39;:empty&#39;
+  &#39;span:empty&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:nth-child(n)"
+><code>E:nth-child(n)</code></a></h4>
+
+<p>Um elemento <code>E</code>, n-&#233;simo filho de sua tag &#34;pai&#34;.</p>
+
+<pre>  &#39;div:nth-child(3)&#39;     # terceiro
+  &#39;div:nth-child(odd)&#39;   # impares
+  &#39;div:nth-child(even)&#39;  # pares
+  &#39;div:nth-child(-n+3)&#39;  # 3 primeiros</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:nth-last-child(n)"
+><code>E:nth-last-child(n)</code></a></h4>
+
+<p>Um elemento <code>E</code>, n-&#233;simo filho de sua tag &#34;pai&#34;, contando de tr&#225;s para frente.</p>
+
+<pre>  &#39;div:nth-last-child(3)&#39;     # terceiro
+  &#39;div:nth-last-child(odd)&#39;   # impares
+  &#39;div:nth-last-child(even)&#39;  # pares
+  &#39;div:nth-last-child(-n+3)&#39;  # 3 &#250;ltimos</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:nth-of-type(n)"
+><code>E:nth-of-type(n)</code></a></h4>
+
+<p>Um elemento <code>E</code>, o n-&#233;simo elemento (&#34;irm&#227;o&#34;) do mesmo tipo.</p>
+
+<pre>  &#39;div:nth-of-type(3)&#39;     # terceiro
+  &#39;div:nth-of-type(odd)&#39;   # impares
+  &#39;div:nth-of-type(even)&#39;  # pares
+  &#39;div:nth-of-type(-n+3)&#39;  # 3 primeiros</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:nth-last-of-type(n)"
+><code>E:nth-last-of-type(n)</code></a></h4>
+
+<p>Um elemento <code>E</code>, o n-&#233;simo de seu mesmo tipo, contanto de tr&#225;s para frente.</p>
+
+<pre>  &#39;div:nth-last-of-type(3)&#39;     # terceiro
+  &#39;div:nth-last-of-type(odd)&#39;   # &#237;mpares
+  &#39;div:nth-last-of-type(even)&#39;  # pares
+  &#39;div:nth-last-of-type(-n+3)&#39;  # 3 &#250;ltimos</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:first-child"
+><code>E:first-child</code></a></h4>
+
+<p>Um elemento <code>E</code>, primeiro filho de seu pai.</p>
+
+<pre>  &#39;div p:first-child&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:last-child"
+><code>E:last-child</code></a></h4>
+
+<p>Um elemento <code>E</code>, &#250;ltimo filho de seu pai.</p>
+
+<pre>  &#39;div p:last-child&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:first-of-type"
+><code>E:first-of-type</code></a></h4>
+
+<p>Um elemento <code>E</code>, primeiro irm&#227;o de seu tipo.</p>
+
+<pre>  &#39;div p:first-of-type&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:last-of-type"
+><code>E:last-of-type</code></a></h4>
+
+<p>Um elemento <code>E</code>, &#250;ltimo irm&#227;o de seu tipo.</p>
+
+<pre>  my $last = $dom-&#62;at(&#39;div p:last-of-type&#39;);</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:only-child"
+><code>E:only-child</code></a></h4>
+
+<p>Um elemento <code>E</code>, filho &#250;nico de seu pai.</p>
+
+<pre>  &#39;div p:only-child&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:only-of-type"
+><code>E:only-of-type</code></a></h4>
+
+<p>Um elemento <code>E</code>, &#250;nico irm&#227;o de seu tipo.</p>
+
+<pre>  &#39;div p:only-of-type&#39;</pre>
+
+<h4><a class='u' href='#___top' title='click to go to top of document'
+name="E:not(s)"
+><code>E:not(s)</code></a></h4>
+
+<p>Um elemento <code>E</code> que n&#227;o casa com o seletor <code>s</code>.</p>
+
+<pre>  &#39;div p:not(:first-child)&#39;</pre>
+
+</body></html>

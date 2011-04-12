@@ -1,5 +1,7 @@
 =pod
 
+=encoding utf8
+
 =head1 Extração de dados com perl, xpath e regex. Exportado em ODF.
 
 Este artigo tem como objetivo proporcionar um exemplo prático que envolva:

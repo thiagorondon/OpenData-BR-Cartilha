@@ -1,0 +1,605 @@
+<html><head><title>DataFlow</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#DataFlow_-_Um_Framework_Para_Fluxo_de_Dados'>DataFlow - Um Framework Para Fluxo de Dados</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#OpenData_-_O_Come%E7o_e_o_Fim'>OpenData - O Come&#231;o e o Fim</a>
+    <li class='indexItem indexItem2'><a href='#Primeiras_Id%E9ias'>Primeiras Id&#233;ias</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Buscar_dados_na_web_(scrape)'>Buscar dados na web (scrape)</a>
+      <li class='indexItem indexItem3'><a href='#ETL_-_Extract%2C_Transform%2C_Load'>ETL - Extract, Transform, Load</a>
+      <li class='indexItem indexItem3'><a href='#Flow%2C_Baby%2C_Flow'>Flow, Baby, Flow</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#Show_Me_The_Node'>Show Me The Node</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Chains'>Chains</a>
+      <li class='indexItem indexItem3'><a href='#Biblioteca_de_N%F3s'>Biblioteca de N&#243;s</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#E_Como_Uso_Tudo_Isso%3F'>E Como Uso Tudo Isso?</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#DATAFLOW_EM_A%C7%C3O'>DATAFLOW EM A&#199;&#195;O</a>
+      <li class='indexItem indexItem3'><a href='#RESULTADO'>RESULTADO</a>
+      <li class='indexItem indexItem3'><a href='#Passo-a-Passo'>Passo-a-Passo</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#Conclus%E3o'>Conclus&#227;o</a>
+    <li class='indexItem indexItem2'><a href='#Refer%EAncias'>Refer&#234;ncias</a>
+    <li class='indexItem indexItem2'><a href='#Agradecimentos'>Agradecimentos</a>
+    <li class='indexItem indexItem2'><a href='#Autor'>Autor</a>
+    <li class='indexItem indexItem2'><a href='#Licen%E7a'>Licen&#231;a</a>
+  </ul>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="DataFlow_-_Um_Framework_Para_Fluxo_de_Dados"
+>DataFlow - Um Framework Para Fluxo de Dados</a></h1>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="OpenData_-_O_Come&#231;o_e_o_Fim"
+>OpenData - O Come&#231;o e o Fim</a></h2>
+
+<p>Tudo come&#231;ou com um e-mail na <a href="http://sao-paulo.pm.org/lista" class="podlinkurl"
+>lista da SP-PM</a>,
+no qual se falou de &#34;hackear&#34; dados p&#250;blicos.
+Logo isso evoluiu para a id&#233;ia de produzir um framework para buscar e analisar dados p&#250;blicos.
+Sem demora,
+o <a href="http://www.maluco.com.br/blog/" class="podlinkurl"
+>Thiago Rondon</a> montou um <a href="https://github.com/maluco/OpenData-BR" class="podlinkurl"
+>reposit&#243;rio no GitHub</a> e come&#231;ou a rabiscar umas id&#233;ias de c&#243;digo.
+Em seguida nasceu o site do <a href="http://www.opendatabr.org/" class="podlinkurl"
+>OpenData-BR</a>.</p>
+
+<p>O projeto ainda tem um status de <i>work in progress</i>,
+mas as expectativas e as perspectivas s&#227;o muito animadoras,
+e espera-se que em breve o <b>DataFlow</b> possa ser utilizado amplamente pelo <b>OpenData-BR</b> para disponibilizar os dados p&#250;blicos.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Primeiras_Id&#233;ias"
+>Primeiras Id&#233;ias</a></h2>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Buscar_dados_na_web_(scrape)"
+>Buscar dados na web (scrape)</a></h3>
+
+<p>A primeira id&#233;ia a ser implementada foi a l&#243;gica de buscar dados na web.
+Na lista,
+ou no canal #saopaulo.pm no irc.perl.org,
+surgiram as primeiras indica&#231;&#245;es de sites onde a informa&#231;&#227;o estava disponibilizada.
+Um dos sites primariamente visados foi o <a href="http://www.portaltransparencia.gov.br/" class="podlinkurl"
+>PortalTransparencia</a>,
+o site do governo federal para promover a transpar&#234;ncia nos dados do governo.</p>
+
+<p>Seguindo a metodologia opensource <i>&#34;release early,
+release often&#34;</i>,
+o projeto come&#231;ou a disponibilizar c&#243;digo que,
+efetivamente,
+conseguia buscar dados.
+No entanto,
+esse c&#243;digo inicialmente n&#227;o fazia muitas provis&#245;es para manuten&#231;&#227;o e extens&#227;o no futuro.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="ETL_-_Extract,_Transform,_Load"
+>ETL - Extract,
+Transform,
+Load</a></h3>
+
+<p>Surgiu ent&#227;o uma tentativa de modularizar melhor o <b>OpenData-BR</b>,
+dividindo-o em 3 tipos de componentes:</p>
+
+<p><b>Extractors</b>: Extratores de dados.
+A id&#233;ia seria que todos os scrapers,
+sejam web ou n&#227;o,
+na forma que forem,
+seriam um tipo de Extractor.</p>
+
+<p><b>Transformers</b>: Rob&#244;s assassinos que se transformam em carros ou outras m&#225;quinas fant&#225;sticas.
+Ou,
+componentes que iriam conter toda a l&#243;gica de <b>transforma&#231;&#227;o</b> dos dados,
+dos documentos originais para os dados buscados.</p>
+
+<p><b>Loaders</b>: Seriam os <i>end-points</i> do processo de extra&#231;&#227;o dos dados,
+e a principal tarefa de um <i>Loader</i> seria gravar os dados em algum lugar.
+Os primeiros testes gravavam esses dados em um banco de dados MongoDB,
+ou imprimiam os dados obtidos usando o <a href="http://search.cpan.org/perldoc?Data%3A%3ADumper" class="podlinkpod"
+>Data::Dumper</a> (para debug).</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Flow,_Baby,_Flow"
+>Flow,
+Baby,
+Flow</a></h3>
+
+<p>Quanto mais pens&#225;vamos no framework,
+mais ele se parecia com um fluxo de dados,
+do come&#231;o (extractors) ao meio (transformers),
+ao fim (loaders).
+Todos os componentes pareciam,
+de uma forma gen&#233;rica,
+ter o mesmo comportamento: recebem algo na entrada,
+fazem alguma coisa com esses dados,
+e (eventualmente) disponibilizam esses dados em uma sa&#237;da.
+Assim surgiu a id&#233;ia de fazer um sub-projeto de fluxo de dados.</p>
+
+<p>Em meados de Dezembro de 2010,
+a primeira id&#233;ia foi codificada em termos de &#34;caixas&#34;,
+que teriam um entrada e uma sa&#237;da - de uma forma bem gen&#233;rica: &#34;entra porquinho,
+sai salsicha&#34;.</p>
+
+<p>Em termos de programa&#231;&#227;o em <b>Perl</b>,
+podemos colocar v&#225;rios tipos de porquinhos:</p>
+
+<p>E as caixas poderiam ser enfileiradas para que a salsicha de um pudesse virar a feijoada do pr&#243;ximo.</p>
+
+<p>Assim surgiu,
+dentro do reposit&#243;rio do <b>OpenData</b>,
+o sub-projeto que foi,
+inicialmente,
+denominado de <i>&#34;Box&#34;</i>.
+Depois se tornou o <i>&#34;Flow&#34;</i> e,
+enquanto este artigo &#233; escrito,
+tornou-se um projeto independente,
+o <i>&#34;DataFlow&#34;</i>.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Show_Me_The_Node"
+>Show Me The Node</a></h2>
+
+<p>Um exemplo b&#225;sico de um n&#243; que transforma os dados para caixa-alta ( <i>upper-case</i>),
+usando a fun&#231;&#227;o <code>uc()</code> padr&#227;o do Perl.</p>
+
+<pre>    my $uc = DataFlow::Node-&#62;new(
+        process_item =&#62; sub {
+            shift; return uc(shift);
+        }
+    );</pre>
+
+<p>O racional de um <code>DataFlow::Node</code> &#233; o mesmo de um comando de Unix ou Linux que atua como um filtro: ele &#233; um peda&#231;o de cano (<i>pipe</i>), que faz uma coisa s&#243;, simples, e bem definida:</p>
+
+<p>E como usar esse n&#243;? Seguindo a tradi&#231;&#227;o, de mais de um jeito:</p>
+
+<pre>    # em duas etapas
+    $uc-&#62;input( &#39;laranja&#39; );
+    my $out = $uc-&#62;output();  # LARANJA
+
+    # ou em um unica etapa
+    my $out = $uc-&#62;process(&#39;laranja&#39;);
+
+    # podemos passar arrays
+    my @out = $uc-&#62;process( qw/feira da fruta/ ); # qw/FEIRA DA FRUTA/
+
+    # podemos passar referencias
+    my $out = $uc-&#62;process( [ &#39;oh&#39;, &#39;my&#39;, &#39;god&#39; ] );</pre>
+
+<p><b>Aten&#231;&#227;o</b>: nesta &#250;ltima forma, os elementos do ArrayRef <b>n&#227;o</b> ser&#227;o transformados, pois voc&#234; pode ter um node que espera de fato uma <i>reference</i> e a trata de acordo com suas pr&#243;prias regras. O mesmo se aplica a outros tipos de refer&#234;ncia. Se voc&#234; quer que o node processe a informa&#231;&#227;o <b>dentro</b> da refer&#234;ncia, use:</p>
+
+<pre>    my $uc = DataFlow::Node-&#62;new(
+        process_into =&#62; 1,
+        process_item =&#62; sub {
+            shift; return uc(shift);
+        }
+    );
+
+    my $out = $uc-&#62;process( [ &#39;oh&#39;, &#39;my&#39;, &#39;god&#39; ] );
+    # resultado: [ &#39;OH&#39;, &#39;MY&#39;, &#39;GOD&#39; ]
+
+    my $out = $uc-&#62;process( { a =&#62; &#39;value&#39;, another =&#62; &#39;different value&#39; } );
+    # resultado { a =&#62; &#39;VALUE&#39;, another =&#62; &#39;DIFFERENT VALUE&#39; } );</pre>
+
+<p>Tamb&#233;m podemos passar <i>code references</i> para serem processadas (usando o <code>process_into</code>):</p>
+
+<pre>    my $code = sub { return &#39;batatas&#39; };
+    my $out = $uc-&#62;process( $code );
+    print $out-&#62;(); # imprime &#39;BATATAS&#39;</pre>
+
+<p>Notem que, quando s&#227;o passadas refer&#234;ncias, sempre s&#227;o retornadas refer&#234;ncias do mesmo tipo. Neste &#250;ltimo caso <code>$out</code> cont&#233;m um <i>code reference</i> que, ao ser invocado, aplica a fun&#231;&#227;o <code>uc()</code> ao resultado do <i>code reference</i> passado ao node.</p>
+
+<p><b>Futuro</b>: Talvez o par&#226;metro <code>process_into</code> passe a ser habilitado por <i>default</i>. Isso est&#225; sendo considerado.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Chains"
+>Chains</a></h3>
+
+<p>Um <i>node</i> sozinho n&#227;o faz um <i>hack</i>, ent&#227;o &#233; preciso &#34;enfileirar&#34; os n&#243;s para conseguir obter um resultado significativo. O poder dos comandos pequenos est&#225; em junt&#225;-los para fazer algo maior:</p>
+
+<p>Exatamente como se fosse um <i>pipe</i> na linha de comando. No <code>DataFlow</code>, isso se faz com a classe <a href="http://search.cpan.org/perldoc?DataFlow%3A%3AChain" class="podlinkpod"
+>DataFlow::Chain</a>, que pode ser usada assim:</p>
+
+<pre>    my $uc = DataFlow::Node-&#62;new(
+        process_item =&#62; sub { shift; return uc(shift) }
+    );
+    my $rv = DataFlow::Node-&#62;new(
+        process_item =&#62; sub { shift; return scalar reverse $_[0]; }
+    );
+
+    my $chain = DataFlow::Chain-&#62;new( links =&#62; [ $uc, $rv ] );</pre>
+
+<p>Um objeto da classe <b>Chain</b> &#233; tamb&#233;m um <b>Node</b>, e funciona da mesma forma:</p>
+
+<pre>        $chain-&#62;input( qw/abc def ghi/ );
+        my @result = $chain-&#62;output();
+        # @result == qw/CBA FED IHG/</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Biblioteca_de_N&#243;s"
+>Biblioteca de N&#243;s</a></h3>
+
+<p>Algumas opera&#231;&#245;es s&#227;o mais comuns, e n&#243;s especializados podem ser criados para executar processamentos espec&#237;ficos. O pacote <a href="http://search.cpan.org/perldoc?DataFlow" class="podlinkpod"
+>DataFlow</a>, cont&#233;m ainda apenas um pequeno n&#250;mero dessas classes, mas com o tempo isso deve aumentar. Alguns exemplos de classes j&#225; dispon&#237;veis hoje s&#227;o:</p>
+
+<dl>
+<dt><a name="DataFlow::Chain"
+><a href="http://search.cpan.org/perldoc?DataFlow%3A%3AChain" class="podlinkpod"
+>DataFlow::Chain</a></a></dt>
+
+<dd>
+<p>Tipo especial de n&#243;, que possui uma lista de n&#243;s, e concatena esses n&#243;s, como descrito acima.</p>
+
+<dt><a name="DataFlow::Node::CSV"
+><a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3ACSV" class="podlinkpod"
+>DataFlow::Node::CSV</a></a></dt>
+
+<dd>
+<p>N&#243; que transforma array references em strings no formato CSV.</p>
+
+<dt><a name="DataFlow::Node::Dumper"
+><a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3ADumper" class="podlinkpod"
+>DataFlow::Node::Dumper</a></a></dt>
+
+<dd>
+<p>N&#243; que utiliza o m&#243;dulo <a href="http://search.cpan.org/perldoc?Data%3A%3ADumper" class="podlinkpod"
+>Data::Dumper</a> para imprimir a estrutura de cada item para STDERR.</p>
+
+<dt><a name="DataFlow::Node::HTMLFilter"
+><a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3AHTMLFilter" class="podlinkpod"
+>DataFlow::Node::HTMLFilter</a></a></dt>
+
+<dd>
+<p>N&#243; utilizado para filtrar tags de um documento HTML utilizando <a href="http://search.cpan.org/perldoc?HTML%3A%3ATreeBuilder%3A%3AXPath" class="podlinkpod"
+>HTML::TreeBuilder::XPath</a>. Pode produzir nodes (<a href="http://search.cpan.org/perldoc?HTML%3A%3AElement" class="podlinkpod"
+>HTML::Element</a>), HTML ou somente os valores de tags e/ou atributos.</p>
+
+<dt><a name="DataFlow::Node::LiteralData"
+><a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3ALiteralData" class="podlinkpod"
+>DataFlow::Node::LiteralData</a></a></dt>
+
+<dd>
+<p>N&#243; que injeta na sua fila de entrada os par&#226;metros passados ao construtor.</p>
+
+<dt><a name="DataFlow::Node::MultiPageURLGenerator"
+><a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3AMultiPageURLGenerator" class="podlinkpod"
+>DataFlow::Node::MultiPageURLGenerator</a></a></dt>
+
+<dd>
+<p>N&#243; utilizado para gerar uma lista de URLs com os endere&#231;os de todas as p&#225;ginas web de um conjunto de dados.</p>
+
+<dt><a name="DataFlow::Node::NOP"
+><a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3ANOP" class="podlinkpod"
+>DataFlow::Node::NOP</a></a></dt>
+
+<dd>
+<p>N&#243; &#34;NO-OP&#34;. A informa&#231;&#227;o sai do mesmo jeito que entrou. Pode ser utilizado como classe base para outras classes, ou apenas para alterar algum atributo do fluxo de dados.</p>
+
+<dt><a name="DataFlow::Node::Null"
+><a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3ANull" class="podlinkpod"
+>DataFlow::Node::Null</a></a></dt>
+
+<dd>
+<p>N&#243; que sempre retorna <code>undef</code>.</p>
+
+<dt><a name="DataFlow::Node::URLRetriever"
+><a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3AURLRetriever" class="podlinkpod"
+>DataFlow::Node::URLRetriever</a></a></dt>
+
+<dd>
+<p>N&#243; que recebe URLs na entrada, e retorna o conte&#250;do das mesmas na sa&#237;da.</p>
+</dd>
+</dl>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="E_Como_Uso_Tudo_Isso?"
+>E Como Uso Tudo Isso?</a></h2>
+
+<p>O <a href="http://search.cpan.org/perldoc?DataFlow" class="podlinkpod"
+>DataFlow</a> surgiu do projeto <a href="http://www.opendatabr.org/" class="podlinkurl"
+>OpenData-BR</a>, e um dos usos para o qual ele foi pensado foi justamente a obten&#231;&#227;o e manipula&#231;&#227;o de dados dispon&#237;veis em sites na web.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="DATAFLOW_EM_A&#199;&#195;O"
+>DATAFLOW EM A&#199;&#195;O</a></h3>
+
+<p>Por exemplo, o trecho de script abaixo (baseado em <a href="http://goo.gl/Vxw4f" class="podlinkurl"
+>df-portaltransparencia.pl</a>), obt&#233;m as informa&#231;&#245;es das pessoas (f&#237;sicas e jur&#237;dicas) consideradas inid&#244;neas e/ou que tenham sido sancionadas por algum &#243;rg&#227;o do governo:</p>
+
+<pre>        my $chain = Chain-&#62;new(
+            links =&#62; [
+                LiteralData-&#62;new($base_url),
+                MultiPageURLGenerator-&#62;new(
+                    first_page =&#62; -1,
+                    produce_last_page =&#62; sub {
+                        my $url = shift;
+        
+                        my $get  = DataFlow::Node::URLRetriever::Get-&#62;new;
+                        my $html = $get-&#62;get($url);
+        
+                        my $texto =
+                          HTML::TreeBuilder::XPath-&#62;new_from_content($html)
+                          -&#62;findvalue(&#39;//p[@class=&#34;paginaAtual&#34;]&#39;);
+                        croak q{N&#227;o conseguiu determinar a &#250;ltima p&#225;gina}
+                          unless $texto;
+                        return $1 if $texto =~ /\d\/(\d+)/;
+                    },
+                    make_page_url =&#62; sub {
+                        my ( $self, $url, $page ) = @_;
+        
+                        my $u = URI-&#62;new($url);
+                        $u-&#62;query_form( $u-&#62;query_form, Pagina =&#62; $page );
+                        return $u-&#62;as_string;
+                    },
+                ),
+                NOP-&#62;new( deref =&#62; 1, ),
+                URLRetriever-&#62;new,
+                HTMLFilter-&#62;new(
+                    process_into =&#62; 1,
+                    search_xpath =&#62;
+                      &#39;//div[@id=&#34;listagemEmpresasSancionadas&#34;]/table/tbody/tr&#39;,
+                ),
+                HTMLFilter-&#62;new(
+                    search_xpath =&#62; &#39;//td&#39;,
+                    result_type  =&#62; &#39;VALUE&#39;,
+                    ref_result   =&#62; 1,
+                ),
+                Node-&#62;new(
+                    process_into =&#62; 1,
+                    process_item =&#62; sub {
+                        shift; local $_ = shift; s/^\s*//; s/\s*$//;
+                        return $_;
+                    }
+                ),
+                DataFlow::Node::Dumper-&#62;new,
+            ],
+        );
+
+        $chain-&#62;flush;</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="RESULTADO"
+>RESULTADO</a></h3>
+
+<p>Esse c&#243;digo imprimir&#225; na tela (<code>STDERR</code>) algo como:</p>
+
+<pre>        ...
+
+        $VAR1 = [
+                  &#39;11.222.333/0001-44&#39;,
+                  &#39;A CALOTEIRA LTDA.&#39;,
+                  &#39;Suspensa&#39;,
+                  &#39;04/06/08&#39;,
+                  &#39;03/06/13&#39;,
+                  &#39;SENADO FEDERAL&#39;,
+                  &#39;**&#39;,
+                  &#39;SENADO FEDERAL&#39;,
+                  &#39;14/04/2009&#39;
+                ];
+        $VAR1 = [
+                  &#39;555.666.777-88&#39;,
+                  &#39;JOS&#201; DO TRAMBIQUE&#39;,
+                  &#39;InidE&#60;06533&#62;nea&#39;,
+                  &#39;27/10/09&#39;,
+                  &#39;27/10/14&#39;,
+                  &#39;1E&#60;#6533&#62; VARA CIVEL - SE&#60;#6533&#62;O SEBASTIAO DO PARAE&#60;#6533&#62;SO - TJMG&#39;,
+                  &#39;&#39;,
+                  &#39;CONSELHO NACIONAL DE JUSTIE&#60;#6533&#62;A&#39;,
+                  &#39;02/01/2011&#39;
+                ];</pre>
+
+<p>Como pode ser visto, a parte de codifica&#231;&#227;o de caracteres ainda precisa de algum trabalho. Mas os dados j&#225; foram obtidos e &#34;limpos&#34;, faltando apenas convert&#234;-los para algum formato que possa ser facilmente manipul&#225;vel por outros sistemas.</p>
+
+<p>J&#225; est&#227;o sendo trabalhados n&#243;s para convers&#227;o de codifica&#231;&#227;o de caracteres, bem como para a transforma&#231;&#227;o para outros formatos, como CSV e XML.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Passo-a-Passo"
+>Passo-a-Passo</a></h3>
+
+<p>Vamos examinar cada n&#243; da cadeia.</p>
+
+<pre>    LiteralData-&#62;new($base),</pre>
+
+<p>Esse n&#243; simplesmente pega o valor de <code>$base_url</code>, uma URL (para este exemplo estamos considerando que &#233; a URL do <b>Cadastro de Empresas Inid&#244;neas ou Sancionadas</b> do site <a href="http://www.portaltransparencia.gov.br" class="podlinkurl"
+>PortalTranspar&#234;ncia</a>) e a injeta na fila de entrada do n&#243;. O objeto do tipo <a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3ALiteralData" class="podlinkpod"
+>DataFlow::Node::LiteralData</a> n&#227;o modifica o valor, logo essa URL ser&#225; o &#250;nico item de sa&#237;da desse n&#243;.</p>
+
+<pre>    MultiPageURLGenerator-&#62;new(
+        first_page =&#62; -2,
+        produce_last_page =&#62; sub {
+                my $url = shift;
+                        ...
+        },
+        make_page_url =&#62; sub {
+                my ( $self, $url, $page ) = @_;
+                        ...
+        },
+    ),</pre>
+
+<p>A classe <a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3AMultiPageURLGenerator" class="podlinkpod"
+>DataFlow::Node::MultiPageURLGenerator</a> serve para gerar, a partir de uma URL base, uma lista de URLs que correspondam &#224;s v&#225;rias p&#225;ginas nas quais aquele conjunto de dados se encontra. &#201; obrigat&#243;rio prover a <i>sub</i> an&#244;nima <code>make_page_url</code>. Esta <i>sub</i> ir&#225; receber uma URL <code>$url</code> e um n&#250;mero de p&#225;gina <code>$page</code>, e dever&#225; retornar uma outra URL para a p&#225;gina <code>$page</code> do conjunto de dados.</p>
+
+<p>As p&#225;ginas inicial e final podem ser indicadas explicitamente, passando os par&#226;metros <code>first_page</code> e <code>last_page</code>, respectivamente. Caso <code>first_page</code> n&#227;o seja passado, ser&#225; usado 1 (um) como valor <i>default</i>. Se <code>last_page</code> n&#227;o for passado, o par&#226;metro <code>produce_last_page</code> <b>dever&#225;</b> conter uma <i>sub</i> an&#244;nima que ir&#225; calcular o n&#250;mero da &#250;ltima p&#225;gina, baseado na <code>$url</code> base.</p>
+
+<p>No exemplo acima, a &#250;ltima p&#225;gina &#233; obtida no pr&#243;prio site, e a primeira p&#225;gina est&#225; como <b>-2</b>, o que significa que ir&#225; come&#231;ar na pen&#250;ltima p&#225;gina.</p>
+
+<p>A sa&#237;da desse n&#243; ser&#225; um <i>ArrayRef</i> que aponta para um <i>array</i> que cont&#233;m as URLs das &#250;ltimas duas p&#225;ginas.</p>
+
+<pre>    NOP-&#62;new( deref =&#62; 1, ),</pre>
+
+<p>Esse n&#243;, do tipo <a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANOP" class="podlinkpod"
+>DataFlow::NOP</a> n&#227;o ir&#225; transformar a informa&#231;&#227;o em si, mas como passamos o valor <b>1</b> para o par&#226;metro <code>deref</code>, o <i>ArrayRef</i> recebido ser&#225; dereferenciado, isto &#233;, transformado de volta em um <i>array</i>, e injetado na fila de sa&#237;da do n&#243;. Assim, cada elemento do <i>array</i> ser&#225; tratado como um dado independente pelos pr&#243;ximos n&#243;s. Poder&#237;amos ter passado <code>deref</code> no n&#243; anterior, mas deixamos aqui para efeito de ilustra&#231;&#227;o.</p>
+
+<p>A sa&#237;da desse n&#243; ser&#227;o duas <i>strings</i> contendo as URLs, respectivamente, da pen&#250;ltima e &#250;ltima p&#225;ginas do cadastro do site.</p>
+
+<pre>    URLRetriever-&#62;new,</pre>
+
+<p>Este n&#243; acima, como o nome da classe <a href="http://search.cpan.org/perldoc?DataFlow%3A%3AURLRetriever" class="podlinkpod"
+>DataFlow::URLRetriever</a> indica, ir&#225; acessar as URLs passadas e buscar&#225; o conte&#250;do (no caso, c&#243;digo HTML).</p>
+
+<p>A sa&#237;da desse n&#243; ser&#227;o duas strings, cada uma delas correspondendo ao conte&#250;do HTML completo das URLs das &#250;ltimas duas p&#225;ginas.</p>
+
+<pre>    HTMLFilter-&#62;new(
+        search_xpath =&#62;
+          &#39;//div[@id=&#34;listagemEmpresasSancionadas&#34;]/table/tbody/tr&#39;,
+    ),</pre>
+
+<p>A classe <a href="http://search.cpan.org/perldoc?DataFlow%3A%3AHTMLFilter" class="podlinkpod"
+>DataFlow::HTMLFilter</a> &#233;, obviamente, utilizada para filtrar conte&#250;do HTML. Essa filtragem &#233; baseada em XPath. No caso do exemplo acima, o filtro ir&#225; buscar uma tag com atributo, <code>&#60;div id=&#34;listagemEmpresasSancionadas&#34;&#62;</code>, e dentro do bloco delimitado por essa tag, uma <code>&#60;table&#62;</code>, dentro dela um <code>&#60;tbody&#62;</code>, e dentro dele todas as tags <code>&#60;tr&#62;</code>, que naturalmente correspondem &#224;s linhas da tabela com os dados que buscamos.</p>
+
+<p>Por <i>default</i>, ser&#225; retornado o texto HTML resultante da busca. No caso, a sa&#237;da deste n&#243; ser&#225; um <i>array</i> de <i>strings</i>, cada uma contendo integralmente o texto HTML de cada linha (<code>&#60;tr&#62;</code>) encontrada nas tabelas de ambas as duas p&#225;ginas, isto &#233;, uma &#250;nica seq&#252;&#234;ncia de itens.</p>
+
+<pre>    HTMLFilter-&#62;new(
+        search_xpath =&#62; &#39;//td&#39;,
+        result_type  =&#62; &#39;VALUE&#39;,
+        ref_result   =&#62; 1,
+    ),</pre>
+
+<p>Mais um filtro HTML, desta vez para obter, de cada linha da tabela os valores de cada c&#233;lula, ou seja, de cada tag <code>&#60;td&#62;</code> que a linha (<code>&#60;tr&#62;</code>) contiver. No entanto, aqui passamos o par&#226;metro <code>result_type</code> igual a <code>&#39;VALUE&#39;</code>, isso faz com que, por exemplo, <code>&#60;tr&#62;&#60;td&#62;1&#60;/td&#62;&#60;td&#62;aa&#60;/td&#62;&#60;/tr&#62;</code>, retorne <code>( 1, &#39;aa&#39; )</code>. Mas, como cada item de uma linha s&#227;o atributos de um &#250;nico item (pessoa inid&#244;nea), gostar&#237;amos que eles ficassem agrupados - para isso passamos o par&#226;metro <code>ref_result</code>, que ir&#225; transformar a lista de valores de cada linha em um <i>ArrayRef</i> para essa lista.</p>
+
+<p>A sa&#237;da deste n&#243; &#233; um <i>array</i> de <i>ArrayRef</i>s, cada um contendo os dados de cada pessoa listada nas &#250;ltimas duas p&#225;ginas do cadastro no site.</p>
+
+<pre>    Node-&#62;new(
+        process_into =&#62; 1,
+        process_item =&#62; sub {
+            shift; local $_ = shift; s/^\s*//; s/\s*$//;
+            return $_;
+        }
+    ),</pre>
+
+<p>Aqui criamos um n&#243; do pr&#243;prio tipo <a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode" class="podlinkpod"
+>DataFlow::Node</a>, ao qual fornecemos o c&#243;digo <code>process_item</code>, que ir&#225;, neste caso, remover eventuais espa&#231;os em branco no in&#237;cio e no final de cada dado, dentro de cada <i>ArrayRef</i> - isso ocorre devido ao uso do par&#226;metro <code>process_into</code>.</p>
+
+<p>A sa&#237;da desse n&#243; ter&#225; a mesma estrutura de dados do n&#243; anterior, mas o conte&#250;do ter&#225; os espa&#231;os iniciais e finais removidos.</p>
+
+<pre>        DataFlow::Node::Dumper-&#62;new,</pre>
+
+<p>Este n&#243;, do tipo <a href="http://search.cpan.org/perldoc?DataFlow%3A%3ANode%3A%3ADumper" class="podlinkpod"
+>DataFlow::Node::Dumper</a>, utiliza o m&#243;dulo <a href="http://search.cpan.org/perldoc?Data%3A%3ADumper" class="podlinkpod"
+>Data::Dumper</a> para imprimir em <code>STDERR</code> o conte&#250;do de cada item de dado. Neste caso ele listar&#225;, para cada pessoa inid&#244;nea ou sancionada das &#250;ltimas duas p&#225;ginas do cadastro, o conte&#250;do do <i>ArrayRef</i> contendo os dados da pessoa.</p>
+
+<p>Para colocar a <b>Chain</b> em a&#231;&#227;o, invocamos o m&#233;todo <code>flush()</code>, que ir&#225; consumir itens da sa&#237;da de um n&#243;, no caso <code>$chain</code>, at&#233; que n&#227;o haja mais itens.</p>
+
+<pre>    $chain-&#62;flush;</pre>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Conclus&#227;o"
+>Conclus&#227;o</a></h2>
+
+<p>O <a href="http://search.cpan.org/perldoc?DataFlow" class="podlinkpod"
+>DataFlow</a> &#233; um projeto que est&#225; em um est&#225;gio muito novo do seu desenvolvimento, e por enquanto n&#227;o h&#225; promessas ou garantias de que as interfaces ser&#227;o mantidas. Se houver interesse em usar o DataFlow, sugiro acompanhar de perto o desenvolvimento do mesmo para ficar a par de quaisquer mudan&#231;as.</p>
+
+<p>J&#225; existem v&#225;rias id&#233;ias de melhorias, como por exemplo:</p>
+
+<ul>
+<li>Execu&#231;&#227;o em paralelo (com threads, com forks)</li>
+
+<li>N&#243; para leitura/escrita de arquivos (em andamento)</li>
+
+<li>N&#243; para <i>encoding</i> de caracteres (em andamento)</li>
+
+<li>N&#243; para envio/recebimento de mensagens em filas (RabbitMQ, MQ, etc...)</li>
+
+<li>N&#243; para gera&#231;&#227;o de dados em formato RDF</li>
+
+<li>N&#243; para decodificar imagens com OCR</li>
+
+<li>N&#243; para executar comandos externos (enviar ou receber dados para esses comandos)</li>
+
+<li>Uso de operadores (concatena&#231;&#227;o de n&#243;s seria uma cadeia)</li>
+
+<li>Constru&#231;&#227;o de n&#243;s (e principalmente cadeias de n&#243;s) a partir de especifica&#231;&#245;es em JSON e/ou YAML</li>
+
+<li>N&#243;s que permitam <i>split</i> e <i>join</i> de fluxos de informa&#231;&#227;o</li>
+</ul>
+
+<p>Estas e outras id&#233;ias de melhorias est&#227;o no arquivo de <a href="https://github.com/russoz/DataFlow/blob/master/TODO" class="podlinkurl"
+>TODO</a> no reposit&#243;rio do projeto.</p>
+
+<p><b>Voc&#234; pode ajudar!</b> De v&#225;rias formas: escrevendo c&#243;digo, tanto para os m&#243;dulos quanto testes. Executando testes e enviando <i>reports</i> - neste momento h&#225;, por exemplo, alguns reports de erro em FreeBSD que n&#227;o est&#227;o ocorrendo no sistema dos mantenedores (Linux).</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Refer&#234;ncias"
+>Refer&#234;ncias</a></h2>
+
+<dl>
+<dt><a name="Portal_Transpar&#234;ncia"
+>Portal Transpar&#234;ncia</a></dt>
+
+<dd>
+<p><a href="http://www.portaltransparencia.gov.br/" class="podlinkurl"
+>http://www.portaltransparencia.gov.br/</a></p>
+
+<dt><a name="Portal_Transpar&#234;ncia_-_CEIS_(Cadastro_de_Empresas_Inid&#244;neas_ou_Sancionadas)"
+>Portal Transpar&#234;ncia - CEIS (Cadastro de Empresas Inid&#244;neas ou Sancionadas)</a></dt>
+
+<dd>
+<p><a href="http://goo.gl/UDNaG" class="podlinkurl"
+>http://goo.gl/UDNaG</a></p>
+
+<dt><a name="OpenData-BR"
+>OpenData-BR</a></dt>
+
+<dd>
+<p><a href="http://www.opendatabr.org/" class="podlinkurl"
+>http://www.opendatabr.org/</a></p>
+</dd>
+</dl>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Agradecimentos"
+>Agradecimentos</a></h2>
+
+<dl>
+<dt><a name="Nelson_Ferraz"
+>Nelson Ferraz</a></dt>
+
+<dd>
+<p>Por lan&#231;ar a sugest&#227;o de ter o Equin&#243;cio 2011 sobre o tema <b>Hack de Dados P&#250;blicos</b>. Nelson, a culpa &#233; toda sua. ;-)</p>
+
+<dt><a name="Thiago_&#34;Maluco&#34;_Rondon"
+>Thiago &#34;Maluco&#34; Rondon</a></dt>
+
+<dd>
+<p>Por tirar o <b>OpenData-BR</b> do plano das id&#233;ias e traz&#234;-lo para a realidade. Pelos testes, id&#233;ias e discuss&#245;es, muitas vezes em hor&#225;rios excusos. Muitos dos conceitos do <a href="http://search.cpan.org/perldoc?DataFlow" class="podlinkpod"
+>DataFlow</a> germinaram a partir desses momentos.</p>
+
+<dt><a name="Blabos_de_Blebe"
+>Blabos de Blebe</a></dt>
+
+<dd>
+<p>Pela revis&#227;o deste texto. Valeu, Blabos!!</p>
+</dd>
+</dl>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Autor"
+>Autor</a></h2>
+
+<p><b>Alexei &#34;Russo&#34; Znamensky &#60; russoz no cpan org &#62;</b></p>
+
+<p>Blog: <a href="http://russoz.wordpress.com/" class="podlinkurl"
+>http://russoz.wordpress.com/</a></p>
+
+<p>LinkedIn: <a href="http://www.linkedin.com/profile?viewProfile=&#38;key=754668&#38;trk=tab_pro" class="podlinkurl"
+>http://www.linkedin.com/profile?viewProfile=&#38;key=754668&#38;trk=tab_pro</a></p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Licen&#231;a"
+>Licen&#231;a</a></h2>
+
+<p>Este texto est&#225; licenciado sob os termos da Creative Commons by-sa, <a href="http://creativecommons.org/licenses/by-sa/3.0/br/" class="podlinkurl"
+>http://creativecommons.org/licenses/by-sa/3.0/br/</a></p>
+
+</body></html>

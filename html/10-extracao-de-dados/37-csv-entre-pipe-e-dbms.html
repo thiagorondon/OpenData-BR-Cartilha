@@ -1,0 +1,403 @@
+<html><head><title>CSV: ENTRE PIPE E DBMS</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#CSV%3A_ENTRE_PIPE_E_DBMS'>CSV: ENTRE PIPE E DBMS</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#INTRODU%C7%C3O'>INTRODU&#199;&#195;O</a>
+    <li class='indexItem indexItem2'><a href='#M%D3DULOS_DE_CPAN_PARA_TRATAR_CSV'>M&#211;DULOS DE CPAN PARA TRATAR CSV</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Text%3A%3ACSV'>Text::CSV</a>
+      <li class='indexItem indexItem3'><a href='#Tie%3A%3AHandle%3A%3ACSV'>Tie::Handle::CSV</a>
+      <li class='indexItem indexItem3'><a href='#DBD%3A%3ACSV'>DBD::CSV</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#AP%CANDICES'>AP&#202;NDICES</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Acelerando_com_o_Text%3A%3ACSV_XS'>Acelerando com o Text::CSV_XS</a>
+      <li class='indexItem indexItem3'><a href='#Retornando_CSV_via_HTTP'>Retornando CSV via HTTP</a>
+      <li class='indexItem indexItem3'><a href='#Google_Fusion_Tables'>Google Fusion Tables</a>
+      <li class='indexItem indexItem3'><a href='#mysqldump%2Fmysqlimport'>mysqldump/mysqlimport</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#REFER%CANCIAS'>REFER&#202;NCIAS</a>
+    <li class='indexItem indexItem2'><a href='#AUTOR'>AUTOR</a>
+    <li class='indexItem indexItem2'><a href='#LICEN%C7A'>LICEN&#199;A</a>
+  </ul>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="CSV:_ENTRE_PIPE_E_DBMS"
+>CSV: ENTRE PIPE E DBMS</a></h1>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="INTRODU&#199;&#195;O"
+>INTRODU&#199;&#195;O</a></h2>
+
+<p>O formato CSV (<i>Comma-Separated Values</i>) &#233; o verdadeiro &#34;idioma ingl&#234;s&#34; para a transfer&#234;ncia de dados: quase todo aplicativo de planilha (<i>spreadsheet</i>) ou DBMS (<i>Database Management System</i>) oferece CSV como o formato de importa&#231;&#227;o ou exporta&#231;&#227;o.</p>
+
+<p>&#218;nico &#34;formato&#34; que pode ser considerado mais simples do que CSV &#233; o TSV (<i>Tab-Separated Values</i>),
+que nada mais &#233; do que um caso particular de CSV.
+O formato TSV est&#225; de certa forma <i>hard-coded</i> em scripts de <i>shell</i>,
+por exemplo,
+<code>xinput -list | cut -f 2</code> retorna os identificadores dos dispositivos de entrada do X11.
+O pr&#243;prio Perl j&#225; lida muito bem com os dados delimitados,
+via <i>inline</i>:</p>
+
+<pre> # extrai o PID e a linha de comando dos processos operantes
+ ps auwx | perl -anE &#39;$,=&#34;\t&#34;; say @F[1,10]&#39;</pre>
+
+<p>Do ponto de vista da efici&#234;ncia, separar pelo delimitador &#233; muito melhor, entretanto, alguns dados s&#227;o suficientemente elaborados a ponto de empregarem o pr&#243;prio delimitador como parte dos dados. Por outro lado, colunas separadas por caractere invis&#237;vel definitivamente n&#227;o s&#227;o uma forma <i>human-readable</i> de representar os dados, especialmente quando existem muitas colunas e/ou colunas de valor indefinido.</p>
+
+<p>&#201; a&#237; que entra o CSV. Apesar de n&#227;o existir uma padroniza&#231;&#227;o r&#237;gida do que seja um CSV v&#225;lido, o formato &#233; suficientemente intuitivo e a defini&#231;&#227;o em <a href="http://tools.ietf.org/html/rfc4180" class="podlinkurl"
+>RFC 4180</a> j&#225; ajuda bastante.</p>
+
+<p>Claro que &#233; poss&#237;vel implementar um <i>parser</i> de CSV <i>from scratch</i>, &#233; s&#243; uma quest&#227;o de tratar do <i>escaping</i> dos delimitadores; mas, felizmente, CPAN j&#225; tem solu&#231;&#245;es robustas para todo gosto!</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="M&#211;DULOS_DE_CPAN_PARA_TRATAR_CSV"
+>M&#211;DULOS DE CPAN PARA TRATAR CSV</a></h2>
+
+<p>Uma busca por &#34;CSV&#34; no CPAN retorna muitas varia&#231;&#245;es sobre o tema. Sem o intuito de desmerecer as outras solu&#231;&#245;es, focarei apenas em <a href="http://search.cpan.org/perldoc?Text%3A%3ACSV" class="podlinkpod"
+>Text::CSV</a>, <a href="http://search.cpan.org/perldoc?Tie%3A%3AHandle%3A%3ACSV" class="podlinkpod"
+>Tie::Handle::CSV</a> e <a href="http://search.cpan.org/perldoc?DBD%3A%3ACSV" class="podlinkpod"
+>DBD::CSV</a>, por serem abordagens bastante ortogonais.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Text::CSV"
+>Text::CSV</a></h3>
+
+<p><a href="http://search.cpan.org/perldoc?Text%3A%3ACSV" class="podlinkpod"
+>Text::CSV</a> &#233; a op&#231;&#227;o mais flex&#237;vel, grava e l&#234; tanto arquivos como <i>strings</i>, e serve como base para muitos outros m&#243;dulos (inclusive os outros dois que explicarei adiante).</p>
+
+<p>Quando <code>column_names</code> s&#227;o definidos (atrav&#233;s de um <i>ArrayRef</i>), podemos usar <code>getline_hr</code>, que retorna <i>HashRef</i> para cada linha processada. J&#225; <code>getline</code> retorna <i>ArrayRef</i> diretamente. Dica: a primeira linha do CSV frequentemente traz os nomes das colunas. Leia estes com <code>getline</code> e passe para <code>column_names</code>. O resto do arquivo pode ser lido com <code>getline_hr</code>.</p>
+
+<p>Para gerar CSV, pode ser usado <code>print</code>, que grava diretamente num <i>FileHandle</i>, ou combina&#231;&#227;o de <code>combine</code> e <code>string</code> para gerar <i>buffer</i>.</p>
+
+<p>Mas vamos botando a m&#227;o na massa. Temos o seguinte CSV, e precisamos filtrar ele, deixando apenas c&#243;digo identificador, nome da cidade e UF:</p>
+
+<pre> estado,cidade,longitude,latitude,link
+ MG,Santa Maria do Salto,-40.14935,-16.24953,http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=3158102
+ ES,Maril&#226;ndia,-40.54236,-19.41355,http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=3203353
+ GO,Estrela do Norte,-49.07341,-13.86851,http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=5207501
+ ...</pre>
+
+<p>Segue o <i>script</i> que emprega o <a href="http://search.cpan.org/perldoc?Text%3A%3ACSV" class="podlinkpod"
+>Text::CSV</a> para isso:</p>
+
+<pre> #!/usr/bin/perl
+ use strict;
+ use utf8;
+ use warnings &#39;all&#39;;
+
+ use open &#39;:locale&#39;;
+
+ use Data::Dumper;
+ use Text::CSV;
+
+ # N&#227;o &#233; necess&#225;rio definir EOL quando s&#243; vamos *ler* o CSV,
+ # pois o valor de $/ ser&#225; usado automaticamente.
+ # J&#225; para grava&#231;&#227;o, precisa definir (n&#227;o sei se &#233; bug).
+ my $csv = new Text::CSV({ eol =&#62; &#34;\n&#34; })
+     or die &#34;Erro com Text::CSV: &#34; . Text::CSV-&#62;error_diag;
+
+ # Assume que a codifica&#231;&#227;o do arquivo &#233; UTF-8.
+ open my $fh, &#39;&#60;:utf8&#39;, &#39;7marco2011.csv&#39;;
+
+ # Pega a primeira linha do CSV e extrai os nomes das colunas.
+ $csv-&#62;column_names($csv-&#62;getline($fh));
+
+ # Pega todas as outras linhas e retorna para cada um HashRef
+ # aonde as chaves s&#227;o os nomes das colunas.
+ while (my $row = $csv-&#62;getline_hr($fh)) {
+     ($row-&#62;{codigo}) = ($row-&#62;{link} =~ m{\bcodmun=([0-9]+)\b}i);
+     print STDERR Dumper $row;
+     $csv-&#62;print(\*STDOUT, [ map { $row-&#62;{$_} // &#39;&#39; } qw(codigo cidade estado) ]);
+ }
+ $csv-&#62;eof or $csv-&#62;error_diag;
+ close $fh;</pre>
+
+<p>O <i>output</i> ser&#225;:</p>
+
+<pre> ...
+ $VAR1 = {
+           &#39;link&#39; =&#62; &#39;http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=4109609&#39;,
+           &#39;cidade&#39; =&#62; &#39;Guaratuba&#39;,
+           &#39;longitude&#39; =&#62; &#39;-48.57544&#39;,
+           &#39;latitude&#39; =&#62; &#39;-25.88355&#39;,
+           &#39;codigo&#39; =&#62; &#39;4109609&#39;,
+           &#39;estado&#39; =&#62; &#39;PA&#39;
+         };
+ 4109609,Guaratuba,PA
+ $VAR1 = {
+           &#39;link&#39; =&#62; &#39;http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=3541109&#39;,
+           &#39;cidade&#39; =&#62; &#39;Presidente Alves&#39;,
+           &#39;longitude&#39; =&#62; &#39;-49.43844&#39;,
+           &#39;latitude&#39; =&#62; &#39;-22.10054&#39;,
+           &#39;codigo&#39; =&#62; &#39;3541109&#39;,
+           &#39;estado&#39; =&#62; &#39;SP&#39;
+         };
+ 3541109,&#34;Presidente Alves&#34;,SP
+ ...</pre>
+
+<p>Outras coisas que valem a pena serem estudadas s&#227;o <code>bind_columns</code>, que associa os campos do CSV &#224;s vari&#225;veis diretamente, e atributos do m&#233;todo <code>new</code>. A configura&#231;&#227;o padr&#227;o &#233;:</p>
+
+<pre> $csv = new Text::CSV({
+     quote_char          =&#62; &#39;&#34;&#39;,
+     escape_char         =&#62; &#39;&#34;&#39;,
+     sep_char            =&#62; &#39;,&#39;,
+     eol                 =&#62; $\,
+     always_quote        =&#62; 0,
+     quote_space         =&#62; 1,
+     quote_null          =&#62; 1,
+     binary              =&#62; 0,
+     keep_meta_info      =&#62; 0,
+     allow_loose_quotes  =&#62; 0,
+     allow_loose_escapes =&#62; 0,
+     allow_whitespace    =&#62; 0,
+     blank_is_undef      =&#62; 0,
+     empty_is_undef      =&#62; 0,
+     verbatim            =&#62; 0,
+     auto_diag           =&#62; 0,
+ });</pre>
+
+<p>&#201; f&#225;cil ajust&#225;-la para processar arquivos TSV (cujas colunas s&#227;o separadas por <i>tabs</i>):</p>
+
+<pre> $csv = new Text::CSV({
+     quote_char          =&#62; undef,
+     escape_char         =&#62; undef,
+     sep_char            =&#62; &#34;\t&#34;,
+     eol                 =&#62; &#34;\n&#34;,
+     quote_space         =&#62; 0,
+     quote_null          =&#62; 0,
+ });</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Tie::Handle::CSV"
+>Tie::Handle::CSV</a></h3>
+
+<p><a href="http://search.cpan.org/perldoc?Tie%3A%3AHandle%3A%3ACSV" class="podlinkpod"
+>Tie::Handle::CSV</a> &#233; a vers&#227;o <i>easy</i> do <a href="http://search.cpan.org/perldoc?Text%3A%3ACSV" class="podlinkpod"
+>Text::CSV</a> <code>:)</code></p>
+
+<p>Combina muito melhor com um c&#243;digo orientado a objetos, fazendo um bom uso de <i>overloading</i> e normalizando os <i>headers</i> para caixa alta/baixa.</p>
+
+<p>N&#227;o &#233; t&#227;o suscet&#237;vel a <i>tuning</i> quanto o m&#243;dulo que encapsula, mas em 99% dos casos, &#233; exatamente isso que queremos. Segue um exemplo com funcionalidade similar ao anterior:</p>
+
+<pre> #!/usr/bin/perl
+ use strict;
+ use utf8;
+ use warnings &#39;all&#39;;
+
+ use open &#39;:locale&#39;;
+
+ use Data::Dumper;
+ use Tie::Handle::CSV;
+
+ my $csv = new Tie::Handle::CSV(
+     file        =&#62; &#39;7marco2011.csv&#39;,
+     header      =&#62; 1,
+     key_case    =&#62; &#39;lower&#39;,
+     open_mode   =&#62; &#39;&#60;:utf8&#39;,
+ );
+
+ while (my $row = &#60;$csv&#62;) {
+     $row-&#62;{link} =~ s/^.*=//;
+     print STDERR Dumper $row;
+     print $row . &#34;\n&#34;;
+ }
+
+ close $csv;</pre>
+
+<p>Vantagem evidente: dispensa coment&#225;rios. Considerar ambos os sentidos da frase <code>;)</code></p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="DBD::CSV"
+>DBD::CSV</a></h3>
+
+<p>Muitas vezes, quando um projeto est&#225; na fase de prototipagem, n&#227;o compensa <i>&#34;matar passarinho com bazooka&#34;</i> criando <i>schemas</i> em um RDBMS. Outros projetos simplesmente n&#227;o atingem o <i>threshold</i> m&#237;nimo para envolver o <a href="http://search.cpan.org/perldoc?DBD%3A%3ASQLite" class="podlinkpod"
+>SQLite</a> na hist&#243;ria, sendo muito mais pr&#225;tico manter as tabelas com apenas um editor de texto. Para unir o melhor dos dois mundos, existe o <a href="http://search.cpan.org/perldoc?DBD%3A%3ACSV" class="podlinkpod"
+>DBD::CSV</a>, um <i>driver</i> para <a href="http://search.cpan.org/perldoc?DBI" class="podlinkpod"
+>DBI</a> que trabalha diretamente com arquivos CSV, usando o <a href="http://search.cpan.org/perldoc?Text%3A%3ACSV" class="podlinkpod"
+>Text::CSV</a> como <i>backend</i>. A grande vantagem &#233; que o c&#243;digo pode ser facilmente escalado, trocando o <i>driver</i> por qualquer outro e importando as tabelas. Quanto ao subconjunto de SQL implementado, posso dizer que &#233; <b>suficientemente</b> completo.</p>
+
+<p>Vamos ao exemplo, com o mesmo conjunto de dados do exemplo anterior. Dessa vez, expandimos a sigla de UF para o nome do estado (atrav&#233;s de um <code>JOIN</code>), e mostramos somente os munic&#237;pios que fazem parte da Grande S&#227;o Paulo:</p>
+
+<pre> #!/usr/bin/perl
+ use strict;
+ use utf8;
+ use warnings &#39;all&#39;;
+
+ use open &#39;:locale&#39;;
+
+ use DBI;
+
+ my $dbh = DBI-&#62;connect(&#39;dbi:CSV:&#39;, undef, undef, {
+     f_encoding  =&#62; &#39;utf8&#39;,
+     csv_tables  =&#62; {
+         llcb    =&#62; { file =&#62; &#39;7marco2011.csv&#39; },
+         estados =&#62; { file =&#62; &#39;estados.csv&#39; },
+     },
+     RaiseError  =&#62; 1,
+     PrintError  =&#62; 1,
+ }) or die &#34;Erro com DBI/DBD::CSV: &#34; . $DBI::errstr;
+
+ my $sth = $dbh-&#62;prepare(&#60;&#60;SQL_QUERY);
+     SELECT cidade, estados.estado AS cidade_uf
+     FROM llcb
+     JOIN estados
+         ON llcb.estado = estados.uf
+     WHERE
+         llcb.estado = &#39;SP&#39;
+         AND (latitude   &#62; -23.80)
+         AND (latitude   &#60; -23.20)
+         AND (longitude  &#62; -47.10)
+         AND (longitude  &#60; -46.10)
+     ORDER BY cidade
+ SQL_QUERY
+
+ $sth-&#62;execute;
+ while (my $row = $sth-&#62;fetchrow_arrayref) {
+     printf(&#34;%s, %s\n&#34;, @{$row});
+ }
+ $sth-&#62;finish;
+ $dbh-&#62;disconnect;</pre>
+
+<p>Al&#233;m de <code>SELECT</code> (com <code>JOIN</code> e <code>ORDER</code>!), <code>INSERT</code>, <code>DELETE</code> e <code>UPDATE</code> tamb&#233;m s&#227;o implementados. A documenta&#231;&#227;o completa est&#225; em <a href="http://search.cpan.org/perldoc?SQL%3A%3AStatement%3A%3ASyntax" class="podlinkpod"
+>SQL::Statement::Syntax</a>.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="AP&#202;NDICES"
+>AP&#202;NDICES</a></h2>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Acelerando_com_o_Text::CSV_XS"
+>Acelerando com o Text::CSV_XS</a></h3>
+
+<p>Quando o m&#243;dulo <a href="http://search.cpan.org/perldoc?Text%3A%3ACSV_XS" class="podlinkpod"
+>Text::CSV_XS</a> est&#225; instalado, o <a href="http://search.cpan.org/perldoc?Text%3A%3ACSV" class="podlinkpod"
+>Text::CSV</a> automaticamente faz o uso do mesmo, proporcionando performance consideravelmente maior:</p>
+
+<pre>              s/iter Text::CSV_PP Text::CSV_XS
+ Text::CSV_PP   23.6           --         -90%
+ Text::CSV_XS   2.27         941%           --</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Retornando_CSV_via_HTTP"
+>Retornando CSV via HTTP</a></h3>
+
+<p>Em v&#225;rias ocasi&#245;es, gostar&#237;amos que os usu&#225;rios pudessem exportar os dados dos sistemas online diretamente para os seus desktops. &#201; s&#243; uma quest&#227;o de configurar os <i>headers</i> corretos para que o sistema do usu&#225;rio encaminhe a planilha diretamente para o aplicativo especializado (Excel, LibreOffice), ao inv&#233;s de exibir o conte&#250;do do CSV na tela do navegador.</p>
+
+<p>Tomando o <a href="http://search.cpan.org/perldoc?Catalyst" class="podlinkpod"
+>Catalyst</a> como exemplo:</p>
+
+<pre> $c-&#62;res-&#62;headers-&#62;content_type(&#39;application/vnd.ms-excel; charset: iso-8859-1&#39;);
+ $c-&#62;res-&#62;header(&#39;Content-Disposition&#39; =&#62; &#39;attachment;filename=&#39; . $filename);</pre>
+
+<p>Previsivelmente, temos um <i>caveat</i> relativo &#224; codifica&#231;&#227;o: Excel espera que o CSV esteja em ISO-8859-1 (ou, possivelmente, Windows-1252), ent&#227;o um <i>downgrade</i> para <code>latin1</code> faz-se necess&#225;rio.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Google_Fusion_Tables"
+>Google Fusion Tables</a></h3>
+
+<p>Uma vez que temos uma quantidade razo&#225;vel de dados em formato CSV, fazer um <a href="http://search.cpan.org/perldoc?overview" class="podlinkpod"
+>overview</a> de uma forma r&#225;pida e intuitiva pode ser um problema. Principalmente quando &#233; necess&#225;rio mostrar os dados para leigos (que n&#227;o tem obriga&#231;&#227;o de saber SQL). Neste caso <a href="http://tables.googlelabs.com/" class="podlinkurl"
+>Fusion Tables</a>, um experimento do <a href="http://www.googlelabs.com/" class="podlinkurl"
+>Google Labs</a>, &#233; de grande ajuda.</p>
+
+<p>Segundo a descri&#231;&#227;o do pr&#243;prio Google:</p>
+
+<pre> Fusion Tables &#233; um servi&#231;o para gerenciar grandes cole&#231;&#245;es de dados
+ tabulares na nuvem. Voc&#234; pode enviar tabelas de at&#233; 100 MB e
+ compartilh&#225;-las com colaboradores, ou torn&#225;-las p&#250;blicas. Voc&#234; pode
+ aplicar filtros e agrega&#231;&#227;o aos seus dados, visualiz&#225;-los em mapas
+ e em outros gr&#225;ficos, mesclar os dados de diversas tabelas e
+ export&#225;-los para a web ou para arquivos csv. Voc&#234; tamb&#233;m pode
+ conduzir discuss&#245;es sobre os dados em diversos n&#237;veis de granularidade,
+ como linhas, colunas e c&#233;lulas individuais.</pre>
+
+<p>Coment&#225;rio do autor: nada mais &#233; do que um <i>Excel on steroids</i>, al&#233;m dos filtros &#233; poss&#237;vel fazer <i>joins</i> e criar <i>views</i>. Para demonstra&#231;&#227;o, o arquivo que usei como exemplo no decorrer desse artigo, o <i>dump</i> do banco de dados do projeto <a href="http://sao-paulo.pm.org/equinocio/2011/mar/11" class="podlinkurl"
+>Latitudes e Longitudes das Cidades Brasileiras</a> do <a href="https://github.com/maluco" class="podlinkurl"
+>Thiago Rondon</a>, encontra-se aqui: <a href="http://j.mp/hyoYqi" class="podlinkurl"
+>http://j.mp/hyoYqi</a></p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="mysqldump/mysqlimport"
+>mysqldump/mysqlimport</a></h3>
+
+<p>MySQL oferece importa&#231;&#227;o/exporta&#231;&#227;o otimizada para arquivos CSV localizados no mesmo <i>host</i> aonde o servidor (<a href="http://search.cpan.org/perldoc?mysqld" class="podlinkpod"
+>mysqld</a>) est&#225; rodando. Trocando em mi&#250;dos, tendo certos privil&#233;gios, podemos &#34;passar por cima&#34; do sistema de queries:</p>
+
+<pre> mysqldump \
+     --fields-terminated-by=&#34;,&#34; \
+     --fields-optionally-enclosed-by=&#34;\&#34;&#34; \
+     --lines-terminated-by=&#34;\n&#34; \
+     -u $USERNAME -p -t -T/caminho/para/diretorio $DATABASE</pre>
+
+<p>Este comando grava todas as tabelas de <code>$DATABASE</code> em arquivos CSV individuais em diret&#243;rio <code>/caminho/para/diretorio</code>. &#201; necess&#225;rio que esse diret&#243;rio tenha permiss&#227;o para grava&#231;&#227;o aberta para o usu&#225;rio que executa o <i>daemon</i>, pois os arquivos CSV s&#227;o gerados diretamente pelo mesmo, e n&#227;o pelo <code>mysqldump</code>!</p>
+
+<p>A importa&#231;&#227;o &#233; feita da seguinte maneira:</p>
+
+<pre> mysqlimport \
+     --fields-terminated-by=&#34;,&#34; \
+     --fields-optionally-enclosed-by=&#34;\&#34;&#34; \
+     --lines-terminated-by=&#34;\n&#34; \
+     -u $USERNAME -p $DATABASE table.csv</pre>
+
+<p>O nome da tabela onde ser&#225; feita a importa&#231;&#227;o &#233; deduzido do nome do arquivo CSV (<code>table</code>, nesse caso).</p>
+
+<p>Para mais detalhes, ver:</p>
+
+<ul>
+<li><a href="http://dev.mysql.com/doc/refman/5.1/en/mysqldump.html" class="podlinkurl"
+>mysqldump &#8212; A Database Backup Program</a></li>
+
+<li><a href="http://dev.mysql.com/doc/refman/5.1/en/mysqlimport.html" class="podlinkurl"
+>mysqlimport &#8212; A Data Import Program</a></li>
+
+<li><a href="http://dev.mysql.com/doc/refman/5.1/en/load-data.html" class="podlinkurl"
+>LOAD DATA INFILE Syntax</a></li>
+</ul>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="REFER&#202;NCIAS"
+>REFER&#202;NCIAS</a></h2>
+
+<ul>
+<li><a href="http://perlmeme.org/tutorials/parsing_csv.html" class="podlinkurl"
+>Parsing CSV</a></li>
+
+<li><a href="http://search.cpan.org/perldoc?Text%3A%3ACSV" class="podlinkpod"
+>Text::CSV</a>, <a href="http://search.cpan.org/perldoc?Text%3A%3ACSV_XS" class="podlinkpod"
+>Text::CSV_XS</a></li>
+
+<li><a href="http://search.cpan.org/perldoc?Tie%3A%3AHandle%3A%3ACSV" class="podlinkpod"
+>Tie::Handle::CSV</a></li>
+
+<li><a href="http://search.cpan.org/perldoc?DBD%3A%3ACSV" class="podlinkpod"
+>DBD::CSV</a></li>
+</ul>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="AUTOR"
+>AUTOR</a></h2>
+
+<p>Stanislaw Pusep <a href="mailto:stas@sysd.org" class="podlinkurl"
+>&#60; stas@sysd.org &#62;</a></p>
+
+<p>Blog: <a href="http://sysd.org/" class="podlinkurl"
+>sysd.org</a></p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="LICEN&#199;A"
+>LICEN&#199;A</a></h2>
+
+<p>Este texto est&#225; licenciado sob os termos da Creative Commons by-sa, <a href="http://creativecommons.org/licenses/by-sa/3.0/br/" class="podlinkurl"
+>http://creativecommons.org/licenses/by-sa/3.0/br/</a></p>
+
+</body></html>

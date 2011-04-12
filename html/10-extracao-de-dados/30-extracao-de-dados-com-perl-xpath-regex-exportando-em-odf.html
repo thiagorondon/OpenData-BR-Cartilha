@@ -1,0 +1,331 @@
+<html><head><title>Extra&#231;&#227;o de dados com perl, xpath e regex. Exportado em ODF.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#Extra%E7%E3o_de_dados_com_perl%2C_xpath_e_regex._Exportado_em_ODF.'>Extra&#231;&#227;o de dados com perl, xpath e regex. Exportado em ODF.</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Obtendo_os_dados_de_uma_p%E1gina'>Obtendo os dados de uma p&#225;gina</a>
+    <li class='indexItem indexItem2'><a href='#Analisando_texto_com_regex'>Analisando texto com regex</a>
+    <li class='indexItem indexItem2'><a href='#Navega%E7%E3o_e_web_crawler_com_perl'>Navega&#231;&#227;o e web crawler com perl</a>
+    <li class='indexItem indexItem2'><a href='#Como_criar_arquivo_openoffice_usando_perl'>Como criar arquivo openoffice usando perl</a>
+    <li class='indexItem indexItem2'><a href='#AUTOR'>AUTOR</a>
+  </ul>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Extra&#231;&#227;o_de_dados_com_perl,_xpath_e_regex._Exportado_em_ODF."
+>Extra&#231;&#227;o de dados com perl,
+xpath e regex.
+Exportado em ODF.</a></h1>
+
+<p>Este artigo tem como objetivo proporcionar um exemplo pr&#225;tico que envolva:</p>
+
+<pre>    - Utiliza&#231;&#227;o de Crawlers/Spider para automatizar a navega&#231;&#227;o em sites com perl.
+    - Xpath para determinar onde est&#227;o os dados que procuramos dentro de uma p&#225;gina web.
+    - Express&#245;es regulares para re-formatar strings de conte&#250;do de acordo com o que precisamos.
+    - Exportar dados do site em arquivo formato ODF ( openoffice spreadsheets ).</pre>
+
+<p>Para come&#231;ar escolheremos um site como ponto de partida. Acesse a url escolhida para nosso artigo: http://www.portaltransparencia.gov.br/despesasdiarias/resultado?consulta=rapida&#38;periodoInicio=01%2F01%2F2011&#38;periodoFim=31%2F01%2F2011&#38;fase=EMP&#38;codigoOS=51000&#38;codigoFavorecido= Obs: para obter esta url, acessei o site http://www.portaltransparencia.gov.br/despesasdiarias e selecionei o per&#237;odo de 01/01/2011 a 31/01/2011, Empenho, Minist&#233;rio do esporte &#62; consultar.</p>
+
+<p>Esta &#233; uma p&#225;gina do portal da transpar&#234;ncia. O que vamos fazer agora &#233; analisar alguns pontos importantes de uma p&#225;gina:</p>
+
+<pre>    - possui pagina&#231;&#227;o?
+    - formata&#231;&#227;o dos dados, valores, strings, etc. observe os padr&#245;es dos dados para poder criar regex e arrumar os dados de acordo.
+    - layout da p&#225;gina. como os dados est&#227;o dispostos ? &#233; uma tabela? s&#227;o divs? onde est&#227;o os dados que eu preciso em uma determinada p&#225;gina ?</pre>
+
+<p>Observe a p&#225;gina e note que ela possui pagina&#231;&#227;o e tem os dados formatados em uma table. Com esta informa&#231;&#227;o j&#225; &#233; poss&#237;vel perceber que teremos que acessar cada p&#225;gina e ler os dados que est&#227;o dentro da tabela. Quanto &#224; formata&#231;&#227;o dos dados, navegando em algumas p&#225;ginas &#233; poss&#237;vel notar que os pre&#231;os muito provavelmente precisar&#227;o ser re-formatados para que o banco de dados os aceite como valores v&#225;lidos.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Obtendo_os_dados_de_uma_p&#225;gina"
+>Obtendo os dados de uma p&#225;gina</a></h2>
+
+<p>Para acessar estes dados utilizarei XPath, que &#233; uma sintaxe utilizada para navegar entre atributos e elementos em um documento xml. XPath est&#225; presente e &#233; utilizado nas mais diversas linguagens de programa&#231;&#227;o. Sua sintaxe &#233; similar a: &#34;//html/body/div/span&#34; que retornaria o valor do texto que est&#225; dentro do span. Leia mais sobre xpath em http://www.w3schools.com/xpath/default.asp</p>
+
+<p>Exemplos de nota&#231;&#227;o XPath:</p>
+
+<pre>    - //td[1] : retorna o primeiro &#60;td&#62;
+    - //td[position()=1] : retorna o primeiro &#60;td&#62;
+    - //table[@class=&#39;tabelao&#39;] : retorna a table com class = &#39;tabelao&#39;
+    - //table/td[1] : retorna o primeiro td de uma &#60;table&#62;
+    - /body/html//table/td[1] : retorna o primero td de uma tabela dentro do &#60;html&#62;</pre>
+
+<p>Agora que entendemos o b&#225;sico sobre XPath, vamos continuar e aplicar este aprendizado no site que escolhemos anteriormente. O objetivo vai ser carregar os dados da p&#225;gina dentro de uma estrutura de dados criada especificamente para este site. Veja a ilustra&#231;&#227;o do que deve ser feito conforme a imagem:</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Analisando_texto_com_regex"
+>Analisando texto com regex</a></h2>
+
+<p>Depois que obtivermos os dados, eles ser&#227;o parseados e ser&#225; feita uma re-formata&#231;&#227;o em alguns deles. O objetivo desta reformata&#231;&#227;o &#233; adapt&#225;-los aos formatos necess&#225;rios para n&#243;s. Para isto vamos utilizar Express&#245;es regulares com o objetivo de analisar todo o conte&#250;do obtido e transform&#225;-lo de acordo com o que precisamos. Obs. isto pode ser feito j&#225; na hora da leitura dos dados. Veja 2 exemplos de como aplicar regex em um texto:</p>
+
+<pre>    use strict;
+    use warnings;
+    my $string = &#39;Ministerio do esporte, valor R$ 4000,00 no dia 01/02/1999 em esp&#233;cie.&#39;;
+
+    $string =~ m/(.+), valor R\$ (.+) no dia (.+) em (.+)./ ;
+      print $1,&#34;\n&#34;;
+      print $2,&#34;\n&#34;;
+      print $3,&#34;\n&#34;;
+      print $4,&#34;\n&#34;;
+      print &#34;-------&#34;,&#34;\n&#34;;
+
+    $string =~ m/(.+), valor R\$ (\d{1,},\d{2}) no dia (\d{2})\/(\d{2})\/(\d{4}) em (.+)./ ;
+      print $1,&#34;\n&#34;;
+      print $2,&#34;\n&#34;;
+      print $3, &#39;/&#39;, $4, &#39;/&#39;, $5,&#34;\n&#34;;
+      print $6,&#34;\n&#34;;
+      print &#34;-------&#34;,&#34;\n&#34;;</pre>
+
+<p>Veja um exemplo de regex na imagem:</p>
+
+<p>Compilei uma tabela de regex simples com os itens que mais utilizo quando trabalho com regex:</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Navega&#231;&#227;o_e_web_crawler_com_perl"
+>Navega&#231;&#227;o e web crawler com perl</a></h2>
+
+<p>Normalmente as 2 op&#231;&#245;es de navega&#231;&#227;o via perl mais comuns s&#227;o:</p>
+
+<pre>    - WWW::Mechanize (ser&#225; utilizado neste exemplo.) mais em: http://search.cpan.org/perldoc?WWW::Mechanize
+    - LWP mais em: http://search.cpan.org/perldoc?LWP</pre>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Como_criar_arquivo_openoffice_usando_perl"
+>Como criar arquivo openoffice usando perl</a></h2>
+
+<p>Um &#243;timo m&#243;dulo para fazer este tipo de trabalho &#233;:</p>
+
+<pre>    OpenOffice::OODoc</pre>
+
+<p>No entanto ap&#243;s algumas tentativas eu n&#227;o consegui colocar os dados que eu obtive logo na tabela (spreadsheet) inicial do arquivo... ent&#227;o eu criei uma nova tabela dentro do meu arquivo openoffice e ai sim consegui salvar os dados por completo. Segue o exemplo do c&#243;digo implementado:</p>
+
+<pre>    sub exportar_e_salvar_odf {                                                                                                                                                        
+        my ( $items ) = @_;
+        my $document = odfDocument(file =&#62; &#39;portal_transparencia.ods&#39;, create =&#62; &#39;spreadsheet&#39;);
+        my $table  = $document-&#62;appendTable(&#34;TABELA DADOS&#34;, 1000,50);
+        my $line = 0;
+        my $all_fields = get_fields();
+        my $col = 0;
+        foreach my $field ( qw/data fase documento especie orgao_superior entidade_vinculada unidade_gestora elemento_despesa favorecido valor/ ) {
+            $document-&#62;updateCell( $table, $line, $col++, $all_fields-&#62;{ $field }-&#62;{ label } );
+        }
+
+        foreach my $item ( @$items ) {
+            $line++;
+            $col = 0;
+            foreach my $field ( qw/data fase documento especie orgao_superior entidade_vinculada unidade_gestora elemento_despesa favorecido valor/ ) {
+                $document-&#62;updateCell( $table, $line, $col++, $item-&#62;{ $field } );
+            }
+        }
+        $document-&#62;save;
+    }</pre>
+
+<p>E agora finalmente vamos aplicar tudo isto no c&#243;digo e gerar um arquivo de sa&#237;da spreadsheet ods (open office). Este c&#243;digo tem por objetivo baixar todos os dados da p&#225;gina do minist&#233;rio dos esportes (veja o in&#237;cio do artigo).</p>
+
+<pre>    #!/usr/bin/perl 
+
+    use strict;
+    use warnings;
+    use WWW::Mechanize;
+    use HTML::TreeBuilder::XPath;
+    use HTML::LinkExtor;
+    use OpenOffice::OODoc;
+
+    my $mech = WWW::Mechanize-&#62;new();
+    $mech-&#62;agent_alias( &#39;Windows IE 6&#39; );
+    my $url = &#39;http://www.portaltransparencia.gov.br/despesasdiarias/resultado&#39;.
+        &#39;?consulta=rapida&#38;periodoInicio=01%2F01%2F2011&#38;periodoFim=31%2F01%2F2011&#39;.
+        &#39;&#38;fase=EMP&#38;codigoOS=51000&#38;codigoFavorecido=&#39;;
+    my @items = ();
+    my $url_visited = {};
+    scan_page( $url );
+
+
+    @items = reformata_dados_com_regex( \@items );
+    exportar_e_salvar_odf( \@items );
+
+    use Data::Dumper;
+    print &#34;Resultados&#34;,&#34;\n&#34;, Dumper @items, &#34;\n&#34;;
+    print &#34;Para ver o arquivo em formato openoffice, abra o arquivo criado: \n&#34;;
+    print &#34;&#39;portal_transparencia.ods&#39; e veja a tabela de nome &#39;TABELA DADOS&#39;\n&#34;;
+
+    sub scan_page {
+      my ( $link ) = @_;
+      $mech-&#62;get( $link );
+      my @links_paginacao = search_links_paginacao( 
+        $mech-&#62;res-&#62;content, &#39;//p[@id=&#34;paginacao&#34;]&#39; 
+      );
+
+      foreach my $url ( @links_paginacao ) {
+        if ( ! $url_visited-&#62;{ $url } ) {
+          print &#34;Acessando url: &#34;, $url, &#34;\n&#34;;
+          $mech-&#62;get( $url );
+          my $pagina_html = $mech-&#62;res-&#62;content;
+          parse_data( $pagina_html );
+          $url_visited-&#62;{ $url } = &#39;visited&#39;;
+          scan_page( $url );
+
+          } else {
+    #         print &#34;url visitada&#34;,&#34;\n&#34;;
+          }
+        }
+
+    }
+
+    sub search_links_paginacao {
+        my ( $html, $pagination_xpath ) = @_;
+        
+        my $tree= HTML::TreeBuilder::XPath-&#62;new;
+        $tree-&#62;parse( $html );
+        my $pagination_div = $tree-&#62;findnodes( $pagination_xpath );
+        $pagination_div = $pagination_div-&#62;[0]-&#62;as_HTML;
+
+
+        my $url_list  = HTML::LinkExtor-&#62;new();
+        $url_list-&#62;parse( $pagination_div );
+
+        my @links= ();
+        foreach my $item ( @{ [ $url_list-&#62;links ] } ) {
+          push( @links, &#39;http://www.portaltransparencia.gov.br&#39; . @$item[2]);
+        }
+        $tree-&#62;delete;
+        return @links;
+
+
+        }
+
+    sub parse_data {
+        my ( $html ) = @_;
+
+        my $tree= HTML::TreeBuilder::XPath-&#62;new;
+        $tree-&#62;parse( $html );
+
+        my $tabela = $tree-&#62;findnodes( &#39;//table[@class=&#34;tabela&#34;]&#39; );
+
+        my $tabela_com_dados_html =  $tabela-&#62;[0]-&#62;as_HTML; #
+
+        my $table_rows = $tree-&#62;findnodes( &#39;//table[@class=&#34;tabela&#34;]/tr&#39; );
+        my $count = 0;
+        foreach my $row ( $table_rows-&#62;get_nodelist ) {
+            if ( $count &#62; 1 ){ 
+            my $tree_tr = HTML::TreeBuilder::XPath-&#62;new;
+            $tree_tr-&#62;parse( $row-&#62;as_HTML );
+
+            my $row_data = {
+                data                =&#62; $tree_tr-&#62;findvalue( &#39;//td[1]&#39; ),
+                fase                =&#62; $tree_tr-&#62;findvalue( &#39;//td[2]&#39; ),
+                documento           =&#62; $tree_tr-&#62;findvalue( &#39;//td[3]&#39; ),
+                especie             =&#62; $tree_tr-&#62;findvalue( &#39;//td[4]&#39; ),
+                orgao_superior      =&#62; $tree_tr-&#62;findvalue( &#39;//td[5]&#39; ),
+                entidade_vinculada  =&#62; $tree_tr-&#62;findvalue( &#39;//td[6]&#39; ),
+                unidade_gestora     =&#62; $tree_tr-&#62;findvalue( &#39;//td[7]&#39; ),
+                elemento_despesa    =&#62; $tree_tr-&#62;findvalue( &#39;//td[8]&#39; ),
+                favorecido          =&#62; $tree_tr-&#62;findvalue( &#39;//td[9]&#39; ),
+                valor               =&#62; $tree_tr-&#62;findvalue( &#39;//td[10]&#39; ),
+            };
+            push( @items, $row_data );
+            $tree_tr-&#62;delete;
+            }
+            $count++;
+        }
+
+
+        $tree-&#62;delete;
+        }
+
+    sub reformata_dados_com_regex {
+        my ( $items ) = @_;
+        for ( my $i = 0; $i &#60; scalar( @$items ) ; $i++ ) {
+            @$items[$i]-&#62;{ data } = join ( &#39;/&#39;, $1, $2, $3 ) 
+                if ( @$items[$i]-&#62;{ data }  =~ m/^(\d{4})-(\d{2})-(\d{2})/ ) ; 
+                #4d&#237;gitos tra&#231;o 2 d&#237;gitos tra&#231;o 2 d&#237;gitos
+            @$items[$i]-&#62;{ valor } = join ( &#39;.&#39;, $1, $2 ) 
+                if ( @$items[$i]-&#62;{ valor }  =~ m/(\d{1,})\.(\d{2})(\d{2})$/ );
+                #ao menos 1 d&#237;gito seguido de . e 2 d&#237;gitos de precis&#227;o.
+        }
+        return @$items;
+    }
+
+
+    sub exportar_e_salvar_odf {                                                                                                                                                        
+        my ( $items ) = @_;
+        my $document = odfDocument(
+            file =&#62; &#39;portal_transparencia.ods&#39;, 
+            create =&#62; &#39;spreadsheet&#39;);
+        my $table  = $document-&#62;appendTable(&#34;TABELA DADOS&#34;, 1000,50);
+        my $line = 0;
+        my $all_fields = get_fields();
+        my $col = 0;
+        foreach my $field ( qw/data fase documento especie orgao_superior entidade_vinculada unidade_gestora elemento_despesa favorecido valor/ ) {
+            $document-&#62;updateCell( $table, $line, $col++, $all_fields-&#62;{ $field }-&#62;{ label } );
+        }
+
+        foreach my $item ( @$items ) {
+            $line++;
+            $col = 0;
+            foreach my $field ( qw/data fase documento especie orgao_superior entidade_vinculada unidade_gestora elemento_despesa favorecido valor/ ) {
+                $document-&#62;updateCell( $table, $line, $col++, $item-&#62;{ $field } );
+            }
+        }
+        $document-&#62;save;
+    }
+
+    sub get_fields {                                                                                                                                                                   
+        my ( $self ) = @_;
+        return {
+            data =&#62; {
+                field =&#62; &#39;data&#39;,
+                label =&#62; &#39;Data&#39;,
+            },
+            fase =&#62; {
+                field =&#62; &#39;fase&#39;,
+                label =&#62; &#39;Fase&#39;,
+            },
+            documento =&#62; {
+                field =&#62; &#39;documento&#39;,
+                label =&#62; &#39;Documento&#39;,
+            },
+            especie =&#62; {
+                field =&#62; &#39;especie&#39;,
+                label =&#62; &#39;Esp&#233;cie&#39;,
+            },
+            orgao_superior =&#62; {
+                field =&#62; &#39;orgao_superior&#39;,
+                label =&#62; &#39;&#211;rg&#227;o Superior&#39;,
+            },
+            entidade_vinculada =&#62; {
+                field =&#62; &#39;entidade_vinculada&#39;,
+                label =&#62; &#39;Entidade Vinculada&#39;,
+            },
+            unidade_gestora  =&#62; {
+                field =&#62; &#39;unidade_gestora&#39;,
+                label =&#62; &#39;Unidade Gestora&#39;,
+            },
+            elemento_despesa =&#62; {
+                field =&#62; &#39;elemento_despesa&#39;,
+                label =&#62; &#39;Elemento Despesa&#39;,
+            },
+            favorecido =&#62; {
+                field =&#62; &#39;favorecido&#39;,
+                label =&#62; &#39;Favorecido&#39;,
+            },
+            valor =&#62; {
+                field =&#62; &#39;valor&#39;,
+                label =&#62; &#39;Valor&#39;,
+            },
+        };
+    }</pre>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="AUTOR"
+>AUTOR</a></h2>
+
+<p>Hernan Lopes <code>&#60;hernanlopes@gmail.com&#62;</code></p>
+
+</body></html>

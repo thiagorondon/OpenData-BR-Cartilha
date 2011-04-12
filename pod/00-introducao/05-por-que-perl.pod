@@ -1,3 +1,5 @@
+=encoding utf8
+
 =head1 Por que Perl?
 
 Este não é um artigo de "evangelização". Não vou perder meu tempo

@@ -1,5 +1,7 @@
 =pod
 
+=encoding utf8
+
 =head1 KinoSearch (Search Engine)
   
  Um erro é simplesmente outro modo de fazer as coisas.

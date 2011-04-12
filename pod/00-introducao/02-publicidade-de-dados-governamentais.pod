@@ -2,6 +2,8 @@
 
 =pod
 
+=encoding utf8
+
 =head1 PUBLICIDADE DE DADOS GOVERNAMENTAIS.
 
 

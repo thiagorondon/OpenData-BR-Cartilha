@@ -1,0 +1,261 @@
+<html><head><title>Formatos para Transpar&#234;ncia de Dados P&#250;blicos</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" >
+<link rel="stylesheet" type="text/css" title="pod_stylesheet" href="http://st.pimg.net/tucs/style.css">
+
+</head>
+<body class='pod'>
+<a name='___top' class='dummyTopAnchor' ></a>
+
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#Formatos_para_Transpar%EAncia_de_Dados_P%FAblicos'>Formatos para Transpar&#234;ncia de Dados P&#250;blicos</a>
+  <ul   class='indexList indexList2'>
+    <li class='indexItem indexItem2'><a href='#Como_n%E3o_fazer'>Como n&#227;o fazer</a>
+    <li class='indexItem indexItem2'><a href='#Web_Services'>Web Services</a>
+    <ul   class='indexList indexList3'>
+      <li class='indexItem indexItem3'><a href='#Um_cen%E1rio'>Um cen&#225;rio</a>
+      <li class='indexItem indexItem3'><a href='#JSON'>JSON</a>
+      <li class='indexItem indexItem3'><a href='#YAML'>YAML</a>
+      <li class='indexItem indexItem3'><a href='#XML'>XML</a>
+      <li class='indexItem indexItem3'><a href='#A_escolha_%E9_do_fregu%EAs'>A escolha &#233; do fregu&#234;s</a>
+    </ul>
+    <li class='indexItem indexItem2'><a href='#Conclus%E3o'>Conclus&#227;o</a>
+  </ul>
+</ul>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Formatos_para_Transpar&#234;ncia_de_Dados_P&#250;blicos"
+>Formatos para Transpar&#234;ncia de Dados P&#250;blicos</a></h1>
+
+<p>Um dos maiores problemas enfrentados pelo <a href="http://sao-paulo.pm.org/equinocio/2011/mar/1" class="podlinkurl"
+>projeto OpenData</a> est&#225; no formato em que a informa&#231;&#227;o &#233; disponibilizada pelo poder p&#250;blico.
+A lei diz que as informa&#231;&#245;es devem ser expostas &#224; popula&#231;&#227;o,
+mas n&#227;o especifica <b>como</b>.
+Por essa raz&#227;o,
+muitas vezes os esfor&#231;os de transpar&#234;ncia,
+t&#227;o valorizados pela Administra&#231;&#227;o P&#250;blica moderna de nosso pa&#237;s,
+acabam sem a repercurs&#227;o ou resultados esperados.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Como_n&#227;o_fazer"
+>Como n&#227;o fazer</a></h2>
+
+<p>Infelizmente,
+boa parte das informa&#231;&#245;es s&#227;o disponibilizadas em formatos &#243;timos para impress&#227;o individual ou leitura manual,
+mas de dif&#237;cil an&#225;lise e manuseio,
+e por vezes at&#233; em padr&#245;es propriet&#225;rios.
+Um relat&#243;rio em PDF pode ser muito elegante impresso,
+mas obriga o analista a aceitar a informa&#231;&#227;o como est&#225;,
+ou perder horas - dias?
+- para fazer refer&#234;ncias cruzadas,
+an&#225;lises comparativas e estat&#237;sticas,
+o que efetivamente desperdi&#231;a e invalida todos os esfor&#231;os de democratiza&#231;&#227;o e cidadania.</p>
+
+<p>Embora existam t&#233;cnicas de parsing e extra&#231;&#227;o autom&#225;tica de informa&#231;&#245;es em formatos de arquivos deste tipo - muitos dos quais discutidos nos demais artigos deste Equin&#243;cio - o ideal &#233; que as informa&#231;&#245;es sejam expostas pela Administra&#231;&#227;o P&#250;blica da forma mais direta e bem estruturada poss&#237;vel.</p>
+
+<p>Para um exemplo simples,
+considere o excelente site do <a href="http://www.isp.rj.gov.br" class="podlinkurl"
+>Insituto de Seguran&#231;a P&#250;blica (ISP)</a> do Estado do Rio de Janeiro,
+que tornou p&#250;blicas as <a href="http://www.isp.rj.gov.br/Conteudo.asp?ident=150" class="podlinkurl"
+>informa&#231;&#245;es acerca de incid&#234;ncias criminais no Estado</a>.
+A iniciativa &#233; fant&#225;stica,
+e com isso a Secretaria de Estado de Seguran&#231;a espera &#34;<i>assegurar o m&#225;ximo de transpar&#234;ncia e o amplo acesso &#224;s informa&#231;&#245;es relativas a notifica&#231;&#245;es criminais</i>&#34;.</p>
+
+<p>Ao carregarmos a p&#225;gina com os dados oficiais,
+vemos que &#233; poss&#237;vel baixar os dados de cada m&#234;s.
+O arquivo est&#225; em formato XLS,
+propriet&#225;rio,
+mas ao menos solu&#231;&#245;es livres como o OpenOffice nos permitem acessar seu conte&#250;do.
+Abrimos a planilha de janeiro/2010,
+e nos deparamos com uma cole&#231;&#227;o completa de dados,
+com 44(!) abas detalhando as informa&#231;&#245;es de cada AISP (&#193;rea Integrada de Seguran&#231;a P&#250;blica).
+Os autores s&#227;o cuidadosos o suficiente para incluir abas de resumo,
+com o &#237;ndice estadual de ocorr&#234;ncias e dados condensados por RISP (Regi&#227;o Integrada de Seguran&#231;a P&#250;blica),
+o que &#233; &#243;timo.</p>
+
+<p>No entanto,
+se quisermos saber,
+por exemplo,
+qual &#193;rea possui a maior incid&#234;ncia de homic&#237;dios culposos,
+precisamos olhar cada uma das 40 abas de AISP,
+procurar o &#237;ndice em quest&#227;o e anotar o maior manualmente.
+A automatiza&#231;&#227;o &#233; at&#233; poss&#237;vel,
+mas depende que a informa&#231;&#227;o esteja sempre dispon&#237;vel nas mesmas linhas/colunas em todos os documentos - ou com o mesmo r&#243;tulo.</p>
+
+<p>Pode at&#233; ser simples fazer isso manualmente uma vez,
+mas se voc&#234; quiser esse tipo de informa&#231;&#227;o todo m&#234;s,
+ou fazer uma an&#225;lise estat&#237;stica de crescimento ou redu&#231;&#227;o da criminalidade no estado ou regi&#227;o,
+estaria disposto a perder seu tempo com uma an&#225;lise manual desse tipo todo m&#234;s?
+Nem eu.</p>
+
+<p>A grande maioria dos portais de transpar&#234;ncia sofre deste problema,
+de sites municipais ao governo federal.
+Portanto,
+se voc&#234; &#233; respons&#225;vel pela transpar&#234;ncia de dados do poder p&#250;blico,
+evite dispor seus dados em:</p>
+
+<ul>
+<li>PDF</li>
+
+<li>XLS</li>
+
+<li>DOC</li>
+
+<li>HTML</li>
+</ul>
+
+<p>Ou melhor,
+n&#227;o disponha a informa&#231;&#227;o <b>apenas</b> nestes formatos.
+Arquivos para baixar ainda s&#227;o &#243;timos para quem quer um dado pontual,
+resumo,
+ou apenas uma listagem simples.
+O verdadeiro poder da cidadania,
+no entanto,
+est&#225; na facilidade de extra&#231;&#227;o e an&#225;lise da informa&#231;&#227;o exposta,
+o que n&#227;o &#233; poss&#237;vel nesses formatos com a qualidade e agilidade necess&#225;rias,
+caracter&#237;sticas no processo.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Web_Services"
+>Web Services</a></h2>
+
+<p>Uma alternativa mais interessante para a disposi&#231;&#227;o de dados p&#250;blicos &#233; atrav&#233;s dos chamados <i>Web Services</i>.
+Trata-se de um m&#233;todo simples e efetivo de comunica&#231;&#227;o e intera&#231;&#227;o entre dispositivos via rede.
+Quando aplicado &#224; portais de transpar&#234;ncia,
+os web services permitem acesso imediato &#224;s informa&#231;&#245;es disponibilizadas na forma de estruturas de dados bem-definidas,
+o que facilita enormemente a automatiza&#231;&#227;o dos processos de coleta e an&#225;lise pela popula&#231;&#227;o.</p>
+
+<p>Existem diversos estilos de Web Services,
+o mais popular hoje em dia chamado REST.
+H&#225; <a href="http://sao-paulo.pm.org/artigo/2010/RESTful" class="podlinkurl"
+>excelente material dispon&#237;vel sobre REST</a> e outros estilos,
+da estrutura &#224; implementa&#231;&#227;o,
+ent&#227;o vamos nos concentrar em mostrar como pode ser simples a exibi&#231;&#227;o de dados e estruturas complexas nos principais formatos para API&#39;s web.</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="Um_cen&#225;rio"
+>Um cen&#225;rio</a></h3>
+
+<p>Suponha que o Instituto de Seguran&#231;a P&#250;blica do Rio deseje implementar um Web Service para facilitar ainda mais o acesso &#224;s informa&#231;&#245;es de incid&#234;ncias criminais em seu site.
+Os respons&#225;veis criam um servi&#231;o REST simples na forma da URI:</p>
+
+<pre>     http://isp.rj.gov.br/api/ANO/MES/AISP/TIPO</pre>
+
+<p>De modo que, se quis&#233;ssemos a lista de registros de crimes violentos na regi&#227;o AISP7 em maio de 2009, bastaria acessar</p>
+
+<pre>     http://isp.rj.gov.br/api/2009/05/AISP7/crimes-violentos</pre>
+
+<p>e importar o resultado para nosso software de an&#225;lise.</p>
+
+<p>Em <a href="http://sao-paulo.pm.org/artigo/2010/Mojolicious" class="podlinkurl"
+>Mojolicious</a>, criar esse tipo de rota &#233; t&#227;o f&#225;cil quanto escrever:</p>
+
+<pre>   use Mojolicious::Lite;
+
+   get &#39;/:ano/:mes/:aisp/:tipo&#39; =&#62; sub {
+       ...
+   };
+
+   app-&#62;start;</pre>
+
+<p>e colocar o aplicativo respondendo em <code>http://isp.rj.gov.br/api</code>. Mas o foco deste artigo s&#227;o os formatos em que os dados podem ser exibidos, ent&#227;o vamos l&#225;. Para os exemplos a seguir, suponha que os dados tenham sido obtidos de um banco de dados qualquer e estejam em uma estrutura de dados Perl como essa:</p>
+
+<pre>   my $crimes_violentos = {
+        &#39;Roubo de aparelho celular&#39; =&#62; 30,
+        &#39;Furto de veiculos&#39;         =&#62; 72,
+        &#39;Extorsao&#39;                  =&#62; 6,
+        &#39;Estelionato&#39;               =&#62; 62,
+   };</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="JSON"
+>JSON</a></h3>
+
+<p>O formato <a href="http://json.org" class="podlinkurl"
+>JSON</a> &#233; extremamente leve e simples - a especifica&#231;&#227;o cabe em apenas uma p&#225;gina! Sua estrutura &#233; de f&#225;cil entendimento e usa conven&#231;&#245;es comuns em muitas linguagens de programa&#231;&#227;o, o que facilita ainda mais sua integra&#231;&#227;o.</p>
+
+<p>Passar a estrutura de dados acima para JSON &#233; muito simples:</p>
+
+<pre>   use JSON;
+
+   my $json = to_json( $crimes_violentos );</pre>
+
+<p>Agora &#233; s&#243; renderizar a vari&#225;vel <code>$json</code>, lembrando de definir o <i>Content-Type</i> da p&#225;gina para &#34;<code>application/json</code>&#34;.</p>
+
+<p>O resultado ser&#225; algo como:</p>
+
+<pre>   {&#34;Extorsao&#34;:6,&#34;Estelionato&#34;:62,&#34;Furto de veiculos&#34;:72,&#34;Roubo de aparelho celular&#34;:30}</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="YAML"
+>YAML</a></h3>
+
+<p>O formato <a href="http://yaml.org" class="podlinkurl"
+>YAML</a> &#233; uma tentativa de simplificar o XML, ofererendo um padr&#227;o de serializa&#231;&#227;o de dados f&#225;cil de ser interpretado tanto por humanos quanto por programas.</p>
+
+<p>Podemos passar a estrutura de dados anterior para YAML fazendo:</p>
+
+<pre>   use YAML::XS;
+
+   my $yaml = Dump( $crimes_violentos );</pre>
+
+<p>Lembrando de definir o <i>Content-Type</i> da p&#225;gina gerada para &#34;<code>text/yaml</code>&#34; ou derivado.</p>
+
+<p>O resultado ser&#225; algo como:</p>
+
+<pre>   ---
+   Estelionato: 62
+   Extorsao: 6
+   Furto de veiculos: 72
+   Roubo de aparelho celular: 30</pre>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="XML"
+>XML</a></h3>
+
+<p><a href="http://www.w3.org/TR/REC-xml/" class="podlinkurl"
+>XML</a> foi um dos formatos padronizados mais populares para serializa&#231;&#227;o de dados via rede. Hoje em dia, muitos desenvolvedores o evitam em Web Services REST, optando por alternativas mais simples como as acima. Ainda assim, o XML &#233; um forte candidato, especialmente nos casos em que queremos validar o dado em quest&#227;o, usando os chamados <i>Schemas</i>.</p>
+
+<p>Supondo que o arquivo contendo o Schema de nosso XML est&#225; em &#34;<code>dados.xsd</code>&#34;, podemos gerar um xml da seguinte forma:</p>
+
+<pre>    use XML::Compile::Schema;
+    use XML::LibXML;
+
+    my $doc = XML::LibXML-&#62;createDocument(&#39;1.0&#39;, &#39;UTF-8&#39;);
+    my $schema = XML::Compile::Schema-&#62;new( &#39;dados.xsd&#39; );
+
+    my $xml = $schema-&#62;compile( WRITER =&#62; &#39;{http://isp.rj.gov.br/api}dados&#39; )
+                     -&#62;($crimes_violentos, $hash)
+                     -&#62;toString;</pre>
+
+<p>H&#225; pouca vantagem em usar XML sem valida&#231;&#227;o, mas isso tamb&#233;m pode ser obtido com relativa facilidade.</p>
+
+<p>N&#227;o esque&#231;a de definir o <i>Content-Type</i> da p&#225;gina gerada para &#34;<code>text/xml</code>&#34;</p>
+
+<h3><a class='u' href='#___top' title='click to go to top of document'
+name="A_escolha_&#233;_do_fregu&#234;s"
+>A escolha &#233; do fregu&#234;s</a></h3>
+
+<p>A transforma&#231;&#227;o de estruturas de dados nos formatos acima &#233; t&#227;o simples que muitos frameworks web como <a href="http://www.catalystframework.org" class="podlinkurl"
+>Catalyst</a>, <a href="http://mojolicio.us" class="podlinkurl"
+>Mojolicious</a> e <a href="http://perldancer.org" class="podlinkurl"
+>Dancer</a> permitem que voc&#234; especifique o formato atrav&#233;s de um par&#226;metro de extens&#227;o na URI, como se fosse a extens&#227;o de um arquivo. Assim, podemos oferecer o mesmo servi&#231;o em diferentes formatos, conforme a prefer&#234;ncia do sistema usu&#225;rio.</p>
+
+<p>No exemplo que estamos usando, a URI</p>
+
+<pre>   http://isp.rj.gov.br/api/2009/05/AISP7/crimes-violentos.json</pre>
+
+<p>poderia renderizar a sa&#237;da em formato JSON. J&#225; a URI</p>
+
+<pre>   http://isp.rj.gov.br/api/2009/05/AISP7/crimes-violentos.yaml</pre>
+
+<p>renderizaria essa mesma informa&#231;&#227;o em YAML, e assim por diante.</p>
+
+<h2><a class='u' href='#___top' title='click to go to top of document'
+name="Conclus&#227;o"
+>Conclus&#227;o</a></h2>
+
+<p>A democratiza&#231;&#227;o e transpar&#234;ncia dos dados da administra&#231;&#227;o p&#250;blica &#233; sem d&#250;vida louv&#225;vel, e os &#243;rg&#227;os respons&#225;veis v&#234;m fazendo um trabalho cada vez melhor na disponibiliza&#231;&#227;o de dados completos para an&#225;lise da popula&#231;&#227;o. No entanto, a escolha de formatos apropriados para coleta de dados via web &#233; fundamental para que esse processo possa ocorrer com a agilidade e efici&#234;ncia necess&#225;rias.</p>
+
+</body></html>

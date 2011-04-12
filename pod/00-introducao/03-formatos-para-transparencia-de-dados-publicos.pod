@@ -1,3 +1,5 @@
+=encoding utf8
+
 =head1 Formatos para Transparência de Dados Públicos
 
 Um dos maiores problemas enfrentados pelo
