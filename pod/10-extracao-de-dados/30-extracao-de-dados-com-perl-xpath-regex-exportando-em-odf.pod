@@ -39,7 +39,7 @@ Exemplos de notação XPath:
 
 =begin pod:xhtml
 
-<p align="center"><img src="/static/images/equinocio/2011/mar/img2.png"/></p>
+<p align="center"><img src="../../images/img2.png"/></p>
 
 =end pod:xhtml
 
@@ -49,7 +49,7 @@ Veja a ilustração do que deve ser feito conforme a imagem:
 
 =begin pod:xhtml
 
-<p align="center"><img src="/static/images/equinocio/2011/mar/img1.png"/></p>
+<p align="center"><img src="../../images/img1.png"/></p>
 
 =end pod:xhtml
 
@@ -82,7 +82,7 @@ Veja um exemplo de regex na imagem:
 
 =begin pod:xhtml
 
-<p align="center"><img src="/static/images/equinocio/2011/mar/img3.png"/></p>
+<p align="center"><img src="../../images/img3.png"/></p>
 
 =end pod:xhtml
 

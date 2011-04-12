@@ -1,4 +1,5 @@
 =pod
+
 =encoding utf8
 
 =head1 PostGIS
@@ -65,7 +66,7 @@ POINT( -20.1929 -44.11221 )
 
 =begin html
 
-  <img src="point.png">
+  <img src="../../images/postfix/point.png">
 
 =end html
 
@@ -76,7 +77,7 @@ LINESTRING(0 0,1 1,1 2)
 
 =begin html
 
-  <img src="linestring.png">
+  <img src="../../images/postfix/linestring.png">
 
 =end html
 
@@ -88,7 +89,7 @@ POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
 
 =begin html
 
-  <img src="polygon.png">
+  <img src="../../images/postfix/polygon.png">
 
 =end html
 
@@ -100,7 +101,7 @@ MULTIPOINT(0 0,1 2)
 
 =begin html
 
-  <img src="multipoint.png">
+  <img src="../../images/postfix/multipoint.png">
 
 =end html
 
@@ -112,7 +113,7 @@ MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))
 
 =begin html
 
-  <img src="multilinestring.png">
+  <img src="../../images/postfix/multilinestring.png">
 
 =end html
 
@@ -123,7 +124,7 @@ MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)), ((-1 -1,-1 -2,-2 -2,
 
 =begin html
 
-  <img src="multipolygon.png">
+  <img src="../../images/postfix/multipolygon.png">
 
 =end html
 
@@ -134,7 +135,7 @@ GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))
 
 =begin html
 
-  <img src="geometrycollection.png">
+  <img src="../../images/postfix/geometrycollection.png">
 
 =end html
 

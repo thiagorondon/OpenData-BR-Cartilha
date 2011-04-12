@@ -10,7 +10,7 @@
 =begin pod:xhtml
 
 <center>
-<img src="/static/images/equinocio/2011/mar/opendata-datasets.png">
+<img src="../../images/opendata-datasets.png">
 </center>
 
 =end pod:xhtml
