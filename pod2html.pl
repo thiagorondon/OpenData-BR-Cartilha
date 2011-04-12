@@ -51,6 +51,7 @@ foreach my $pod (@files) {
 
     my $p = new OpenData::Pod;
     my $html = '';
+    $p->accept_targets('*');
     $p->html_css($css);
     $p->index(1);
     $p->output_string(\$html);
