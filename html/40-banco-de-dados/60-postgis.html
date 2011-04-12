@@ -21,6 +21,7 @@
   </ul>
   <li class='indexItem indexItem1'><a href='#Refer%EAncias'>Refer&#234;ncias</a>
   <li class='indexItem indexItem1'><a href='#AUTOR'>AUTOR</a>
+  <li class='indexItem indexItem1'><a href='#POD_ERRORS'>POD ERRORS</a>
 </ul>
 </div>
 
@@ -32,8 +33,8 @@ name="PostGIS"
 name="Introdu&#231;&#227;o"
 >Introdu&#231;&#227;o</a></h2>
 
-<p>O <a href="http://postgis.refractions.net/" class="podlinkurl"
->PostGIS</a> &#233; uma extens&#227;o do <a href="http://www.postgresql.org/" class="podlinkurl"
+<p>O <a href="http://search.cpan.org/perldoc?http%3A#%2Fpostgis.refractions.net%2F" class="podlinkpod"
+>PostGIS</a> &#233; uma extens&#227;o do <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.postgresql.org%2F" class="podlinkpod"
 >PostgreSQL</a> que adiciona suporte a dados geogr&#225;ficos tornando poss&#237;vel opera&#231;&#245;es envolvendo pontos,
 linhas,
 &#225;reas e volumes localizados no espa&#231;o geogr&#225;fico.
@@ -45,8 +46,8 @@ funcionalidades e poss&#237;veis aplica&#231;&#245;es.</p>
 name="O_que_&#233;_o_PostGIS?"
 >O que &#233; o PostGIS?</a></h2>
 
-<p>Desenvolvido e distribu&#237;do livremente pela <a href="http://www.refractions.net/" class="podlinkurl"
->Refractions Research</a> o PostGIS adiciona suporte espacial ao <a href="http://www.postgresql.org/" class="podlinkurl"
+<p>Desenvolvido e distribu&#237;do livremente pela <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.refractions.net%2F" class="podlinkpod"
+>Refractions Research</a> o PostGIS adiciona suporte espacial ao <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.postgresql.org%2F" class="podlinkpod"
 >PostgreSQL</a> permitindo a manipula&#231;&#227;o e an&#225;lise de atributos num&#233;ricos e textuais em intera&#231;&#227;o com o espa&#231;o geogr&#225;fico.
 O PostGIS pode ser usado para obter informa&#231;&#245;es sobre uma determinada localidade,
 como por exemplo,
@@ -218,9 +219,9 @@ possui uma medi&#231;&#227;o espacial e calcula a &#225;rea baseando-se numa col
 name="Exemplo:_Antenas_de_telefonia_celular_no_estado_de_S&#227;o_Paulo"
 >Exemplo: Antenas de telefonia celular no estado de S&#227;o Paulo</a></h2>
 
-<p>Vamos utilizar os dados geogr&#225;ficos das microregi&#245;es do estado de S&#227;o Paulo disponibilizados pelo <a href="http://www.ibge.gov.br/" class="podlinkurl"
+<p>Vamos utilizar os dados geogr&#225;ficos das microregi&#245;es do estado de S&#227;o Paulo disponibilizados pelo <a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.ibge.gov.br%2F" class="podlinkpod"
 >IBGE</a> [<a href="#IBGE" class="podlinkpod"
->1</a>] como mapa base para o nosso exemplo com dados reais. Cruzaremos esses mapas com os dados obtidos do projeto <a href="http://http://www.opencellid.org/" class="podlinkurl"
+>1</a>] como mapa base para o nosso exemplo com dados reais. Cruzaremos esses mapas com os dados obtidos do projeto <a href="http://search.cpan.org/perldoc?http%3A#%2Fhttp%3A%2F%2Fwww.opencellid.org%2F" class="podlinkpod"
 >OpenCellID</a> [<a href="#OpenCellID" class="podlinkpod"
 >2</a>], um projeto open source que cataloga informa&#231;&#245;es sobre antenas de celulares no mundo todo.</p>
 
@@ -275,11 +276,11 @@ name="Consultas_interessantes"
 
 <p>Agora que j&#225; temos nossos dados prontos, vamos realizar algumas consultas.</p>
 
-<dl>
-<dt><a name="Quantas_antenas_existem_em_cada_microregi&#227;o_do_Estado_de_S&#227;o_Paulo?"
->Quantas antenas existem em cada microregi&#227;o do Estado de S&#227;o Paulo?</a></dt>
+<blockquote>
+<p>=</p>
 
-<dd>
+<p>Quantas antenas existem em cada microregi&#227;o do Estado de S&#227;o Paulo?</p>
+
 <pre>  SELECT nome_micro, COUNT (module.id) AS count 
   FROM saopaulo, module 
   WHERE ST_Within(module.position, saopaulo.the_geom) 
@@ -297,10 +298,8 @@ name="Consultas_interessantes"
     Osasco     |   426
     ...        |   ...</pre>
 
-<dt><a name="Quantas_antenas_existem_num_raio_de_1000_metros_do_ponto_POINT(-48.5186233520508_-27.6062755584717)?"
->Quantas antenas existem num raio de 1000 metros do ponto POINT(-48.5186233520508 -27.6062755584717)?</a></dt>
+<p>Quantas antenas existem num raio de 1000 metros do ponto POINT(-48.5186233520508 -27.6062755584717)?</p>
 
-<dd>
 <pre>  SELECT count(sp_cell.id)
   FROM sp_cell
   WHERE ST_distance_sphere(sp_cell.position, &#39;POINT(-48.5186233520508 -27.6062755584717)&#39;) &#60; 1000.0;
@@ -309,8 +308,7 @@ name="Consultas_interessantes"
     count 
    -------
        18</pre>
-</dd>
-</dl>
+</blockquote>
 
 <h2><a class='u' href='#___top' title='click to go to top of document'
 name="Visualizando_dados_geogr&#225;ficos"
@@ -322,19 +320,19 @@ name="Visualizando_dados_geogr&#225;ficos"
 
 <dl>
 <dt><a name="TerraView"
-><a href="http://www.dpi.inpe.br/terraview/index.php/" class="podlinkurl"
+><a href="http://search.cpan.org/perldoc?http%3A#%2Fwww.dpi.inpe.br%2Fterraview%2Findex.php%2F" class="podlinkpod"
 >TerraView</a>
 <dt><a name="MapServer"
-><a href="http://http://www.mapserver.org/" class="podlinkurl"
+><a href="http://search.cpan.org/perldoc?http%3A#%2Fhttp%3A%2F%2Fwww.mapserver.org%2F" class="podlinkpod"
 >MapServer</a>
 <dt><a name="GeoServer"
-><a href="http://geoserver.org/display/GEOS/Welcome/" class="podlinkurl"
+><a href="http://search.cpan.org/perldoc?http%3A#%2Fgeoserver.org%2Fdisplay%2FGEOS%2FWelcome%2F" class="podlinkpod"
 >GeoServer</a>
 <dt><a name="uDig"
-><a href="http://udig.refractions.net/" class="podlinkurl"
+><a href="http://search.cpan.org/perldoc?http%3A#%2Fudig.refractions.net%2F" class="podlinkpod"
 >uDig</a>
 <dt><a name="QGIS"
-><a href="http://qgis.org/" class="podlinkurl"
+><a href="http://search.cpan.org/perldoc?http%3A#%2Fqgis.org%2F" class="podlinkpod"
 >QGIS</a></a></dt>
 </dl>
 
@@ -371,5 +369,20 @@ name="AUTOR"
 >AUTOR</a></h1>
 
 <p>Gabriel Andrade &#60;gabriel[@]aware.com.br&#62;</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="POD_ERRORS"
+>POD ERRORS</a></h1>
+
+<p>Hey! <b>The above document had some coding errors, which are explained below:</b></p>
+
+<dl>
+<dt><a name="Around_line_261:"
+>Around line 261:</a></dt>
+
+<dd>
+<p>You can&#39;t have =items (as at line 265) unless the first thing after the =over is an =item</p>
+</dd>
+</dl>
 
 </body></html>
