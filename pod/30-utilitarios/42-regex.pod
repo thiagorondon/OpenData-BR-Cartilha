@@ -1,0 +1,500 @@
+=encoding utf8
+=head1 Expressões Regulares
+
+	Uma das características mais famosas do Perl é a sua capacidade de processar grandes volumes de dados e gerar relatórios por meio do seu engenho de expressões regulares. Uma vez definido um padrão o Perl pode informar se ocorreu, onde ocorreu e como ocorreu um match deste padrão nos dados em processamento.
+	Um padrão é processado no Perl por meio do operador m, que pode ser meramente omitido dada a frequente utilização das regex na linguagem o operador m se tornou um elemento implícito. Assim uma expressão como m/ao/  pode ser expressa da forma simplificada /ao/ e é altamente integrado com as variáveis implícitas do Perl, assim:
+
+$_ =~ m/ao/;
+
+torna-se
+
+/ao/;
+
+	Indo muito além, o engenho de regex possuí diversos metacaracteres e otimizações que aumentam o poder das regex no Perl tornando uma centena de linhas de código de verificação em apenas uma linha. Em contra partida pode se considerar sua interpretação onerosa para olhares menos atentos ou profissionais que não conheçam os detalhes das regex em Perl.
+	Além da verificação de match existe o operador de substituição s/regex/substituição/ que realiza modificação automaticamente. O Engenho também permite a integração com funções como split e grep.
+
+=head1 As Expressões Regulares.
+
+	As expressões regulares são um conjunto de caracteres ou metacaracteres com um significado específico. Uma expressão regular, por exemplo, é avaliada caractere por caractere de acordo com a sequencia informada na Regexp, assim uma regex como /bat-movel/ é validada somente se o texto analisado tenha todos os caracteres:
+
+	# perl -e '
+	my $string1 = "O peito do pe de pedro e preto";
+	my $string2 = "O rato roeu a roupa do rei de roma";
+	print "Match pe in \"$string2\"\n" if $string2 =~ /pe/;
+	print "matched pe in \"$string1\"\n" if $string1 =~ /pe/;
+	'	
+
+	matched pe in "O peito do pe de pedro e preto"
+
+
+	Veja no nosso exemplo que a regex /pe/ só realizou match (retornou true com o operador =~) após encontrar uma sequência pe qualquer. Isso é muito semelhante ao mecanismo de buscas de muitos editores e processadores de texto, e posso garantir que muitos usam o engenho de regexp do Perl. E como ter certeza de qual pe o Perl encontrou na minha string? Inicialmente com as variáveis Pre-match ($`), Match ($&) e Pós-Match ($'):
+
+	use 5.10.0;
+
+	my $string1 = "O peito do pe de pedro e preto";
+	my $string2 = "O rato roeau a roupa do rei de roma";
+	say "Match pe in \"$string2\"" if $string2 =~ /pe/;
+	say "matched pe in \"$string1\"" if $string1 =~ /pe/;
+
+	say $`; #Pré Match
+	say $&; #Match
+	say $'; #Pós Match
+
+	matched pe in "O peito do pe de pedro e preto"
+	O 
+	pe
+	ito do pe de pedro e preto
+
+	Talvez você ache estranho o Perl ter encontrado a sequência pe em peito e não em pe, porém da forma que está escrita a regex informa a primeira sequência de caracteres idênticos encontrados no string e não a “sequência exata”. Muito limitado não acha? Vamos ampliar o poder das regex com os metacaracteres.
+
+=head1 Os Metacaractes:
+
+	Os METACARACTERES tem como função ampliar as capacidades de uma regex. Eles não buscam pelo seu caractere específico, mas implicitamente buscam outra informação mais ampla, por isso são metas. Os metacaracteres são:
+
+	? o metacaractere ? busca pela existência ou não do caractere anterior. Por exemplo: $string =~  m/pei?/ significa que estamos procurando uma sequência que pode conter ou  não o caractere i. Assim o match ocorreria em pe peito ou pedra.
+
+	[root@solaris~]]# perl -e'
+	my @strings = qw/pedra peito prata/;
+	for(@strings){
+		print "$& => $_\n" if /pei?/
+	}
+	'
+	pe => pedra
+	pei => peito
+	[root@solaris~]#
+
+	Veja neste exemplo que a regexp efetuou o match tanto com pe como pei. Assim, vamos pegar um exemplo mais mateiral: o nome Tiago tem duas vertentes, uma com h e outra sem h. Assim Thiago e Tiago são o mesmo nome. Se quisermos pesquisar as duas possibilidades a regex seria: /Th?iago/. Veja:
+
+	[root@solaris~]# perl -e'
+	my @strings = qw/Toledo Thiago Felipao Tiago Triago/;
+	for(@strings){
+		print "$& => $_\n" if /Th?i/
+	}
+'
+	Thi => Thiago
+	Ti => Tiago
+	[root@solaris~]#
+
+	O metacaractere \ elimina o significado “meta” do metacaractere que o prossegue tornando-o um caractere comum. Assim \? siginificaria que estamos procurando pelo próprio caractere ?:
+
+	[root@solaris~]# perl -e'
+	my @strings = qw/Toledo Thiago Felipao Tiago Triago Th?iestrano/;
+	for(@strings){
+	print "$& => $_\n" if /Th\?i/
+	}
+	'
+	Th?i => Th?iestrano
+	[root@solaris~]#
+
+	O metacaractere . (ponto) significa qualquer caractere. Veja:
+
+	[root@solaris~]# perl -e'
+	my @strings = qw/Toledo Thiago Felipao Tiago Triago Th?iestrano/;
+	for(@strings){
+	print "$& => $_\n" if /T.i/
+	}
+	'
+	Thi => Thiago
+	Tri => Triago
+	[root@solaris~]#
+
+	A regex /T.i/ realizou o match com Thiago e Trigo. Os metacaracteres também podem ser combinado, assim /T.?i/ Significaria ter ou não um caractere entre T e i:
+
+	[root@solaris~]# perl -e'
+	my @strings = qw/Toledo Thiago Felipao Tiago Triago Th?iestrano/;
+	for(@strings){
+		print "$& => $_\n" if /T.?i/
+	}
+	'
+	Thi => Thiago
+	Ti => Tiago
+	Tri => Triago
+	[root@solaris~]#
+
+	+ indica que deve haver pelo menos 1, mas podem haver vário outros. De forma que /a+/ realizará match com a, aa, 	aaaa... 
+
+	[root@solaris~]# perl -e '
+	my @strings = qw/casa caaabanaaaa caastelooo/;
+	for(@strings){
+	$_ =~ s/a+/a/g;
+		print "$_\n";
+	}
+	'
+	casa
+	cabana
+	castelooo
+	[root@solaris~]#
+
+	O operador s executou a substituição dos agrupamentos de aaa por a. 
+	Com o * dizemos que pode haver uma, muitas ou nenhuma aparição do caractere que o antecede. Assim /.*/ efetuaria match com qualquer string existente. Vejamos: 
+
+	[root@solaris]# perl -e '
+	my @strings = qw/thiago tiago thhhhiago triago/;
+	for (@strings){
+		print "$& => $_\n" if /th*i/;
+	}
+	'
+	thi => thiago
+	ti => tiago
+	thhhhi => thhhhiago
+	A expressão efetuou match com thi, ti e thhhhi mas não tri.
+
+	Porém os metas *, ?, + e . são muito genéricos para algumas aplicações. Assim podemos nos valer de quantificadores mais específicos. Com { } eu posso quantificar um máximo e mínimo de aparições de um determinado caractere na minha regex. Logo /th{4}i / significa um t seguido de 4 h's e um i.
+
+	[root@solaris]# perl -e '
+	my @strings = qw/thiago tiago thhhhiago triago/;
+	for (@strings){
+		print "$& => $_\n" if /th{4}i/;
+	}
+	'
+	thhhhi => thhhhiago
+
+	O quantificador { } permite que eu estabeleça um intervalo de aparições: {2,4} significa no mínimo 2 e no máximo 6.
+
+	[root@solaris]# perl -e '
+	my @strings = qw/tiago thiago thhiago thhhiago thhhhiago triago/;
+	for (@strings){
+		print "$& => $_\n" if /th{2,4}i/;
+	}
+	'
+	thhi => thhiago
+	thhhi => thhhiago
+	thhhhi => thhhhiago
+
+	Ainda podemos fazer agrupamentos com os parêntese ( ), de forma que os caracteres dentro de um agrupamento são interpretados como um único elemento pelos outros metacaracteres. Por exemplo /(00:){2}00/ significa 00:00:00. Nesta regex o conjunto de caracteres 00: deve ocorrer pelo menos duas vezes. Ou podemos melhorar adicionando o \d que significa digito e fazendo         /(\d{2}:){2}\d{2}/ que seria uma mascara interessante para o formato de horas. Essa regex efetuaria match com 12:30:40 ou com 03:18:01 mas não com 03:125:26 por exemplo:
+	
+	[root@solaris]# perl -e '
+	my @strings = qw/18:30:23 52c:00:18 23:41:123 124:04:13/;
+	for(@strings){
+		print "$&\n" if /(\d{2}:){2}\d{2}/;
+	}
+	'
+	18:30:23
+	23:41:12
+	24:04:13
+
+	Nossa mascara para horas ainda tem uma falha. Ela aceita strings com mais de 2 dígitos no final. Apesar do match ocorrer somente com os 2 dígitos antes do caractere : a nossa regex permite que hajam dígitos antes ou depois dos limites. Para sanar estes problemas temos os metas: ^ e $. Eles significam, respectivamente, no começo da string e no fim da string. Então nossa máscara ficará perfeita assim: /^(\d{2}:){2}\d{2}$/. Esta regex também poderia ter sido escrita como: /^\d\d:\d\d:\d\d$/ mas da primeira forma eu pude demonstrar como usar os metacaracteres do Perl. Vejamos a nossa nova máscara em ação:
+
+	[root@solaris]# perl -e '
+	my @strings = qw/18:30:23 52c:00:18 23:41:123 124:04:13/;
+	for(@strings){
+		print "$&\n" if /^(\d{2}:){2}\d{2}$/;
+	}
+	'
+	18:30:23
+
+	O metacaracter | que tem a função de operador lógico or. /(Thiago|Felipe)/ por exemplo significa match com Thiago ou com Felipe.
+
+	use 5.10.0;
+
+	my @sentenca;
+	push @sentenca, "Entao Thiago disse: Esse tal de Perl eh da ora!!!",
+                "Eu prefiro VB, respondeu o Peba",
+                "Tambem gostei do Perl, retrucou Unix-Guy";
+
+	say for grep(/(Thiago)|(Unix-Guy)/, @sentenca);
+
+	saída:
+
+	Entao Thiago disse: Esse tal de Perl eh da ora!!!
+	Tambem gostei do Perl, retrucou Unix-Guy
+
+	Neste caso o grep procura por Thiago ou Unix-Guy.
+
+	Além destes temos o metacaractere de definição de classes de caractere. Por meio dele podemos especificar grupos de caracteres, como [abcdef] que irão efetuar o match caso ocorra a incidência de qualquer um deste caracteres na string. Também podemos especificar este mesmo agrupamento de caracteres com [a-f]. Assim podemos criar padrões mais complexos, como [0-9] para dígitos ou [a-z] para letras minúsculas. Podemos ainda juntar diversos grupos e formar uma classe complexa, como alpha-numérica, [0-9a-zA-Z] ou especificar um par maiúsculo/minúsculo. Um exemplo da utilidade deste meta é verificar se não existem caracteres indevidos na entrada do usuário.
+
+	use 5.10.1;
+	use strict;
+	use warnings;
+	sub is_integer{
+		my $number = shift;
+		return $number =~ m(^[0-9]+(\.0+)?$) ? 1 : 0;
+	}
+	say "Digite um numero inteiro: ";
+	chomp(my $int = <STDIN>);
+	if(is_integer $int){
+		say "Você digitou um inteiro"
+	}
+	else{
+		say "Este número não é um inteiro"
+	}
+
+	saídas:
+
+	Digite um número inteiro: 
+	23
+	Você digitou um inteiro
+
+	Digite um número inteiro: 
+	45.10
+	Este numero não é um inteiro
+
+	Digite um número inteiro: 
+	112.00
+	Você digitou um inteiro
+
+	Neste exemplo a regex funciona da seguinte forma: ^[0..9]+ diz que a string deve conter uma sequência de dígitos de 0 a 9, como qualquer número inteiro. Além disso, os metacaracteres definem que a string deve começar com dígitos. Definimos que a sequência pode termina com um ponto, desde que seguido de zeros (\.0+)? $. Essa regex efetua match com sequencias de digitos como 97, 192768 ou 1 bem como números com representação decimal, desde que contenha apenas zeros, como 95.00 127.0000 e assim por diante.
+Atalhos para Classes de Caracteres
+
+	O metacaractere [ ] permite que criemos classes de caracteres, porém algumas classes são tão comuns que foram criados atalhos no Perl para elas. Assim temos:
+
+	Atalho	|	Significado		|	Agrupamento:
+	\d	|	Todos os dígitos	|	[0-9]
+	\D	|	Exceto dígitos		|	[^0-9]
+	\w	|	Letras, números e _	|	[a-zA-Z0-9_]
+	\W	|	Exceto letras e números	|	[a-zA-Z0-9_]
+	\s	|	Espaços			|	[ \t\n\f\r]
+	\S	|	Exceto espaços		|	[^ \t\n\f\r]
+
+
+	Ao estudar esta tabela você vai perceber que o metacaractere ^ tem seu significado modificado quando está entre colchetes: [^ ]. Ele significa exclusão dos elementos dentro da classe.
+	Assim nossa regex do exemplo anterior, m(^[0-9]+(\.0+)?), pode ser simplificada como m{^\d+(\.0+)?}.
+
+=head1 Os operadores m/// e s///
+
+	Os operadores de regex do Perl tem certas características que devem ser ressaltadas. A mais interessante é a capacidade de concatenar strings, permitindo que regex sejam criadas dinamicamente. Assim se eu criar um algoritmo que pesquise determinados textos em um arquivo, como são feitos os mecanismos de pesquisa dos editores de texto, eu poderia fazer:
+
+	use 5.10.1;
+	use strict;
+	use warnings;
+
+	use FileHandle;
+
+	#caminho do arquivo
+	my $path = '/etc/apache2/apache2.conf';
+
+	my $file = FileHandle->new($path, "r");
+	print "Informe o texto a ser pesquisado: ";
+	chomp (my $to_search = <STDIN>);
+	my $line = 0;
+	while($_ = $file->getline()){
+		$line++;
+		print ":$line: $_" if /$to_search/;
+	}
+
+	Informe o texto a ser pesquisado: ServerRoot
+	:27: # with "/", the value of ServerRoot is prepended -- so "/var/log/apache2/foo.log"
+	:28: # with ServerRoot set to "" will be interpreted by the
+	:40: # ServerRoot: The top of the directory tree under which the server's
+	:50: ServerRoot "/etc/apache2"
+
+	Veja que ao informarmos a expressão ServerRoot, o programa pesquisou todas as linhas do arquivo e informou seu valor. Porém este programa vai além, e permite que o usuário informe expressões regulares com metacaracteres:
+
+	Informe o texto a ser pesquisado: ^ServerRoot
+	:50: ServerRoot "/etc/apache2"
+
+	Pesquisando por ^ServerRoot  nosso programa retorna apenas as linhas que começam com este valor.
+	Não sendo o bastante, ainda temos, adicionada a toda essa flexibilidade a opção de modificar o delimitador da regex. Assim, em vez de fazer /regex/ podemos fazer m#regex# ou m(regex). E para o operador s podemos usar s#regex# #string# ou s{regex} {string}.
+	Os operadores também possuem modificadores que atuam na forma como a expressão é analisada, ou como a string é percorrida. Os modificadores mais importantes são:
+
+	Modificador	Função
+	/i		Ignora o Case da letra
+	/g		Verificação global.
+	/o		Compila a regex apenas uma vez
+	/s		O meta . também efetua match com \n
+	/x		Permite comentários dentro da regex
+
+
+	Vamos ver alguns exemplos:
+
+	O /i ignora o case da regex:
+
+	use 5.10.1;
+	use strict;
+	use warnings;
+
+	my @strs = qw/casa carro Casa CArro/;
+
+	say "Matches sem /i:";
+	for(@strs){
+		print "$_ " if /ca/;
+	}
+	say "\n";
+	
+	say "Matches com /i";
+	for(@strs){
+		print "$_ " if /ca/i;
+	}
+
+	saída:
+	Matches sem /i:
+	casa carro 
+	
+	Matches com /i
+	casa carro Casa CArro
+	
+	Com o /g  podemos receber um array com todos os matches de uma expressão:
+
+	use 5.10.1;
+	use strict;
+	use warnings;
+
+	my $str = "Frodo Baggins e Bilbo Baggins são parentes";
+
+	my @match = $str =~ /b/i;
+	my @matches = $str =~ /b/gi;
+
+	say "Sem o modificador g: @match";
+	say "Com o modificador g: @matches";
+
+	saída:
+	Sem o modificador g: 1
+	Com o modificador g: B B b B
+
+	E com o modificador /x podemos adicionar comentários:
+
+	use 5.10.1;
+	use strict;
+	use warnings;
+
+	print "Digite uma data (formato dd/mm/aaa): ";
+	chomp (my $date = <STDIN>);
+	
+	if($date =~ m[	#inicia a regex
+			(\d\d)/		#dia
+			(\d\d)/		#mes
+			(\d{4})		#ano]x){
+	say "$date esta no formato correto"
+	}
+	else{
+		say "$date esta no formato incorreto"
+	}
+
+	Este modificador é extremamente interessante pois permite que deixemos as regex mais legíveis e deve ser introduzido na sua lista de boas práticas.
+	O operador m também alimenta as variáveis ocultas $1, $2, $3...$n quando usamos agrupamentos, ( ). Assim podemos adicionar uma funcionalidade no programa anterior adicionando estas linhas ao final:
+
+	say "Dia informado: $1";
+	say "Mes informado: $2";
+	say "Ano: $3";
+ 
+	veja a nova saída:
+
+	Digite uma data (formato dd/mm/aaa): 13/02/1980
+	13/02/1980 esta no formato correto
+	Dia informado: 13
+	Mes informado: 02
+	Ano: 1980
+
+	O que fizemos aqui é chamado agrupamento. Os agrupamentos são subelementos das regex, que podem ser obtidos a fim de facilitar algoritmos, como obter as partes de uma data, hora ou e-mail. Mais um exemplo, vamos supor um formulário Web que verifica o formato de um e-mail e separa o nome de usuário do domínio.
+
+	#!/usr/bin/perl -T
+	use strict;
+	use warnings;
+	use CGI;
+	use CGI::Carp qw/fatalsToBrowser/;
+	use Data::Validate::Email qw(is_email is_email_rfc822);
+
+	my $cgi = CGI->new();
+	print $cgi->header(-type => 'Content-Type',
+			-charset => 'iso-8859-1'),
+	  $cgi->start_html(-title => "Verifica e-mail");
+
+	if(not $cgi->param("Email")){
+	print $cgi->start_form(-action => $cgi->url()),
+		$cgi->p("Informe seu e-mail " .
+		$cgi->textfield(-name => "Email") . " " .
+	        $cgi->submit(-name => "testar")),
+	        $cgi->end_form;
+	}
+	else{
+		my $mail = $cgi->param("Email");
+		if (not is_email($mail)){
+			die "Email informado inválido\n";
+		}
+		$mail =~ m{^([\w-]+)\@(([\w-]+)\.([\w-]+)(\.([\w-]+))?)};
+		print $cgi->p("Username = $1"),
+ 		  $cgi->p("Domain = $2"),
+ 		  $cgi->p("\t Parte 1 = $3"),
+ 		  $cgi->p("\t Parte 2 = $4");
+		print $cgi->p("\t Parte 3 = $6") if $5;
+	}
+
+	Neste exemplo a regex m{^([\w-]+)\@(([\w-]+)\.([\w-]+)(\.([\w-]+))?)} divide a string em duas partes, uma antes do @ e outra depois. Então $1 irá conter o nome do usuário e $2 o nome completo do domínio. $3 irá conter o valor imediatamente depois de @ e antes do primeiro ponto que divide o nome do domínio na internet. A variável $4 irá conter o restante do nome, se for apenas .com ou .net. Como exitem domínios .com assim como .com.br ou co.uk, tivemos que fazer mais um agrupamento. Então, em um domínio .com.br, $5 irá conter .br e $6 apenas br.
+
+              ____________________________________________________
+             |                  $2                                |
+ _________   |   __________      _________   __________________   |
+|     $1  |  |  |    $3    |    |   $4    | |     ____________ |  |
+|^([\w-]+)|\@|( | ([\w-]+) | \. | ([\w-]+)| |(\. | ([\w-]+))?)||  |
+|_________|  |  |__________|    |_________| |    |____$6______||  |
+             |                              |         $5       |  |
+             |                              |__________________|  |
+             |____________________________________________________|
+
+=head1 Verificando a Posição na String:
+
+	As vezes o importante não é apenas efetuar o mach, mas também saber as posições onde o match ocorre. Para isto usamos a função pos( ) juntamente com o modificador g. O operador g deixa um cursor informando a posição onde ocorreu o ultimo match. O operador pos retorna a posição deste cursor. Leve em consideração que a posição inicial do cursos é sempre 0.
+
+	$ perl -E ' 
+	my $string = "Frodo e Bilbo Baggins são parentes"; 
+	while(my $match = $string =~ /b/gi){ 
+		say "$& encontrado na posição ", pos($string) - 1; 
+	} 
+	' 
+	saida:
+	B encontrado na posição 8 
+	b encontrado na posição 11 
+	B encontrado na posição 14 
+
+	Utilizamos  pos($string) – 1 pois o cursos fica posicionado no próximo caractere da string sendo percorrida. Não se esqueça que ele é posicionado logo após o final do padrão. Portanto de o padrão contiver diversos caracteres, o cursor estará ao final do caractere.
+
+	$ perl -E ' 
+	my $string = "Frodo e Bilbo Baggins são parentes"; 
+	while(my $match = $string =~ /\wo/gi){ 
+		say "$& encontrado na posição ", pos($string) - 1; 
+	} 
+	' 
+	ro encontrado na posição 2 
+	do encontrado na posição 4 
+	bo encontrado na posição 12 
+
+=head1 Ancora \b:
+
+	Você percebeu que as expressões regulares tem uma certa dificuldade em encontrar a palavra exata. Por exemplo, nossa pesquisa por b retorna todas as palavras que contenham b. Os delimitadores ^ e $ verificam início e final de string. Mas uma string pode conter diversas palavras. Se eu desejar encontrar uma palavra exata em um string você deve utilizar as ancoras m(\bexpressao\b).
+
+	~$ perl -E ' 
+	my $string = "Frodo e Bilbo Baggins são parentes"; 
+	while(my $match = $string =~ /\bBi\b/gi){ 
+		say "$& encontrado na posição ", pos($string) - 1; 
+	} 
+	' 	
+	$
+
+	Este exemplo não gera saída por que não temos uma palavra exata, Bi. Mas se modificarmos para \bBilbo\b terremos uma saída.
+
+	perl -E' 
+	my $string = "Frodo e Bilbo Baggins são parentes"; 
+	while(my $match = $string =~ /\bBilbo\b/gi){ 
+		say "$& encontrado na posição ", pos($string) - 1; 
+	} 
+	' 
+	Bilbo encontrado na posição 12 
+	Considerações Finais:
+
+	Expressões regulares são extremamente amplas e poderosas. Seria quase impossível explicar todas as suas funcionalidades em um único módulo deste curso. Assim ficam como referências para estudos posteriores: As páginas da documentação do Perl:
+                 perlrequick         Perl regular expressions quick start 
+		 perlretut           Perl regular expressions tutorial 
+
+	E os livros:
+	Mastering Regular Expressions, Third Edition - By: Jeffrey E.F. Friedl
+	Mastering Perl - By: brian d foy (capítulo Advanced Regular Expressions)
+
+=head1 Receita Especial – Match Aproximado
+
+	Existe uma coisa mais muito importante a respeito das regex, que é pouco comentada em livros mas muito importante em sistemas profissionais. As vezes precisamos de realizar match em expressões próximas. Por exemplo, é muito comum que as pessoas escrevam meu nome errado, omitindo o h em Thiago ou substituindo o z por s em Sanchez. Uma busca por padrão exato nunca encontraria meu nome, mas existe uma solução para isso. O módulo String::Approx permite que façamos pesquisa e substituição em valores próximos. Ele utiliza um algoritmo Fuzzy, escrito em C, para fazer as pesquisas.
+	
+	use 5.10.1;
+
+	use String::Approx qw(amatch);
+
+	while(<DATA>) { 
+		print if amatch("Thiago"); 
+	}
+
+
+	__DATA__
+	Thiago
+	Tiago
+	Diago
+	Iago
+	Thiogo
